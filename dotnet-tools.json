@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-format": {
+      "version": "5.1.250801",
+      "commands": [
+        "dotnet-format"
+      ]
+    },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "4.8.13",
+      "commands": [
+        "reportgenerator"
+      ]
+    },
+    "abraxas.feature.apiclient.generator": {
+      "version": "3.4.0",
+      "commands": [
+        "Abraxas.Feature.ApiClient.Generator"
+      ]
+    }
+  }
+}

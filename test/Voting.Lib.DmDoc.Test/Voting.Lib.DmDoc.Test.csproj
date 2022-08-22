@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.DmDoc\Voting.Lib.DmDoc.csproj" />
+  </ItemGroup>
+</Project>

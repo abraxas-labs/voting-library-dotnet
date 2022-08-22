@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.ImageProcessing\Voting.Lib.ImageProcessing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="TestFiles\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>

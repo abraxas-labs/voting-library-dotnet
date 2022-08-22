@@ -1,0 +1,36 @@
+<Project>
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <LangVersion>10</LangVersion>
+        <Authors>Abraxas Informatik AG</Authors>
+        <Nullable>enable</Nullable>
+        <IsPackable>true</IsPackable>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+        
+        <!-- We need to generate the documentation file, otherwise errors in the XML documentation aren't reported -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <NoWarn>NU5100</NoWarn><!-- referenced assembly not in lib folder, problem in grpc pkg -->
+
+        <EfCoreVersion>6.0.0</EfCoreVersion>
+        <MsExtensionsVersion>6.0.0</MsExtensionsVersion>
+        <MsAspNetCoreVersion>6.0.0</MsAspNetCoreVersion>
+        <EventStoreVersion>21.2.0</EventStoreVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(MSBuildProjectName).Testing</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+          <_Parameter1>$(MSBuildProjectName).Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.IO.Pipelines" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MsExtensionsVersion)"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MsExtensionsVersion)"/>
+    </ItemGroup>
+</Project>

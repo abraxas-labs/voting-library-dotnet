@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MsAspNetCoreVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="$(MsExtensionsVersion)" />
+        <PackageReference Include="Abraxas.Foundation.ApiClient.Base.DotNet" Version="3.3.0" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Voting.Lib.Grpc" />
+    <InternalsVisibleTo Include="Voting.Lib.Rest" />
+    <InternalsVisibleTo Include="Voting.Lib.Grpc.Test" />
+    <InternalsVisibleTo Include="Voting.Lib.Rest.Test" />
+  </ItemGroup>
+
+</Project>

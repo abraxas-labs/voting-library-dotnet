@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="eCH-0058-5-0" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+  </ItemGroup>
+
+</Project>

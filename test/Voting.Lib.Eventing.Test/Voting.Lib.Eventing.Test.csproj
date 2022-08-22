@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Grpc.Tools" Version="2.45.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Eventing\Voting.Lib.Eventing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Events/*.proto" GrpcServices="None" />
+  </ItemGroup>
+</Project>

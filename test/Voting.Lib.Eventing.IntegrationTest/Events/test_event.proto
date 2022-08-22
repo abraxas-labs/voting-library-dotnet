@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package abraxas.voting.lib.eventing.integration_test.events;
+
+option csharp_namespace = "Voting.Lib.Eventing.IntegrationTest.Events";
+
+message TestEvent {
+  int32 test_value = 1;
+}
+
+message TestEvent2 {
+  int32 test_value2 = 1;
+}
+
+message TestEventMetadata {
+  int32 test_meta_value = 1;
+}

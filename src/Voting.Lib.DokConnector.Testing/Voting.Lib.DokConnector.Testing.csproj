@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.DokConnector\Voting.Lib.DokConnector.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+  </ItemGroup>
+
+</Project>

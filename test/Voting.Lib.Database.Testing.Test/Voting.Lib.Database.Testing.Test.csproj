@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Database.Testing\Voting.Lib.Database.Testing.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Database.Test\Voting.Lib.Database.Test.csproj" />
+  </ItemGroup>
+</Project>

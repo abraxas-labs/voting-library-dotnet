@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Minio" Version="3.1.13" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MsExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MsExtensionsVersion)" />
+  </ItemGroup>
+
+</Project>

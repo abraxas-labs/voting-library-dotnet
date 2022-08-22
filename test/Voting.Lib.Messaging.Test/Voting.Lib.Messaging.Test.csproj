@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Messaging.Testing\Voting.Lib.Messaging.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

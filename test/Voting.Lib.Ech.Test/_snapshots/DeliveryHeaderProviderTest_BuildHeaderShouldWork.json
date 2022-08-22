@@ -1,0 +1,13 @@
+{
+  "senderId": "Voting.Lib.Tests.Sender",
+  "messageId": "constant-message-id",
+  "messageType": null,
+  "sendingApplication": {
+    "manufacturer": "Abraxas Informatik AG",
+    "product": "Voting.Lib.Tests",
+    "productVersion": "0.1.2"
+  },
+  "messageDate": "2020-01-10T13:12:10.200",
+  "action": "1",
+  "testDeliveryFlag": true
+}

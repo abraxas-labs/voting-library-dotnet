@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Grpc\Voting.Lib.Grpc.csproj" />
+  </ItemGroup>
+
+</Project>

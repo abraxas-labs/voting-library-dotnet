@@ -1,0 +1,3900 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Permission Service",
+    "version": "1.0",
+    "contact": {
+      "url": "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/permission"
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json",
+    "application/grpc"
+  ],
+  "produces": [
+    "application/json",
+    "application/grpc"
+  ],
+  "paths": {
+    "/app-packages": {
+      "post": {
+        "summary": "---------\nAPPPACKAGES\n---------",
+        "operationId": "CreateAppPackage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AppPackage"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/app-packages/{id}": {
+      "delete": {
+        "operationId": "DeleteAppPackage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateAppPackage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AppPackage"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications": {
+      "get": {
+        "operationId": "GetApplications",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "post": {
+        "operationId": "CreateApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/name/{filter}": {
+      "get": {
+        "operationId": "GetApplicationByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/shortcut/{filter}": {
+      "get": {
+        "operationId": "GetApplicationByShortcut",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{app_id}/redirectURIs": {
+      "post": {
+        "operationId": "AddAppRedirectURIs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiURLs"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "app_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AppURI"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{app_id}/redirectURIs/{uri}": {
+      "delete": {
+        "operationId": "DeleteAppRedirectURI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "app_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "uri",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{idTwo}/tenants/{idOne}/app-packages": {
+      "get": {
+        "operationId": "GetAppPackagesByTenantAndApp2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackages"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{idTwo}/tenants/{idOne}/options": {
+      "get": {
+        "summary": "---------\nOptions\n---------",
+        "operationId": "GetOptionsByTenantAndApp2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{idTwo}/users/{idOne}/tenants": {
+      "get": {
+        "operationId": "GetTenantsByUserAndApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{id}": {
+      "get": {
+        "operationId": "GetApplicationById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{id}/app-packages": {
+      "get": {
+        "operationId": "GetAppPackagesByApp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackages"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{id}/labels": {
+      "get": {
+        "operationId": "GetApplicationLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{id}/redirectURIs": {
+      "get": {
+        "operationId": "GetAppRedirectURIs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiURLs"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/applications/{id}/tenants": {
+      "get": {
+        "operationId": "GetTenantsByApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/apps/{idOne}/tenants/{idTwo}/users": {
+      "get": {
+        "operationId": "GetUsersByAppAndTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Users"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/apps/{idOne}/tenants/{idTwo}/users/appdelegations": {
+      "get": {
+        "operationId": "GetUsersByTenantAndAppdelegation2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DisplayUsers"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.loginid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.firstname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.lastname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.servicename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "userFilter.lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userFilter.lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.loginids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/apps/{idTwo}/users/{idOne}/authorizations": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/apps/{id}/users": {
+      "get": {
+        "operationId": "GetUsersByApp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Users"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/authorizedusers": {
+      "post": {
+        "operationId": "SearchAuthorizedUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Users"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AuthorizedUserFilter"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/healthz": {
+      "get": {
+        "operationId": "Healthz",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/openmodes": {
+      "get": {
+        "operationId": "GetOpenModes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenModes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "post": {
+        "operationId": "CreateOpenMode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenMode"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1OpenMode"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/openmodes/{id}": {
+      "get": {
+        "operationId": "GetOpenModeById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenMode"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteOpenMode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateOpenMode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1OpenMode"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1OpenMode"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "Ready",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenant/{idTwo}/users/{idOne}/applications": {
+      "get": {
+        "operationId": "GetApplicationsByUserAndTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenant/{idTwo}/users/{idOne}/authorizations": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenant/{idTwo}/users/{idOne}/authorizations/delegation": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndTenantAndDelegation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants": {
+      "get": {
+        "summary": "Filterpossibilities (Lifecycles, MappingID, Origin)\nLifecycleFilter: lifecycles=ACTIVE\u0026lifecycles=INACTIVE\u0026lifecycles=DELETED \nMappingID Key: mappingId.key=ERP_VRSG\nOrigin: origin=SecureConnect\nLastModified: lastModified=2018-09-19T14:30:44.356968635Z",
+        "operationId": "GetTenants",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappingId.key",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "mappingId.value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bfs",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name_contains",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "post": {
+        "operationId": "CreateTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/labelsfilter": {
+      "post": {
+        "operationId": "GetTenantsByLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LabelsFilter"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/tenantid/{tenantId}": {
+      "get": {
+        "operationId": "GetTenantByTenantId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/addresses/{idTwo}": {
+      "get": {
+        "operationId": "GetTenantAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiAddress"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteTenantAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/applications/{idTwo}/app-packages": {
+      "get": {
+        "operationId": "GetAppPackagesByTenantAndApp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackages"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/applications/{idTwo}/options": {
+      "get": {
+        "summary": "---------\nOptions\n---------",
+        "operationId": "GetOptionsByTenantAndApp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/delegations/{idTwo}/possibleApps": {
+      "get": {
+        "operationId": "GetPossibleAppsByDelegation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/emails/{idTwo}": {
+      "get": {
+        "operationId": "GetTenantEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/commonapiEmail"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteTenantEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idOne}/phones/{idTwo}": {
+      "get": {
+        "operationId": "GetTenantPhone",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/commonapiPhoneNumber"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteTenantPhone",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idTwo}/apps/{idOne}/users": {
+      "get": {
+        "operationId": "GetUsersByAppAndTenant2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Users"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idTwo}/apps/{idOne}/users/appdelegations": {
+      "get": {
+        "operationId": "GetUsersByTenantAndAppdelegation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DisplayUsers"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.loginid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.firstname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.lastname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.servicename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "userFilter.lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userFilter.lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.loginids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{idTwo}/users/{idOne}/possibleApps": {
+      "get": {
+        "operationId": "GetPossibleAppsByUserAndTenant2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}": {
+      "get": {
+        "operationId": "GetTenantById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Tenant"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/addresses": {
+      "get": {
+        "operationId": "GetTenantAddresses",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiAddresses"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/app-packages": {
+      "get": {
+        "operationId": "GetAppPackagesByTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AppPackages"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/applications": {
+      "get": {
+        "operationId": "GetApplicationsByTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/emails": {
+      "get": {
+        "operationId": "GetTenantEmails",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiEmails"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/labels": {
+      "get": {
+        "operationId": "GetTenantLabels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/phones": {
+      "get": {
+        "operationId": "GetTenantPhones",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiPhoneNumbers"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{id}/possibleApps": {
+      "get": {
+        "operationId": "GetPossibleAppsByTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{tenantId}/addresses": {
+      "post": {
+        "operationId": "AddTenantAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiAddress"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiAddress"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{tenantId}/emails": {
+      "post": {
+        "operationId": "AddTenantEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/commonapiEmail"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/commonapiEmail"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{tenantId}/phones": {
+      "post": {
+        "operationId": "AddTenantPhone",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/commonapiPhoneNumber"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/commonapiPhoneNumber"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{tenantId}/users": {
+      "get": {
+        "operationId": "GetUsersByTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Users"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.loginid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.firstname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.lastname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.servicename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "userFilter.lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userFilter.lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.loginids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/tenants/{tenantId}/users/delegations": {
+      "get": {
+        "operationId": "GetUsersByTenantAndDelegation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DisplayUsers"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.loginid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "userFilter.firstname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.lastname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.servicename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "userFilter.lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "userFilter.lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "userFilter.loginids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/applications/{idTwo}/tenants": {
+      "get": {
+        "operationId": "GetTenantsByUserAndApplication2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/apps/{idTwo}/authorizations": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndApplication2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/authorizations/{idTwo}": {
+      "delete": {
+        "operationId": "DeleteAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "x-vrsg-tenant",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/tenants/{idTwo}/applications": {
+      "get": {
+        "operationId": "GetApplicationsByUserAndTenant2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/tenants/{idTwo}/authorizations": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndTenant2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/tenants/{idTwo}/authorizations/delegation": {
+      "get": {
+        "operationId": "GetAuthorizationsByUserAndTenantAndDelegation2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{idOne}/tenants/{idTwo}/possibleApps": {
+      "get": {
+        "operationId": "GetPossibleAppsByUserAndTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/applications": {
+      "get": {
+        "operationId": "GetApplicationsByUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/authorizations": {
+      "get": {
+        "operationId": "GetUserAuthorizations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteAuthorizationsByLoginID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiReturnMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/authorizations/true": {
+      "get": {
+        "operationId": "GetUserAuthorizationsWithDelegations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/history": {
+      "get": {
+        "summary": "---------\nHistory\n---------",
+        "operationId": "GetUserHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v3ChangeObjects"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/possibleApps": {
+      "get": {
+        "operationId": "GetPossibleAppsByUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{id}/tenants": {
+      "get": {
+        "operationId": "GetTenantsByUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginId}/authorizations": {
+      "post": {
+        "operationId": "CreateAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          },
+          {
+            "name": "x-vrsg-tenant",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginId}/authorizations/{id}": {
+      "put": {
+        "operationId": "UpdateAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginid}/authorizations/allowed": {
+      "get": {
+        "operationId": "GetAllowedUserAuthorizations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginid}/authorizations/possibleapplications": {
+      "get": {
+        "operationId": "GetPossibleApplicationsForAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "tenantid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginid}/authorizations/possibleroles": {
+      "get": {
+        "operationId": "GetPossibleRolesForAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "tenantid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "appid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/users/{loginid}/authorizations/possibletenants": {
+      "get": {
+        "operationId": "GetPossibleTenantsForAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "name_contains",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    },
+    "/validate": {
+      "get": {
+        "operationId": "Validate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiLabels"
+            }
+          }
+        },
+        "tags": [
+          "PermissionService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "abraxaspermissionapiv1Authorization": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "loginId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        },
+        "application": {
+          "$ref": "#/definitions/v1Application"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "apiAddress": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "country": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "primary": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "region": {
+          "type": "string"
+        },
+        "streetAddress": {
+          "type": "string"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "loginId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "contactId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "apiAddresses": {
+      "type": "object",
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiAddress"
+          }
+        }
+      }
+    },
+    "apiEmails": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiEmail"
+          }
+        }
+      }
+    },
+    "apiLabels": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        }
+      }
+    },
+    "apiPhoneNumbers": {
+      "type": "object",
+      "properties": {
+        "phonenumbers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiPhoneNumber"
+          }
+        }
+      }
+    },
+    "apiReturnMessage": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "apiStorageLifecycle": {
+      "type": "string",
+      "enum": [
+        "STATELESS",
+        "ARCHIVED",
+        "DELETED",
+        "ACTIVE",
+        "INACTIVE"
+      ],
+      "default": "STATELESS"
+    },
+    "apiURL": {
+      "type": "object",
+      "properties": {
+        "URL": {
+          "type": "string"
+        }
+      }
+    },
+    "apiURLs": {
+      "type": "object",
+      "properties": {
+        "URLs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiURL"
+          }
+        }
+      }
+    },
+    "apiv1Email": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
+        },
+        "primary": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "verified": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "apiv1PhoneNumber": {
+      "type": "object",
+      "properties": {
+        "phonenumber": {
+          "type": "string"
+        },
+        "primary": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "verified": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "commonapiEmail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "email": {
+          "type": "string",
+          "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
+        },
+        "primary": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "verified": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "loginId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "contactId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "commonapiLabel": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "commonapiPhoneNumber": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "phonenumber": {
+          "type": "string"
+        },
+        "primary": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "verified": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "loginId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "contactId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AppPackage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "application": {
+          "$ref": "#/definitions/v1Application"
+        },
+        "tenant": {
+          "$ref": "#/definitions/v1Tenant"
+        },
+        "delegation": {
+          "$ref": "#/definitions/v1Tenant"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "design": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AppPackages": {
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AppPackage"
+          }
+        }
+      }
+    },
+    "v1AppURI": {
+      "type": "object",
+      "properties": {
+        "app_id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Application": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "shortcut": {
+          "type": "string"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "appExt": {
+          "$ref": "#/definitions/v1ApplicationExt"
+        }
+      }
+    },
+    "v1ApplicationExt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "openmode": {
+          "$ref": "#/definitions/v1OpenMode"
+        },
+        "iconname": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/v1ApplicationType"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "applicationId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "second_factor_ip_whitelist": {
+          "$ref": "#/definitions/v1IPFilter"
+        },
+        "redirect_uris": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1ApplicationType": {
+      "type": "string",
+      "enum": [
+        "NONE_TYPE",
+        "WEBAPP",
+        "TECHNICAL_SVC",
+        "UNTECHNICAL_SVC"
+      ],
+      "default": "NONE_TYPE"
+    },
+    "v1Applications": {
+      "type": "object",
+      "properties": {
+        "applications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Application"
+          }
+        }
+      }
+    },
+    "v1Authorizations": {
+      "type": "object",
+      "properties": {
+        "authorizations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+          }
+        }
+      }
+    },
+    "v1AuthorizedUserFilter": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "applicationId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        }
+      }
+    },
+    "v1DisplayUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "loginid": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "servicename": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "primaryMail": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DisplayUsers": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1DisplayUser"
+          }
+        }
+      }
+    },
+    "v1Gender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNKNOWN",
+        "FEMALE",
+        "MALE"
+      ],
+      "default": "GENDER_UNKNOWN"
+    },
+    "v1IPFilter": {
+      "type": "object",
+      "properties": {
+        "allowed_ips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1LabelsFilter": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        }
+      }
+    },
+    "v1MappingID": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "v1OpenMode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        }
+      }
+    },
+    "v1OpenModes": {
+      "type": "object",
+      "properties": {
+        "openMode": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OpenMode"
+          }
+        }
+      }
+    },
+    "v1PasswordState": {
+      "type": "string",
+      "enum": [
+        "UNDEFINED",
+        "INITIAL",
+        "ACTIVE"
+      ],
+      "default": "UNDEFINED"
+    },
+    "v1Tenant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "tenantExt": {
+          "$ref": "#/definitions/v1TenantExt"
+        },
+        "tenantId": {
+          "type": "string"
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1TenantExt": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "bfs": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "origin": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accountmanagers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mappingIDs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MappingID"
+          }
+        }
+      }
+    },
+    "v1Tenants": {
+      "type": "object",
+      "properties": {
+        "tenants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Tenant"
+          }
+        }
+      }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "loginid": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "servicename": {
+          "type": "string"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "emails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiv1Email"
+          }
+        },
+        "phonenumbers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiv1PhoneNumber"
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commonapiLabel"
+          }
+        },
+        "lifecycle": {
+          "$ref": "#/definitions/apiStorageLifecycle"
+        },
+        "type": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "externalIdps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "creationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "origin": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gender": {
+          "$ref": "#/definitions/v1Gender"
+        },
+        "resourceowner": {
+          "type": "string"
+        },
+        "passwordState": {
+          "$ref": "#/definitions/v1PasswordState"
+        },
+        "resource_owner_tenant_id": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "v1UserFilter": {
+      "type": "object",
+      "properties": {
+        "loginid": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "servicename": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "includeDeleted": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lifecycles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiStorageLifecycle"
+          }
+        },
+        "origin": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "loginids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        }
+      }
+    },
+    "v1Users": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1User"
+          }
+        }
+      }
+    },
+    "v3ChangeObject": {
+      "type": "object",
+      "properties": {
+        "changeDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generation": {
+          "type": "string",
+          "format": "int64"
+        },
+        "modifier": {
+          "type": "string"
+        },
+        "attribut": {
+          "type": "string"
+        },
+        "new": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "old": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "objecttype": {
+          "type": "string"
+        }
+      }
+    },
+    "v3ChangeObjects": {
+      "type": "object",
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v3ChangeObject"
+          }
+        }
+      }
+    }
+  }
+}
