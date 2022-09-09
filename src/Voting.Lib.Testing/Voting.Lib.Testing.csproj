@@ -6,16 +6,17 @@
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="6.2.0" />
-        <PackageReference Include="Snapper" Version="2.3.0" />
+        <PackageReference Include="Snapper" Version="2.3.2" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MsAspNetCoreVersion)" />
-        <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.47.0" />
         <PackageReference Include="DotNet.Testcontainers" Version="1.6.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Voting.Lib.Iam.Testing\Voting.Lib.Iam.Testing.csproj" />
       <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+      <ProjectReference Include="..\Voting.Lib.ProtoValidation\Voting.Lib.ProtoValidation.csproj" />
     </ItemGroup>
 
 </Project>

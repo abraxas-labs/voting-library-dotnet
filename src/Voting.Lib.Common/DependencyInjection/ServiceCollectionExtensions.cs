@@ -35,8 +35,8 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Adds certificate pinning to the service collection
-    /// and all created <see cref="HttpClient"/> which are created via <see cref="DefaultHttpMessageHandlerBuilder.Build"/>
-    /// (this includes clients created via <see cref="DefaultHttpClientFactory.CreateClient" />.
+    /// and all created <see cref="HttpClient"/> which are created via the "DefaultHttpMessageHandlerBuilder.Build"
+    /// (this includes clients created via the <see cref="IHttpClientFactory"/> contract implemented by "DefaultHttpClientFactory.CreateClient".
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="config">The certificate pinning options.</param>
@@ -105,8 +105,8 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TImpl">The implementation type of the service.</typeparam>
     /// <returns>The same service collection instance.</returns>
     public static IServiceCollection AddForwardRefSingleton<TService, TImpl>(this IServiceCollection services)
-        where TImpl : class, TService
         where TService : class
+        where TImpl : class, TService
     {
         services.TryAddSingleton<TImpl>();
         services.AddSingleton<TService>(sp => sp.GetRequiredService<TImpl>());
@@ -121,8 +121,8 @@ public static class ServiceCollectionExtensions
     /// <typeparam name="TImpl">The implementation type of the service.</typeparam>
     /// <returns>The same service collection instance.</returns>
     public static IServiceCollection AddForwardRefScoped<TService, TImpl>(this IServiceCollection services)
-        where TImpl : class, TService
         where TService : class
+        where TImpl : class, TService
     {
         services.TryAddScoped<TImpl>();
         services.AddScoped<TService>(sp => sp.GetRequiredService<TImpl>());

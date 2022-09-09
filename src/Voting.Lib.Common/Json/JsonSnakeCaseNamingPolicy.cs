@@ -10,7 +10,7 @@ namespace Voting.Lib.Common.Json;
 /// <summary>
 /// snake_case_naming_policy for System.Text.Json.
 /// </summary>
-public class JsonSnakeCaseNamingPolicy : JsonNamingPolicy
+public sealed class JsonSnakeCaseNamingPolicy : JsonNamingPolicy
 {
     /// <summary>
     /// Singleton instance.

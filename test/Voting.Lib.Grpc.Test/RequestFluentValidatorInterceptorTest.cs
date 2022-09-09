@@ -15,20 +15,20 @@ using Xunit;
 
 namespace Voting.Lib.Grpc.Test;
 
-public class RequestValidatorInterceptorTest : IAsyncDisposable
+public class RequestFluentValidatorInterceptorTest : IAsyncDisposable
 {
     private readonly ServiceProvider _serviceProvider;
-    private readonly RequestValidatorInterceptor _interceptor;
+    private readonly RequestFluentValidatorInterceptor _interceptor;
     private readonly TestRequestValidator _validator;
 
-    public RequestValidatorInterceptorTest()
+    public RequestFluentValidatorInterceptorTest()
     {
         _serviceProvider = new ServiceCollection()
             .AddForwardRefSingleton<IValidator<TestRequest>, TestRequestValidator>()
             .BuildServiceProvider();
 
         _validator = _serviceProvider.GetRequiredService<TestRequestValidator>();
-        _interceptor = new RequestValidatorInterceptor(_serviceProvider);
+        _interceptor = new RequestFluentValidatorInterceptor(_serviceProvider);
     }
 
     [Fact]

@@ -15,8 +15,8 @@ namespace Voting.Lib.Testing;
 /// <typeparam name="TFactory">Factory to be used.</typeparam>
 /// <typeparam name="TStartup">Startup class to be used.</typeparam>
 public class RestApiBaseTest<TFactory, TStartup> : BaseTest<TFactory, TStartup>
-    where TStartup : class
     where TFactory : BaseTestApplicationFactory<TStartup>
+    where TStartup : class
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RestApiBaseTest{TFactory, TStartup}"/> class.

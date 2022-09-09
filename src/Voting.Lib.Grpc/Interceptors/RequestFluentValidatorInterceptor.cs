@@ -13,15 +13,15 @@ namespace Voting.Lib.Grpc.Interceptors;
 /// Interceptor which validates all request objects if an <see cref="IValidator{T}"/> for the request type exists
 /// and is registered in the DI container.
 /// </summary>
-public class RequestValidatorInterceptor : RequestInterceptor
+public class RequestFluentValidatorInterceptor : RequestInterceptor
 {
     private readonly IServiceProvider _sp;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RequestValidatorInterceptor"/> class.
+    /// Initializes a new instance of the <see cref="RequestFluentValidatorInterceptor"/> class.
     /// </summary>
     /// <param name="sp">The service provider.</param>
-    public RequestValidatorInterceptor(IServiceProvider sp)
+    public RequestFluentValidatorInterceptor(IServiceProvider sp)
     {
         _sp = sp;
     }

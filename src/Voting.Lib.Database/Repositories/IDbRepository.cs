@@ -11,7 +11,7 @@ using Voting.Lib.Database.Models;
 namespace Voting.Lib.Database.Repositories;
 
 /// <summary>
-/// Repository for for operations on a EF Core DbContext.
+/// Repository for operations on a EF Core DbContext.
 /// </summary>
 /// <typeparam name="TDbContext">Type of the DbContext.</typeparam>
 /// <typeparam name="TKey">Type of the Key of the Entity.</typeparam>

@@ -3,6 +3,6 @@
     <ProjectReference Include="..\..\src\Voting.Lib.Rest\Voting.Lib.Rest.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MsAspNetCoreVersion)" />
   </ItemGroup>
 </Project>

@@ -25,9 +25,9 @@ public class LatestEventMonitor : IScheduledJob
     /// <summary>
     /// Initializes a new instance of the <see cref="LatestEventMonitor"/> class.
     /// </summary>
-    /// <param name="reader">The EventStore reader.</param>
     /// <param name="logger">The logger.</param>
     /// <param name="subscriptions">The list of subscriptions.</param>
+    /// <param name="reader">The EventStore reader.</param>
     public LatestEventMonitor(ILogger<LatestEventMonitor> logger, IEnumerable<ISubscription> subscriptions, IEventReader reader)
     {
         _logger = logger;

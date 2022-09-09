@@ -4,10 +4,10 @@
     <PackageReference Include="EventStore.Client.Grpc.Streams" Version="$(EventStoreVersion)" />
     <PackageReference Include="EventStore.Client.Grpc.ProjectionManagement" Version="$(EventStoreVersion)" />
     <PackageReference Include="EventStore.Client.Grpc.PersistentSubscriptions" Version="$(EventStoreVersion)" />
-    <PackageReference Include="Google.Protobuf" Version="3.19.1" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="$(ProtobufVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(MsAspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MsExtensionsVersion)" />
-    <PackageReference Include="Scrutor" Version="3.3.0" />
+    <PackageReference Include="Scrutor" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>

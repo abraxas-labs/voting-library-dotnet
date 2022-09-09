@@ -55,7 +55,6 @@ public class EventProcessingHandler<TScope>
             ["EventId"] = eventData.OriginalEvent.EventId,
             ["Position"] = eventData.OriginalEvent.Position,
             ["OriginalEventNumber"] = eventData.OriginalEventNumber,
-            ["Scope"] = subscription.ScopeName,
         });
         _logger.LogDebug("Received event");
 

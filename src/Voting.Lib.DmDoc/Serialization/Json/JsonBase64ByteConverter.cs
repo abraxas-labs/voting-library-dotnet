@@ -9,7 +9,7 @@ namespace Voting.Lib.DmDoc.Serialization.Json;
 
 // since dm doc encodes base64 with \n chars in it,
 // the default dotnet base64 byte converter cannot handle it :(
-internal class JsonBase64ByteConverter : JsonConverter<byte[]>
+internal sealed class JsonBase64ByteConverter : JsonConverter<byte[]>
 {
     public static readonly JsonBase64ByteConverter Instance = new();
 

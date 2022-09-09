@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+
+message Greet {
+  string name = 1 [(abraxas.voting.validation.v1.rules).string.regex = "^[A-Z][a-z]+$"];
+}

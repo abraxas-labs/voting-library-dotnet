@@ -15,8 +15,8 @@ namespace Voting.Lib.Testing;
 /// </summary>
 /// <inheritdoc />
 public abstract class GrpcAuthorizationBaseTest<TFactory, TStartup> : GrpcApiBaseTest<TFactory, TStartup>
-    where TStartup : class
     where TFactory : BaseTestApplicationFactory<TStartup>
+    where TStartup : class
 {
     /// <summary>
     /// The identifier to mark a user which is authenticated but doesn't have any roles assigned.

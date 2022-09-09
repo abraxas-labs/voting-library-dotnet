@@ -3,7 +3,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MsAspNetCoreVersion)" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="$(MsExtensionsVersion)" />
-        <PackageReference Include="Abraxas.Foundation.ApiClient.Base.DotNet" Version="3.3.0" />
+        <PackageReference Include="Abraxas.Foundation.ApiClient.Base.DotNet" Version="3.4.1" />
     </ItemGroup>
 
   <ItemGroup>

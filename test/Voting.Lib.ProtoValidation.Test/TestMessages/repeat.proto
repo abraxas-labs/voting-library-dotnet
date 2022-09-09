@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+
+message Repeat {
+  string id = 1 [(abraxas.voting.validation.v1.rules).string.guid = true];
+  repeated string extern_ids = 2 [(abraxas.voting.validation.v1.rules).string.guid = true];
+  repeated RepeatChild children = 3;
+  map<string, string> translations = 4;
+}
+
+message RepeatChild {
+  string description = 1 [(abraxas.voting.validation.v1.rules).string = { complex_sl_text: true, min_length: 4 }];
+}

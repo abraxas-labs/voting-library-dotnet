@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.19.0" />
-    <PackageReference Include="Grpc.Core" Version="2.41.1" />
-    <PackageReference Include="FluentValidation" Version="10.3.4" />
+    <PackageReference Include="Grpc.Core" Version="2.46.3" />
+    <PackageReference Include="FluentValidation" Version="11.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Voting.Lib.Iam\Voting.Lib.Iam.csproj" />
+    <ProjectReference Include="..\Voting.Lib.ProtoValidation\Voting.Lib.ProtoValidation.csproj" />
   </ItemGroup>
 
 </Project>

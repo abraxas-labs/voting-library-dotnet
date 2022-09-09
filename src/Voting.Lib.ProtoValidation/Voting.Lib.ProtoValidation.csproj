@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="$(ProtobufVersion)" />
+    <PackageReference Include="Voting.Lib.Validation.Proto" Version="$(VotingLibValidationProtoVersion)" />
+  </ItemGroup>
+
+</Project>

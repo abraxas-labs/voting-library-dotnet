@@ -3,10 +3,9 @@
 
 using System;
 using FluentAssertions;
-using Voting.Lib.Common;
 using Xunit;
 
-namespace Voting.Ausmittlung.Test.UtilsTest;
+namespace Voting.Lib.Common.Test;
 
 public class ByteConverterTest
 {

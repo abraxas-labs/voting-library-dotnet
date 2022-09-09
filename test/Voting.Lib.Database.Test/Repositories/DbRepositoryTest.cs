@@ -137,7 +137,7 @@ public class DbRepositoryTest : BaseDbContextTest
 
         await Repo.UpdateRange(entities);
 
-        var ids = entities.Select(x => x.Id).ToList();
+        var ids = entities.ConvertAll(x => x.Id);
         var updatedEntities = await Repo.Query().Where(x => ids.Contains(x.Id)).ToListAsync();
         updatedEntities.All(x => x.Name.EndsWith("-updated", StringComparison.Ordinal) && x.Value >= 100)
             .Should()
@@ -197,7 +197,7 @@ public class DbRepositoryTest : BaseDbContextTest
 
         await Repo.UpdateRangeIgnoreRelations(entities);
 
-        var ids = entities.Select(x => x.Id).ToList();
+        var ids = entities.ConvertAll(x => x.Id);
         var updatedEntities = await Repo.Query().Where(x => ids.Contains(x.Id)).ToListAsync();
         updatedEntities.All(x => x.Name.EndsWith("-updated", StringComparison.Ordinal) && x.Value >= 100)
             .Should()

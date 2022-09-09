@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+import "google/protobuf/wrappers.proto";
+
+message Complex {
+  string id = 1 [(abraxas.voting.validation.v1.rules).string.guid = true];
+  string parent_id = 2 [(abraxas.voting.validation.v1.rules).string = { guid: true, allow_empty: true }];
+  Contact contact = 3 [(abraxas.voting.validation.v1.rules).object.required = true];
+  State state = 4 [(abraxas.voting.validation.v1.rules).enum.exact_enum = true];
+}
+
+message Contact {
+  string email = 1 [(abraxas.voting.validation.v1.rules).string.email = true];
+  string phone = 2 [(abraxas.voting.validation.v1.rules).string.phone = true];
+  ContactCompany company = 3;
+  google.protobuf.Int32Value age = 4 [(abraxas.voting.validation.v1.rules).integer.min_value = 0];
+}
+
+message ContactCompany {
+  string name = 1 [(abraxas.voting.validation.v1.rules).string = { complex_sl_text: true }];
+}
+
+enum State {
+  STATE_UNSPECIFIED = 0;
+  STATE_ACTIVE = 1;
+}

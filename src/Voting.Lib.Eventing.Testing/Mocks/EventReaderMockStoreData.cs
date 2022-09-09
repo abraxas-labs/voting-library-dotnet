@@ -17,8 +17,8 @@ public class EventReaderMockStoreData
     /// </summary>
     /// <param name="event">The event.</param>
     /// <param name="position">The event position.</param>
-    /// <param name="created">The creation time.</param>
     /// <param name="eventNumber">The event number.</param>
+    /// <param name="created">The creation time.</param>
     public EventReaderMockStoreData(EventWithMetadata @event, Position position, StreamPosition eventNumber, DateTime created)
     {
         Event = @event;

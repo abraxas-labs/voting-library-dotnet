@@ -61,6 +61,7 @@ public class CliStartup
     /// <param name="configuration">The configuration.</param>
     public virtual void ConfigureParser(ParserSettings settings, IConfiguration configuration)
     {
+        settings.HelpWriter = Console.Error;
     }
 
     /// <summary>

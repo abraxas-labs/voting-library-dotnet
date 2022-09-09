@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -57,7 +56,7 @@ public static class ApplicationBuilderExtensions
             app.UseSwaggerUI(c =>
             {
                 var provider = app.ApplicationServices.GetService<IApiVersionDescriptionProvider>();
-                if (provider != null && provider.ApiVersionDescriptions.Any())
+                if (provider?.ApiVersionDescriptions.Count > 0)
                 {
                     // register all api versions in the swagger ui based on generic version descriptors
                     foreach (var description in provider.ApiVersionDescriptions)

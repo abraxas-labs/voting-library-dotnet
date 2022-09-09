@@ -73,7 +73,7 @@ public class WrappedWriteOnlyStream : Stream
     public override void WriteByte(byte value)
     {
         _stream.WriteByte(value);
-        _position += 1;
+        _position++;
     }
 
     /// <inheritdoc />

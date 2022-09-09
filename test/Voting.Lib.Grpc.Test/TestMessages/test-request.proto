@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+
+message TestRequest {
+  string required_string = 1 [(abraxas.voting.validation.v1.rules).string.allow_empty = false];
+}

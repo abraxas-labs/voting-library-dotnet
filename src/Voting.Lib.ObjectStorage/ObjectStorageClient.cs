@@ -34,7 +34,10 @@ public class ObjectStorageClient : IObjectStorageClient
         _publicUrlDefaultTtl = config.DefaultPublicDownloadLinkTtl;
         _publicUrlDefaultParameters = config.DefaultPublicDownloadLinkParameters;
         _logger = logger;
-        _client = new MinioClient(config.Endpoint, config.AccessKey, config.SecretKey);
+        _client = new MinioClient()
+            .WithEndpoint(config.Endpoint)
+            .WithCredentials(config.AccessKey, config.SecretKey)
+            .Build();
 
         if (config.UseSsl)
         {
@@ -45,10 +48,10 @@ public class ObjectStorageClient : IObjectStorageClient
     /// <inheritdoc />
     public async Task EnsureBucketExists(string bucketName, CancellationToken ct = default)
     {
-        if (!await _client.BucketExistsAsync(bucketName, ct).ConfigureAwait(false))
+        if (!await _client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName), ct).ConfigureAwait(false))
         {
             _logger.LogInformation("Bucket {BucketName} does not exist yet, creating...", bucketName);
-            await _client.MakeBucketAsync(bucketName, cancellationToken: ct).ConfigureAwait(false);
+            await _client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName), ct).ConfigureAwait(false);
             _logger.LogInformation("Bucket {BucketName} created", bucketName);
         }
     }
@@ -64,12 +67,19 @@ public class ObjectStorageClient : IObjectStorageClient
         CancellationToken ct = default)
     {
         fileSize ??= data.Length;
-        await _client.PutObjectAsync(bucketName, objectName, data, fileSize.Value, contentType, meta, cancellationToken: ct).ConfigureAwait(false);
+        var args = new PutObjectArgs()
+            .WithBucket(bucketName)
+            .WithObject(objectName)
+            .WithStreamData(data)
+            .WithObjectSize(fileSize.Value)
+            .WithContentType(contentType)
+            .WithHeaders(meta);
+        await _client.PutObjectAsync(args, ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
     public Task Delete(string bucketName, string objectName, CancellationToken ct = default)
-        => _client.RemoveObjectAsync(bucketName, objectName, ct);
+        => _client.RemoveObjectAsync(new RemoveObjectArgs().WithBucket(bucketName).WithObject(objectName), ct);
 
     /// <inheritdoc />
     public async Task<Uri> GetPublicDownloadUrl(
@@ -80,7 +90,12 @@ public class ObjectStorageClient : IObjectStorageClient
     {
         reqParams ??= _publicUrlDefaultParameters;
         expiry ??= _publicUrlDefaultTtl;
-        var url = await _client.PresignedGetObjectAsync(bucketName, objectName, (int)expiry.Value.TotalSeconds, reqParams).ConfigureAwait(false);
+        var args = new PresignedGetObjectArgs()
+            .WithBucket(bucketName)
+            .WithObject(objectName)
+            .WithExpiry((int)expiry.Value.TotalSeconds)
+            .WithHeaders(reqParams);
+        var url = await _client.PresignedGetObjectAsync(args).ConfigureAwait(false);
         var uri = new Uri(url);
         return _publicUrlHostReplacement == null
             ? uri
@@ -89,7 +104,7 @@ public class ObjectStorageClient : IObjectStorageClient
 
     /// <inheritdoc />
     public Task Fetch(string bucketName, string objectName, Action<Stream> callback)
-        => _client.GetObjectAsync(bucketName, objectName, callback);
+        => _client.GetObjectAsync(new GetObjectArgs().WithBucket(bucketName).WithObject(objectName).WithCallbackStream(callback));
 
     /// <inheritdoc />
     public Task FetchAsBase64(string bucketName, string objectName, Action<Stream> callbackBase64)

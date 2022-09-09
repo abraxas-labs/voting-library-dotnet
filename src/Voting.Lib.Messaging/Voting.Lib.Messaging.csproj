@@ -1,10 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <MassTransitVersion>7.3.1</MassTransitVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="7.3.0" />
-    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />
+    <PackageReference Include="MassTransit" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MsExtensionsVersion)" />
   </ItemGroup>
 

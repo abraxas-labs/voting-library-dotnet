@@ -9,7 +9,7 @@ using Google.Protobuf.Reflection;
 
 namespace Voting.Lib.Eventing.Protobuf;
 
-internal class ProtobufTypeRegistry : IProtobufTypeRegistry
+internal sealed class ProtobufTypeRegistry : IProtobufTypeRegistry
 {
     private readonly IReadOnlyDictionary<string, MessageDescriptor> _fullNameToMessageMap;
     private readonly IReadOnlyDictionary<Type, MessageDescriptor> _clrTypeToMessageMap;

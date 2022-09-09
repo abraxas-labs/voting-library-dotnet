@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Serilog;
 using Voting.Lib.Common.Net;
 
 namespace Voting.Lib.Common.DependencyInjection;
@@ -31,5 +32,27 @@ public static class ApplicationBuilderExtensions
                 .WithExposedHeaders(config.ExposedHeaders.ToArray()));
 
         return app;
+    }
+
+    /// <summary>
+    /// Adds the middleware <see cref="SerilogApplicationBuilderExtensions.UseSerilogRequestLogging(IApplicationBuilder, System.Action{Serilog.AspNetCore.RequestLoggingOptions})"/>
+    /// with enriched diagnostics context. The following information is added if available:
+    /// <list type="bullet">
+    ///     <item>CorrelationId from the request header 'X-CorrelationId'.</item>
+    ///     <item>ForwardedFor from the request header 'X-Forwarded-For'.</item>
+    /// </list>
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <returns>A System.Action to configure the provided Serilog.AspNetCore.RequestLoggingOptions.</returns>
+    public static IApplicationBuilder UseSerilogRequestLoggingWithTraceabilityModifiers(this IApplicationBuilder app)
+    {
+        return app.UseSerilogRequestLogging(options =>
+        {
+            options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+            {
+                diagnosticContext.Set("CorrelationId", httpContext.Request.Headers["X-CorrelationId"]);
+                diagnosticContext.Set("ForwardedFor", httpContext.Request.Headers["X-Forwarded-For"]);
+            };
+        });
     }
 }
