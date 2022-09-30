@@ -20,6 +20,7 @@ public class DeliveryHeaderProviderTest
             SenderId = "Voting.Lib.Tests.Sender",
             TestDeliveryFlag = true,
             ProductVersion = "0.1.2",
+            MessageType = "1710967",
         };
 
         var messageIdProviderMock = new Mock<IEchMessageIdProvider>();

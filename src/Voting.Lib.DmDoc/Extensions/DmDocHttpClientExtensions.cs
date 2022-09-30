@@ -60,6 +60,22 @@ internal static class DmDocHttpClientExtensions
         return responseContent!;
     }
 
+    public static async Task<TResponse> PutDmDoc<TContent, TResponse>(
+        this HttpClient client,
+        string url,
+        TContent content,
+        CancellationToken ct = default)
+        where TResponse : notnull
+    {
+        using var stringContent = BuildDmDocContent(content);
+
+        using var response = await client.PutAsync(url, stringContent, ct).ConfigureAwait(false);
+        await response.EnsureSuccessStatusOrThrowDmDocEx().ConfigureAwait(false);
+
+        var responseContent = await response.Content.ReadFromJsonAsync<DmDocDataApiResponse<TResponse>>(DmDocJsonOptions.Instance, ct).ConfigureAwait(false);
+        return responseContent.EnsureSuccessAndUnwrap();
+    }
+
     private static HttpContent BuildDmDocContent<TContent>(TContent content)
     {
         // set length explicitly to disable chunked transfer encoding

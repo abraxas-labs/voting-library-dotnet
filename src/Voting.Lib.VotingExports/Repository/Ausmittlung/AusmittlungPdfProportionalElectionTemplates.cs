@@ -179,6 +179,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    /// <summary>
+    /// Gets the result bundle review export template.
+    /// </summary>
+    public static readonly TemplateModel ResultBundleReview = new TemplateModel
+    {
+        Key = "proportional_election_result_bundle_review",
+        Filename = "Bundkontrolle {0}",
+        Description = "Bundkontrolle",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResultBundleReview,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         VoterTurnoutProtocol,
@@ -193,5 +207,6 @@ public static class AusmittlungPdfProportionalElectionTemplates
         ListCandidateVoteSourcesEndResults,
         EndResultCalculation,
         EndResultListUnions,
+        ResultBundleReview,
     };
 }

@@ -4,11 +4,15 @@
 namespace Voting.Lib.DokConnector.Models;
 
 /// <summary>
-/// The model for a DOK connector upload response.
+/// The model for a DOK Connector upload response.
 /// </summary>
 public class UploadResponse
 {
-    internal UploadResponse(string fileId)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UploadResponse"/> class.
+    /// </summary>
+    /// <param name="fileId">The ID of the file that has been uploaded.</param>
+    public UploadResponse(string fileId)
     {
         FileId = fileId;
     }

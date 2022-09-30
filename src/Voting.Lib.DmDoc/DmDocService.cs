@@ -148,6 +148,52 @@ public class DmDocService : IDmDocService
     public Task<byte[]> FinishAsPdf<T>(string templateName, T templateData, CancellationToken ct = default)
         => WithTemporaryDraft(templateName, null, templateData, d => FinishDraftAsPdf(d.Id, ct), ct);
 
+    /// <inheritdoc />
+    public Task<List<Brick>> ListBricks(CancellationToken ct = default)
+    {
+        var url = _urlBuilder.Bricks();
+        return _http.GetDmDoc<List<Brick>>(url, ct);
+    }
+
+    /// <inheritdoc />
+    public Task<List<Brick>> ListBricks(int categoryId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.Bricks(categoryId);
+        return _http.GetDmDoc<List<Brick>>(url, ct);
+    }
+
+    /// <inheritdoc />
+    public Task<List<Brick>> ListBricks(string category, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.Bricks(category);
+        return _http.GetDmDoc<List<Brick>>(url, ct);
+    }
+
+    /// <inheritdoc />
+    public async Task<string> GetBrickContentEditorUrl(int brickId, int brickContentId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.BricksContentEditor(brickId, brickContentId);
+        var response = await _http.GetDmDoc<BrickContentEditResponse>(url, ct);
+
+        // dmDoc currently returns a case-sensitive path, but the version needs to be lower cased.
+        // dmDoc only returns the relative path of the editor.
+        return response.EditorUrlV3.ToLowerInvariant();
+    }
+
+    /// <inheritdoc />
+    public async Task<(int NewBrickId, int NewContentId)> UpdateBrickContent(int brickContentId, string content, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.BrickContentUpdate(brickContentId);
+        var response = await _http.PutDmDoc<UpdateBrickContentRequest, UpdateBrickContentResponse>(
+            url,
+            new UpdateBrickContentRequest
+            {
+                Checkin = true, // creates a new version and thus a new brick id and content id.
+                Content = content,
+            });
+        return (response.BrickId, response.Id);
+    }
+
     private async Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
         string? templateName,
         int? templateId,

@@ -53,10 +53,25 @@ public static class AusmittlungPdfMajorityElectionTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    /// <summary>
+    /// Gets the result bundle review export template.
+    /// </summary>
+    public static readonly TemplateModel ResultBundleReview = new TemplateModel
+    {
+        Key = "majority_election_result_bundle_review",
+        Filename = "Bundkontrolle {0}",
+        Description = "Bundkontrolle",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.MajorityElection,
+        ResultType = ResultType.PoliticalBusinessResultBundleReview,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         CountingCircleProtocol,
         EndResultProtocol,
         EndResultDetailProtocol,
+        ResultBundleReview,
     };
 }

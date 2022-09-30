@@ -69,11 +69,26 @@ public static class AusmittlungPdfVoteTemplates
         PerDomainOfInfluenceType = true,
     };
 
+    /// <summary>
+    /// Gets the result bundle review export template.
+    /// </summary>
+    public static readonly TemplateModel ResultBundleReview = new TemplateModel
+    {
+        Key = "vote_result_bundle_review",
+        Filename = "Bundkontrolle {0}",
+        Description = "Bundkontrolle",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.Vote,
+        ResultType = ResultType.PoliticalBusinessResultBundleReview,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         EndResultProtocol,
         TemporaryEndResultDomainOfInfluencesProtocol,
         EndResultDomainOfInfluencesProtocol,
         ResultProtocol,
+        ResultBundleReview,
     };
 }

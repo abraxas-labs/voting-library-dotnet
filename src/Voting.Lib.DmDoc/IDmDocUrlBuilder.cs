@@ -42,6 +42,41 @@ public interface IDmDocUrlBuilder
     string TemplateCategories(int templateId);
 
     /// <summary>
+    /// Gets the bricks URL.
+    /// </summary>
+    /// <returns>The bricks URL.</returns>
+    string Bricks();
+
+    /// <summary>
+    /// Gets the URL for bricks of a specific category.
+    /// </summary>
+    /// <param name="categoryId">The category ID.</param>
+    /// <returns>The bricks category URL.</returns>
+    string Bricks(int categoryId);
+
+    /// <summary>
+    /// Gets the URL for bricks of a specific category.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <returns>The bricks category URL.</returns>
+    string Bricks(string category);
+
+    /// <summary>
+    /// Gets the URL for the bricks editor.
+    /// </summary>
+    /// <param name="brickId">The brick ID.</param>
+    /// <param name="brickContentId">The brick content ID.</param>
+    /// <returns>The bricks editor URL.</returns>
+    string BricksContentEditor(int brickId, int brickContentId);
+
+    /// <summary>
+    /// Gets the URL for updating an existing brick content.
+    /// </summary>
+    /// <param name="brickContentId">The brick content ID.</param>
+    /// <returns>The bricks content update URL.</returns>
+    string BrickContentUpdate(int brickContentId);
+
+    /// <summary>
     /// Gets the URL for the data containers of a template.
     /// </summary>
     /// <param name="templateId">The template ID.</param>

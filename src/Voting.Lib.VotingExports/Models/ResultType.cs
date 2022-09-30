@@ -37,4 +37,9 @@ public enum ResultType
     /// Multiple political businesses within a political business union.
     /// </summary>
     PoliticalBusinessUnionResult,
+
+    /// <summary>
+    /// A single bundle review on a political business result.
+    /// </summary>
+    PoliticalBusinessResultBundleReview,
 }

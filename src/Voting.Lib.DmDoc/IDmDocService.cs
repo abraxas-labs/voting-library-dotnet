@@ -154,4 +154,45 @@ public interface IDmDocService
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns a PDF.</returns>
     Task<byte[]> FinishAsPdf<T>(string templateName, T templateData, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get all bricks.
+    /// </summary>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns all bricks.</returns>
+    Task<List<Brick>> ListBricks(CancellationToken ct = default);
+
+    /// <summary>
+    /// Get all bricks of a specific category.
+    /// </summary>
+    /// <param name="categoryId">The category ID.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns all bricks of a specific category.</returns>
+    Task<List<Brick>> ListBricks(int categoryId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get all bricks of a specific category.
+    /// </summary>
+    /// <param name="category">The category (specified by intern name of the category).</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns all bricks of a specific category.</returns>
+    Task<List<Brick>> ListBricks(string category, CancellationToken ct = default);
+
+    /// <summary>
+    /// Get a new brick content standalone editor URL.
+    /// </summary>
+    /// <param name="brickId">The brick ID.</param>
+    /// <param name="brickContentId">The brick content ID.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns a brick content editor url.</returns>
+    Task<string> GetBrickContentEditorUrl(int brickId, int brickContentId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Update an existing brick content.
+    /// </summary>
+    /// <param name="brickContentId">The brick content ID.</param>
+    /// <param name="content">The brick content.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns the new brick and brick content ID.</returns>
+    Task<(int NewBrickId, int NewContentId)> UpdateBrickContent(int brickContentId, string content, CancellationToken ct = default);
 }

@@ -50,7 +50,7 @@ public static class ApplicationBuilderExtensions
         {
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
-                diagnosticContext.Set("CorrelationId", httpContext.Request.Headers["X-CorrelationId"]);
+                diagnosticContext.Set("CorrelationId", httpContext.Request.Headers["X-Correlation-Id"]);
                 diagnosticContext.Set("ForwardedFor", httpContext.Request.Headers["X-Forwarded-For"]);
             };
         });

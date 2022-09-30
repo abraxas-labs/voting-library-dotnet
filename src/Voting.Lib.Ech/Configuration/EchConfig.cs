@@ -36,6 +36,11 @@ public class EchConfig
     public string SenderId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the message type used in the delivery header.
+    /// </summary>
+    public string MessageType { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets a value indicating whether the deliveries produced are test deliveries.
     /// </summary>
     public bool TestDeliveryFlag { get; set; } = true;

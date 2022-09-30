@@ -1,7 +1,7 @@
 {
   "senderId": "Voting.Lib.Tests.Sender",
   "messageId": "constant-message-id",
-  "messageType": null,
+  "messageType": "1710967",
   "sendingApplication": {
     "manufacturer": "Abraxas Informatik AG",
     "product": "Voting.Lib.Tests",

@@ -64,6 +64,26 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
     public string DraftFinishAsPdf(int draftId)
         => BuildUrl($"drafts/{draftId}/finish_editing", ("distribution", "local_pdf"));
 
+    /// <inheritdoc />
+    public string Bricks()
+        => BuildUrl("bricks", ("show_current", false), ("show_editable", true));
+
+    /// <inheritdoc />
+    public string Bricks(int categoryId)
+        => BuildUrl("bricks", ("category_id", categoryId), ("show_current", false), ("show_editable", true));
+
+    /// <inheritdoc />
+    public string Bricks(string category)
+        => BuildUrl("bricks", ("category_name", category), ("show_current", false), ("show_editable", true));
+
+    /// <inheritdoc />
+    public string BricksContentEditor(int brickId, int brickContentId)
+        => BuildUrl($"bricks/{brickId}/brick_contents/{brickContentId}/edit");
+
+    /// <inheritdoc />
+    public string BrickContentUpdate(int brickContentId)
+        => BuildUrl($"brick_contents/{brickContentId}/update");
+
     private string BuildUrl(string url, params (string, object?)[] query)
     {
         var sb = new StringBuilder(url);

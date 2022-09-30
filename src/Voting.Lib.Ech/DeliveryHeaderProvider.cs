@@ -54,6 +54,7 @@ public class DeliveryHeaderProvider
             TestDeliveryFlag = _config.TestDeliveryFlag,
             SenderId = _config.SenderId,
             MessageDate = _clock.UtcNow.ToString(DateFormat, CultureInfo.InvariantCulture),
+            MessageType = _config.MessageType,
         };
     }
 }

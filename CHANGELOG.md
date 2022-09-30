@@ -1,4 +1,4 @@
-# ✨ Changelog (`v7.14.2`)
+# ✨ Changelog (`v7.17.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v7.14.2
-Previous version ---- v7.12.0
+This version -------- v7.17.1
+Previous version ---- v7.14.2
 Initial version ----- v7.7.35
-Total commits ------- 12
+Total commits ------- 7
 ```
+
+## [v7.17.1] - 2022-09-27
+
+### 🔄 Changed
+
+- dmdoc update brick content
+
+## [v7.17.0] - 2022-09-23
+
+### 🔄 Changed
+
+- add result bundle review templates
+
+## [v7.16.1] - 2022-09-23
+
+### 🔄 Changed
+
+- relative brick content editor url
+
+## [v7.16.0] - 2022-09-23
+
+### 🔄 Changed
+
+- dmdoc bricks
+
+## [v7.15.0] - 2022-09-21
+
+### 🔄 Changed
+
+- add required eCH message type
+
+## [v7.14.4] - 2022-09-20
+
+### 🔄 Changed
+
+- make UploadResponse constructor public
+
+## [v7.14.3] - 2022-09-15
+
+### 🔄 Changed
+
+- adapt correlation id header to changed name for logging
 
 ## [v7.14.2] - 2022-09-06
 
