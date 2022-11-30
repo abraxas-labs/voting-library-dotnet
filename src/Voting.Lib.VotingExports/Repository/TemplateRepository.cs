@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Voting.Lib.VotingExports.Exceptions;
 using Voting.Lib.VotingExports.Models;
@@ -54,6 +55,24 @@ public static class TemplateRepository
     }
 
     /// <summary>
+    /// Tries to get a template by its key.
+    /// </summary>
+    /// <param name="key">The key to look up the template for.</param>
+    /// <param name="template">The found template, or null if it was not found.</param>
+    /// <returns>Whether a template for the key has been found.</returns>
+    public static bool TryGetByKey(string key, [MaybeNullWhen(false)] out TemplateModel template)
+    {
+        if (ByKey.TryGetValue(key, out var t))
+        {
+            template = t;
+            return true;
+        }
+
+        template = null;
+        return false;
+    }
+
+    /// <summary>
     /// Returns a template by its key.
     /// </summary>
     /// <param name="key">The key to look up the template for.</param>
@@ -61,7 +80,7 @@ public static class TemplateRepository
     /// <exception cref="TemplateNotFoundException">If a template cannot be found.</exception>
     public static TemplateModel GetByKey(string key)
     {
-        if (!ByKey.TryGetValue(key, out var template))
+        if (!TryGetByKey(key, out var template))
         {
             throw new TemplateNotFoundException(key);
         }

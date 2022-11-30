@@ -53,6 +53,9 @@ public abstract class MessageConsumerHubBase<TFilterMessage, TListenerMessage>
         CancellationToken cancellationToken)
     {
         var registrationId = Guid.NewGuid();
+
+        _logger.LogDebug("Try adding listener with id {Id}", registrationId);
+
         if (!_listeners.TryAdd(registrationId, registration))
         {
             throw new InvalidOperationException("Could not add listener with id " + registrationId);

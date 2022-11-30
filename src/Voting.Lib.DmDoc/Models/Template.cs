@@ -20,4 +20,9 @@ public class Template
     /// </summary>
     [JsonPropertyName("name_value")]
     public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the internal name of the template.
+    /// </summary>
+    public string InternName { get; set; } = string.Empty;
 }

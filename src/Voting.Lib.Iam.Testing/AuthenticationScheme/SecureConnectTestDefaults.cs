@@ -41,7 +41,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantDefault = new Tenant
     {
-        Id = "default-tenant-id",
+        Id = "000000000000000000",
         Name = "Default",
     };
 
@@ -50,7 +50,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantUzwil = new Tenant
     {
-        Id = "100",
+        Id = "100100100100100100",
         Name = "Uzwil",
     };
 
@@ -59,7 +59,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantStGallen = new Tenant
     {
-        Id = "200",
+        Id = "200200200200200200",
         Name = "St. Gallen",
     };
 
@@ -68,7 +68,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantGossau = new Tenant
     {
-        Id = "300",
+        Id = "300300300300300300",
         Name = "Gossau",
     };
 
@@ -77,7 +77,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantGenf = new Tenant
     {
-        Id = "400",
+        Id = "400400400400400400",
         Name = "Genf",
     };
 
@@ -86,7 +86,7 @@ public static class SecureConnectTestDefaults
     /// </summary>
     public static readonly Tenant MockedTenantBund = new Tenant
     {
-        Id = "999",
+        Id = "999999999999999999",
         Name = "Bund",
     };
 

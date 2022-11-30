@@ -79,6 +79,12 @@ public class EventStoreConfig
     public TimeSpan? OperationTimeout { get; set; } = TimeSpan.FromMinutes(5);
 
     /// <summary>
+    /// Gets or sets maximum event processing failure count per subscription scope, after which the event processing is deemed unsuccessful.
+    /// This is used for monitoring purposes (health checks).
+    /// </summary>
+    public uint MaxEventProcessingFailureCount { get; set; } = 10;
+
+    /// <summary>
     /// Hook to customize the built <see cref="EventStoreClientSettings"/>.
     /// </summary>
     /// <param name="eventStoreSettings">The <see cref="EventStoreClientSettings"/> to customize.</param>

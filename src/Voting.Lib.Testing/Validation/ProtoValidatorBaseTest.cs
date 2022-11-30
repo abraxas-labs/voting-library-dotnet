@@ -3,9 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Google.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
 using Voting.Lib.ProtoValidation;
@@ -72,21 +71,26 @@ public abstract class ProtoValidatorBaseTest<TMessage> : IAsyncDisposable
 
     private void AssertValidations(IEnumerable<TMessage> messages, bool valid)
     {
-        var results = new List<bool>();
+        var results = new List<(bool, string, TMessage)?>();
 
         foreach (var message in messages)
         {
             try
             {
                 Validator.Validate(message);
-                results.Add(true);
+                results.Add((true, string.Empty, message));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                results.Add(false);
+                results.Add((false, e.Message, message));
             }
         }
 
-        results.All(x => x == valid).Should().BeTrue();
+        var result = results.Find(x => x!.Value.Item1 != valid);
+
+        if (result != null)
+        {
+            throw new ValidationException($"{result.Value.Item2}, {result.Value.Item3}");
+        }
     }
 }

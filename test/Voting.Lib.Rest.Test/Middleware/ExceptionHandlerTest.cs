@@ -43,6 +43,15 @@ public class ExceptionHandlerTest
     }
 
     [Fact]
+    public Task NoDetailedErrorsExposedExceptionMessageShouldMapStatusCodeAndExceptionMessage()
+    {
+        return AssertExceptionResponse<TestExceptionHandler>(
+            client => client.GetAsync("/exposed-exception-message"),
+            "{'title':'Exception','status':404,'detail':'exposed test message'}",
+            HttpStatusCode.NotFound);
+    }
+
+    [Fact]
     public Task DetailedErrorsShouldExposeDetails()
     {
         return AssertExceptionResponse<TestDetailedExceptionHandler>(
@@ -77,6 +86,7 @@ public class ExceptionHandlerTest
         app.UseMiddleware<TMiddleware>();
         app.MapGet("/ok", () => "ok");
         app.MapGet("/exposed-exception", new Func<string>(() => throw new ExposedTestException()));
+        app.MapGet("/exposed-exception-message", new Func<string>(() => throw new ExposedMessageTestException()));
         app.MapGet("/exception", new Func<string>(() => throw new TestException()));
         await app.StartAsync();
         return await runTest(app.GetTestClient());
@@ -113,12 +123,16 @@ public class ExceptionHandlerTest
         protected override bool ExposeExceptionType(Exception ex)
             => ex is ExposedTestException;
 
+        protected override bool ExposeExceptionMessage(Exception ex)
+            => ex is ExposedMessageTestException;
+
         protected override int MapExceptionToStatus(Exception ex)
         {
             return ex switch
             {
                 TestException => StatusCodes.Status424FailedDependency,
                 ExposedTestException => StatusCodes.Status409Conflict,
+                ExposedMessageTestException => StatusCodes.Status404NotFound,
                 _ => StatusCodes.Status500InternalServerError,
             };
         }
@@ -135,6 +149,14 @@ public class ExceptionHandlerTest
     private class ExposedTestException : Exception
     {
         public ExposedTestException()
+            : base("exposed test message")
+        {
+        }
+    }
+
+    private class ExposedMessageTestException : Exception
+    {
+        public ExposedMessageTestException()
             : base("exposed test message")
         {
         }

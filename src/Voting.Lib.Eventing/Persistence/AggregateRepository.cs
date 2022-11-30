@@ -16,6 +16,7 @@ public class AggregateRepository : IAggregateRepository
     private readonly IEventPublisher _eventPublisher;
     private readonly IAggregateEventReader _aggregateEventReader;
     private readonly IAggregateFactory _aggregateFactory;
+    private readonly IAggregateRepositoryHandler _aggregateRepositoryHandler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AggregateRepository"/> class.
@@ -23,14 +24,17 @@ public class AggregateRepository : IAggregateRepository
     /// <param name="eventPublisher">The event publisher.</param>
     /// <param name="aggregateEventReader">The aggregate event reader.</param>
     /// <param name="aggregateFactory">The aggregate factory.</param>
+    /// <param name="aggregateRepositoryHandler">The aggregate repository handler.</param>
     public AggregateRepository(
         IEventPublisher eventPublisher,
         IAggregateEventReader aggregateEventReader,
-        IAggregateFactory aggregateFactory)
+        IAggregateFactory aggregateFactory,
+        IAggregateRepositoryHandler aggregateRepositoryHandler)
     {
         _eventPublisher = eventPublisher;
         _aggregateEventReader = aggregateEventReader;
         _aggregateFactory = aggregateFactory;
+        _aggregateRepositoryHandler = aggregateRepositoryHandler;
     }
 
     /// <inheritdoc/>
@@ -73,7 +77,8 @@ public class AggregateRepository : IAggregateRepository
     public async Task Save<TAggregate>(TAggregate aggregate)
         where TAggregate : BaseEventSourcingAggregate
     {
-        var events = aggregate.GetUncommittedEvents();
+        await _aggregateRepositoryHandler.BeforeSaved(aggregate);
+        var events = aggregate.GetUncommittedEvents().ToList();
         if (events.Count == 0)
         {
             return;
@@ -84,8 +89,10 @@ public class AggregateRepository : IAggregateRepository
             events.Select(ev => new EventWithMetadata(ev.Data, ev.Metadata, ev.Id)),
             aggregate.OriginalVersion)
             .ConfigureAwait(false);
+
         aggregate.ClearUncommittedEvents();
         aggregate.OriginalVersion = aggregate.Version!.Value;
+        await _aggregateRepositoryHandler.AfterSaved(aggregate, events);
     }
 
     private async Task<TAggregate> GetById<TAggregate>(Guid id, DateTime? endTimestampInclusive)

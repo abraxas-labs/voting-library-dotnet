@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Voting.Lib.DmDoc.Models;
 
@@ -18,12 +19,14 @@ public class Brick
     /// <summary>
     /// Gets or sets the name of the brick.
     /// </summary>
-    public string NameValue { get; set; } = string.Empty;
+    [JsonPropertyName("name_value")]
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the description of the brick.
     /// </summary>
-    public string DescriptionValue { get; set; } = string.Empty;
+    [JsonPropertyName("description_value")]
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the internal name of the brick.

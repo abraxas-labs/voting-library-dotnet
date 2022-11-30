@@ -9,25 +9,25 @@ using Voting.Lib.Eventing.Subscribe;
 namespace Voting.Lib.Eventing.Diagnostics;
 
 /// <summary>
-/// A health check which indicates whether a subscription has catched up.
+/// A health check which indicates whether a subscription has caught up.
 /// </summary>
 /// <typeparam name="TSubscriptionScope">The scope of the subscription.</typeparam>
-public class EventStoreSubscriptionCatchUpHealthCheck<TSubscriptionScope> : IHealthCheck
+public class EventStoreSubscriptionCatchUpReadinessCheck<TSubscriptionScope> : IHealthCheck
     where TSubscriptionScope : IEventProcessorScope
 {
     /// <summary>
     /// The name prefix of this health check.
     /// The full name of the scope gets appended.
     /// </summary>
-    public const string NamePrefix = "EventStoreSubscriptionCatchUp-";
+    public const string NamePrefix = "EventStoreSubscriptionCatchUpReadiness-";
 
     private readonly Subscription<TSubscriptionScope> _subscription;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventStoreSubscriptionCatchUpHealthCheck{TSubscriptionScope}"/> class.
+    /// Initializes a new instance of the <see cref="EventStoreSubscriptionCatchUpReadinessCheck{TSubscriptionScope}"/> class.
     /// </summary>
     /// <param name="subscription">The subscription.</param>
-    public EventStoreSubscriptionCatchUpHealthCheck(Subscription<TSubscriptionScope> subscription)
+    public EventStoreSubscriptionCatchUpReadinessCheck(Subscription<TSubscriptionScope> subscription)
     {
         _subscription = subscription;
     }

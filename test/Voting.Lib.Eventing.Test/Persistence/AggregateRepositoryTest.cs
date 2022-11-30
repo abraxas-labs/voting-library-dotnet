@@ -35,8 +35,9 @@ public class AggregateRepositoryTest
 
         var factoryMock = NewFactoryMock();
         var publisherMock = new Mock<IEventPublisher>();
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
 
-        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object);
+        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.GetById<TestAggregate>(TestAggregateId);
         aggregate.Sum.Should().Be(3);
         aggregate.Version!.Value.Should().Be(2);
@@ -59,8 +60,9 @@ public class AggregateRepositoryTest
 
         var factoryMock = NewFactoryMock();
         var publisherMock = new Mock<IEventPublisher>();
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
 
-        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object);
+        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.GetSnapshotById<TestAggregate>(TestAggregateId, snapshotTimestamp);
         aggregate.Sum.Should().Be(190);
         aggregate.Version!.Value.Should().Be(19);
@@ -82,8 +84,9 @@ public class AggregateRepositoryTest
 
         var factoryMock = NewFactoryMock();
         var publisherMock = new Mock<IEventPublisher>();
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
 
-        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object);
+        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.TryGetById<TestAggregate>(TestAggregateId);
         aggregate.Should().NotBeNull();
         aggregate!.Sum.Should().Be(3);
@@ -102,7 +105,8 @@ public class AggregateRepositoryTest
             .Verifiable();
 
         var factoryMock = NewFactoryMock();
-        var repo = new AggregateRepository(new Mock<IEventPublisher>().Object, eventReaderMock.Object, factoryMock.Object);
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
+        var repo = new AggregateRepository(new Mock<IEventPublisher>().Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.TryGetById<TestAggregate>(TestAggregateId);
         aggregate.Should().BeNull();
         factoryMock.Verify();
@@ -119,7 +123,8 @@ public class AggregateRepositoryTest
             .Verifiable();
 
         var factoryMock = NewFactoryMock();
-        var repo = new AggregateRepository(new Mock<IEventPublisher>().Object, eventReaderMock.Object, factoryMock.Object);
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
+        var repo = new AggregateRepository(new Mock<IEventPublisher>().Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.GetOrCreateById<TestAggregate>(TestAggregateId);
         aggregate.Should().NotBeNull();
         aggregate.Version.Should().BeNull();
@@ -142,8 +147,9 @@ public class AggregateRepositoryTest
 
         var factoryMock = NewFactoryMock();
         var publisherMock = new Mock<IEventPublisher>();
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
 
-        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object);
+        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, factoryMock.Object, handlerMock.Object);
         var aggregate = await repo.GetOrCreateById<TestAggregate>(TestAggregateId);
         aggregate.Sum.Should().Be(3);
         aggregate.Version!.Value.Should().Be(2);
@@ -170,8 +176,18 @@ public class AggregateRepositoryTest
                 StreamRevision.FromInt64(2)))
             .Returns(Task.CompletedTask)
             .Verifiable();
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
+        handlerMock
+            .Setup(x => x.BeforeSaved(
+                It.Is<TestAggregate>(e => e.GetUncommittedEvents().Count == 2 && e.OriginalVersion!.Value == 2)))
+            .Verifiable();
+        handlerMock
+            .Setup(x => x.AfterSaved(
+                It.Is<TestAggregate>(e => e.GetUncommittedEvents().Count == 0 && e.OriginalVersion!.Value == 4),
+                It.Is<IReadOnlyCollection<IDomainEvent>>(e => e.Count == 2)))
+            .Verifiable();
 
-        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, NewFactoryMock().Object);
+        var repo = new AggregateRepository(publisherMock.Object, eventReaderMock.Object, NewFactoryMock().Object, handlerMock.Object);
         var aggregate = await repo.GetById<TestAggregate>(TestAggregateId);
         aggregate.OriginalVersion!.Value.Should().Be(2);
         aggregate.Version!.Value.Should().Be(2);
@@ -185,6 +201,7 @@ public class AggregateRepositoryTest
         aggregate.Version!.Value.Should().Be(4);
         aggregate.GetUncommittedEvents().Should().BeEmpty();
         publisherMock.Verify();
+        handlerMock.Verify();
     }
 
     [Fact]
@@ -199,7 +216,18 @@ public class AggregateRepositoryTest
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var repo = new AggregateRepository(publisherMock.Object, new Mock<IAggregateEventReader>().Object, NewFactoryMock().Object);
+        var handlerMock = new Mock<IAggregateRepositoryHandler>();
+        handlerMock
+            .Setup(x => x.BeforeSaved(
+                It.Is<TestAggregate>(e => e.GetUncommittedEvents().Count == 3 && !e.OriginalVersion.HasValue)))
+            .Verifiable();
+        handlerMock
+            .Setup(x => x.AfterSaved(
+                It.Is<TestAggregate>(e => e.GetUncommittedEvents().Count == 0 && e.OriginalVersion!.Value == 2),
+                It.Is<IReadOnlyCollection<IDomainEvent>>(e => e.Count == 3)))
+            .Verifiable();
+
+        var repo = new AggregateRepository(publisherMock.Object, new Mock<IAggregateEventReader>().Object, NewFactoryMock().Object, handlerMock.Object);
         var aggregate = new TestAggregate();
         aggregate.Add();
         aggregate.Add();
@@ -212,6 +240,7 @@ public class AggregateRepositoryTest
         aggregate.Version!.Value.Should().Be(2);
         aggregate.GetUncommittedEvents().Should().BeEmpty();
         publisherMock.Verify();
+        handlerMock.Verify();
     }
 
     private Mock<IAggregateFactory> NewFactoryMock()

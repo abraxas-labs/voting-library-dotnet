@@ -45,7 +45,7 @@ public class ProtobufJsonSerializer : IEventSerializer
     }
 
     /// <inheritdoc />
-    public bool TryDeserialize(EventRecord eventRecord, IDescriptor? metadataDescriptor, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata)
+    public bool TryDeserialize(EventRecord eventRecord, Func<IMessage, IDescriptor>? metadataDescriptorProvider, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata)
     {
         if (!TryDeserialize(eventRecord.Data, eventRecord.EventType, out var data))
         {
@@ -54,7 +54,7 @@ public class ProtobufJsonSerializer : IEventSerializer
         }
 
         IMessage? metadata = null;
-        if (metadataDescriptor != null && eventRecord.Metadata.Length > 0 && !TryDeserialize(eventRecord.Metadata, metadataDescriptor.FullName, out metadata))
+        if (metadataDescriptorProvider != null && eventRecord.Metadata.Length > 0 && !TryDeserialize(eventRecord.Metadata, metadataDescriptorProvider(data).FullName, out metadata))
         {
             eventWithMetadata = default;
             return false;

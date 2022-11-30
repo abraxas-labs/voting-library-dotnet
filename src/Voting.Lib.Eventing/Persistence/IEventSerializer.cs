@@ -54,8 +54,8 @@ public interface IEventSerializer
     /// Tries to deserialize an event.
     /// </summary>
     /// <param name="eventRecord">The event to deserialize.</param>
-    /// <param name="metadataDescriptor">The metadata descriptor.</param>
+    /// <param name="metadataDescriptorProvider">The metadata descriptor provider by the event data.</param>
     /// <param name="eventWithMetadata">The deserialized event.</param>
     /// <returns>Returns true if the deserialization succeeded.</returns>
-    bool TryDeserialize(EventRecord eventRecord, IDescriptor? metadataDescriptor, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata);
+    bool TryDeserialize(EventRecord eventRecord, Func<IMessage, IDescriptor>? metadataDescriptorProvider, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata);
 }

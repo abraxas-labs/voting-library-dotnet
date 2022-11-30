@@ -28,17 +28,33 @@ public static class HealthChecksBuilderExtensions
     /// <param name="builder">The builder.</param>
     /// <returns>The builder instance.</returns>
     public static IHealthChecksBuilder AddEventStoreTransientSubscriptionCatchUp(this IHealthChecksBuilder builder)
-        => builder.AddEventStoreSubscriptionCatchUp<TransientEventProcessorScope>();
+    {
+        return builder
+            .AddEventStoreSubscriptionCatchUp<TransientEventProcessorScope>()
+            .AddEventStoreSubscriptionHealthCheck<TransientEventProcessorScope>();
+    }
 
     /// <summary>
-    /// Adds an event store subscription catch up health check.
+    /// Adds an event store subscription catch up readiness check.
     /// </summary>
     /// <param name="builder">The builder.</param>
     /// <typeparam name="TSubscriptionScope">The scope of the subscription.</typeparam>
     /// <returns>The builder instance.</returns>
     public static IHealthChecksBuilder AddEventStoreSubscriptionCatchUp<TSubscriptionScope>(this IHealthChecksBuilder builder)
         where TSubscriptionScope : IEventProcessorScope
-        => builder.AddCheck<EventStoreSubscriptionCatchUpHealthCheck<TSubscriptionScope>>(
-            EventStoreSubscriptionCatchUpHealthCheck<TSubscriptionScope>.NamePrefix + typeof(TSubscriptionScope).FullName,
+        => builder.AddCheck<EventStoreSubscriptionCatchUpReadinessCheck<TSubscriptionScope>>(
+            EventStoreSubscriptionCatchUpReadinessCheck<TSubscriptionScope>.NamePrefix + typeof(TSubscriptionScope).FullName,
             tags: new[] { EventStoreHealthCheck.Tag, HealthChecks.Tags.Readiness });
+
+    /// <summary>
+    /// Adds an event store subscription health check.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <typeparam name="TSubscriptionScope">The scope of the subscription.</typeparam>
+    /// <returns>The builder instance.</returns>
+    public static IHealthChecksBuilder AddEventStoreSubscriptionHealthCheck<TSubscriptionScope>(this IHealthChecksBuilder builder)
+        where TSubscriptionScope : IEventProcessorScope
+        => builder.AddCheck<EventStoreSubscriptionHealthCheck<TSubscriptionScope>>(
+            EventStoreSubscriptionHealthCheck<TSubscriptionScope>.NamePrefix + typeof(TSubscriptionScope).FullName,
+            tags: new[] { EventStoreHealthCheck.Tag });
 }

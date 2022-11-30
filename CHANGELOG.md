@@ -1,4 +1,4 @@
-# ✨ Changelog (`v7.17.1`)
+# ✨ Changelog (`v7.25.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,118 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v7.17.1
-Previous version ---- v7.14.2
-Initial version ----- v7.7.35
-Total commits ------- 7
+This version -------- v7.25.0
+Previous version ---- v7.17.1
+Initial version ----- v7.7.37
+Total commits ------- 19
 ```
+
+## [v7.25.0] - 2022-11-29
+
+### 🔄 Changed
+
+- add health check for event subscription failures
+
+## [v7.24.0] - 2022-11-28
+
+### 🔄 Changed
+
+- add aggregate repository handling and event metadata read changes
+
+## [v7.23.1] - 2022-11-23
+
+### 🔄 Changed
+
+- basis input validation
+
+## [v7.23.0] - 2022-11-22
+
+### 🆕 Added
+
+- add grpc request logger tooling to record load testing playbooks
+
+### 🔄 Changed
+
+- introduce project wide variable for grpc packages to align package versions
+
+## [v7.22.0] - 2022-11-21
+
+### 🔄 Changed
+
+- apply virtual keyword for repository public methods.
+
+## [v7.21.1] - 2022-11-17
+
+### 🔄 Changed
+
+- make DOK Connector upload uri relative
+
+## [v7.21.0] - 2022-11-16
+
+### 🔄 Changed
+
+- add TryGet method to export template repository
+- move XML validation into Voting.Lib.Common
+
+## [v7.20.5] - 2022-11-11
+
+### 🔄 Changed
+
+- ignore XML schema validation warnings in tests
+
+## [v7.20.4] - 2022-11-10
+
+### 🔄 Changed
+
+- extend dm doc response models
+
+## [v7.20.3] - 2022-11-08
+
+### 🔄 Changed
+
+- add testing utilities for XML and raw snapshots
+
+## [v7.20.2] - 2022-11-07
+
+### 🆕 Added
+
+- add log messages for debugging
+- add configure await to signal intention for continuation
+
+## [v7.20.1] - 2022-10-20
+
+### 🔄 Changed
+
+- support default tenant id in authentication mock handler
+
+## [v7.20.0] - 2022-10-20
+
+### 🔄 Changed
+
+- add option to expose exception message
+- add option to expose exception message
+
+## [v7.19.0] - 2022-10-20
+
+### 🔄 Changed
+
+- add option to set default tenant id
+
+## [v7.18.1] - 2022-10-18
+
+### 🔄 Changed
+
+## [v7.18.0] - 2022-10-14
+
+### 🔄 Changed
+
+- add double and map proto validators
+
+## [v7.17.2] - 2022-10-14
+
+### 🔄 Changed
+
+- Wabsti-C changes
 
 ## [v7.17.1] - 2022-09-27
 
@@ -157,17 +264,5 @@ Total commits ------- 7
 - add proportional election union party mandates csv report
 
 ## [v7.7.37] - 2022-06-01
-
-### 🔄 Changed
-
-- add cancellation token for verify second factor
-
-## [v7.7.36] - 2022-05-23
-
-### 🔄 Changed
-
-- validate role token
-
-## [v7.7.35] - 2022-05-19
 
 ### 🎉 Initial release for Bug Bounty

@@ -300,4 +300,43 @@ public class DbRepositoryTest : BaseDbContextTest
         var newCount = await Repo.Query().CountAsync();
         newCount.Should().Be(count);
     }
+
+    [Fact]
+    public async Task OverriddenQueryShouldReturnReducedResultSet()
+    {
+        var entities = await RepoOverride.Query().ToListAsync();
+        entities.Should().AllSatisfy(x => x.Value.Should().BeLessThan(10));
+    }
+
+    [Fact]
+    public async Task OverriddenGetByKeyShouldReturnNullIfValueGreater9()
+    {
+        var entity = await Repo.Query().FirstAsync(x => x.Name == "X10");
+        var resp = await RepoOverride.GetByKey(entity.Id);
+        resp.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task OverriddenCreateShouldNormalizeValuePart()
+    {
+        await RepoOverride.Create(new TestEntity { Value = 100, Name = "Hello World" });
+        var resp = await Repo.Query().FirstOrDefaultAsync(x => x.Value == 100);
+        resp!.Name.Should().Be("hello world");
+    }
+
+    [Fact]
+    public async Task OverriddenUpdateShouldNormalizeValuePart()
+    {
+        var entity = await Repo.Query().FirstAsync(x => x.Value == 9);
+        await RepoOverride.Update(entity);
+        var resp = await RepoOverride.GetByKey(entity.Id);
+        resp!.Name.Should().Be("x9");
+    }
+
+    [Fact]
+    public async Task OverriddenDeleteShouldThrowUnauthroizedExceptionIfValueGreater9()
+    {
+        var entity = await Repo.Query().FirstAsync(x => x.Value == 10);
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await RepoOverride.DeleteByKey(entity.Id));
+    }
 }

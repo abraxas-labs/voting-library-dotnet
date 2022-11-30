@@ -70,6 +70,11 @@ public class AuthenticationHandlerMock : SecureConnectHandler
                 userId));
 
         var hasTenantId = Request.Headers.TryGetValue(SecureConnectTestDefaults.TenantHeader, out var tenantId);
+        if (!hasTenantId && !string.IsNullOrEmpty(Options.DefaultTenantId))
+        {
+            hasTenantId = true;
+            tenantId = Options.DefaultTenantId;
+        }
 
         List<string>? roles = null;
         if (hasTenantId && Request.Headers.TryGetValue(SecureConnectTestDefaults.RolesHeader, out var rolesHeader))

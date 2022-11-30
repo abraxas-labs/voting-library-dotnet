@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Voting.Lib.Eventing.Domain;
 using Voting.Lib.Eventing.Exceptions;
@@ -19,6 +20,7 @@ public class AggregateRepositoryMock : IAggregateRepository
     private readonly IEventPublisher _eventPublisher;
     private readonly IAggregateFactory _aggregateFactory;
     private readonly AggregateRepositoryMockStore _store;
+    private readonly IAggregateRepositoryHandler _aggregateRepositoryHandler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AggregateRepositoryMock"/> class.
@@ -26,14 +28,17 @@ public class AggregateRepositoryMock : IAggregateRepository
     /// <param name="eventPublisher">The mock event publisher.</param>
     /// <param name="aggregateFactory">The mock aggregate factory.</param>
     /// <param name="store">The mock aggregate store.</param>
+    /// <param name="aggregateRepositoryHandler">The aggregate repository handler.</param>
     public AggregateRepositoryMock(
         IEventPublisher eventPublisher,
         IAggregateFactory aggregateFactory,
-        AggregateRepositoryMockStore store)
+        AggregateRepositoryMockStore store,
+        IAggregateRepositoryHandler aggregateRepositoryHandler)
     {
         _eventPublisher = eventPublisher;
         _aggregateFactory = aggregateFactory;
         _store = store;
+        _aggregateRepositoryHandler = aggregateRepositoryHandler;
     }
 
     /// <summary>
@@ -95,13 +100,17 @@ public class AggregateRepositoryMock : IAggregateRepository
     public async Task Save<TAggregate>(TAggregate aggregate)
         where TAggregate : BaseEventSourcingAggregate
     {
-        foreach (var ev in aggregate.GetUncommittedEvents())
+        await _aggregateRepositoryHandler.BeforeSaved(aggregate);
+
+        var events = aggregate.GetUncommittedEvents().ToList();
+        foreach (var ev in events)
         {
             _store.AddEvent(aggregate.Id, ev);
             await _eventPublisher.Publish(aggregate.Id.ToString(), new EventWithMetadata(ev.Data, ev.Metadata, ev.Id), null).ConfigureAwait(false);
         }
 
         aggregate.ClearUncommittedEvents();
+        await _aggregateRepositoryHandler.AfterSaved(aggregate, events);
     }
 
     /// <inheritdoc />

@@ -9,8 +9,15 @@ namespace Voting.Lib.Eventing.Subscribe;
 /// <summary>
 /// Interface for the event processing retry policy.
 /// </summary>
-public interface IEventProcessingRetryPolicy
+/// <typeparam name="TScope">The type of event processing scope.</typeparam>
+public interface IEventProcessingRetryPolicy<TScope>
+    where TScope : IEventProcessorScope
 {
+    /// <summary>
+    /// Gets the count of consecutive failed event processing attempts.
+    /// </summary>
+    int FailureCount { get; }
+
     /// <summary>
     /// Gets called each time the subscription has successfully processed an event.
     /// </summary>

@@ -12,22 +12,27 @@ namespace Voting.Lib.Eventing.Subscribe;
 /// <summary>
 /// Class responsible for retrying the event processing in case of failures.
 /// </summary>
-public class EventProcessingRetryPolicy : IEventProcessingRetryPolicy
+/// <typeparam name="TScope">The type of event processing scope.</typeparam>
+public class EventProcessingRetryPolicy<TScope> : IEventProcessingRetryPolicy<TScope>
+    where TScope : IEventProcessorScope
 {
     private const int MaxDelaySeconds = 60;
-    private readonly ILogger<EventProcessingRetryPolicy> _logger;
+    private readonly ILogger<EventProcessingRetryPolicy<TScope>> _logger;
 
     // volatile, since access may come from different threads but is never parallel.
     private volatile int _failureCounter;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventProcessingRetryPolicy"/> class.
+    /// Initializes a new instance of the <see cref="EventProcessingRetryPolicy{TScope}"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    public EventProcessingRetryPolicy(ILogger<EventProcessingRetryPolicy> logger)
+    public EventProcessingRetryPolicy(ILogger<EventProcessingRetryPolicy<TScope>> logger)
     {
         _logger = logger;
     }
+
+    /// <inheritdoc />
+    public int FailureCount => _failureCounter;
 
     /// <inheritdoc />
     public void Succeeded()

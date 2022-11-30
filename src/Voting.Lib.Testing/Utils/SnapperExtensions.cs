@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Snapper;
@@ -118,6 +120,31 @@ public static class SnapperExtensions
         else
         {
             obj.ShouldMatchChildSnapshot(snapshotName);
+        }
+    }
+
+    /// <summary>
+    /// Compares "raw content" (as a string, not an object) against a snapshot or updates the snapshot.
+    /// Since this method does not use Snapper, the path to the snapshot and whether to update the snapshot must be passed manually.
+    /// </summary>
+    /// <param name="content">The content to compare with the snapshot.</param>
+    /// <param name="snapshotPath">Full path to the snapshot file.</param>
+    /// <param name="updateSnapshot">Whether to update the snapshot.</param>
+    public static void MatchRawSnapshot(this string content, string snapshotPath, bool updateSnapshot)
+    {
+        if (updateSnapshot)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(snapshotPath)!);
+            if (!File.Exists(snapshotPath) || !File.ReadAllText(snapshotPath).Equals(content, StringComparison.Ordinal))
+            {
+                File.WriteAllText(snapshotPath, content);
+            }
+        }
+        else
+        {
+            File.ReadAllText(snapshotPath)
+                .Should()
+                .Be(content);
         }
     }
 

@@ -58,7 +58,7 @@ public class ProtobufJsonSerializerTest
     [Fact]
     public void TryDeserializeWithMetadataShouldWork()
     {
-        var ok = _serializer.TryDeserialize(EventRecordTestUtil.BuildRecord(true), TestEventMetadata.Descriptor, out var result);
+        var ok = _serializer.TryDeserialize(EventRecordTestUtil.BuildRecord(true), _ => TestEventMetadata.Descriptor, out var result);
         ok.Should().BeTrue();
         result.Should().NotBeNull();
         result!.Id.Should().Be(Guid.Parse("e2dd66f4-a932-44e5-bae4-28eb0bef8ef5"));
@@ -69,7 +69,7 @@ public class ProtobufJsonSerializerTest
     [Fact]
     public void TryDeserializeWithoutEventMetadataShouldWork()
     {
-        var ok = _serializer.TryDeserialize(EventRecordTestUtil.BuildRecord(), TestEventMetadata.Descriptor, out var result);
+        var ok = _serializer.TryDeserialize(EventRecordTestUtil.BuildRecord(), _ => TestEventMetadata.Descriptor, out var result);
         ok.Should().BeTrue();
         result.Should().NotBeNull();
         result!.Id.Should().Be(Guid.Parse("e2dd66f4-a932-44e5-bae4-28eb0bef8ef5"));

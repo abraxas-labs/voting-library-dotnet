@@ -29,7 +29,7 @@ public class EventProcessingSubscriber<TScope> : IHostedService
     private readonly Subscription<TScope> _subscription;
     private readonly EventTypeResolver _eventTypeResolver;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IEventProcessingRetryPolicy _retryPolicy;
+    private readonly IEventProcessingRetryPolicy<TScope> _retryPolicy;
     private readonly IEventReader _reader;
 
     private StreamSubscription? _streamSubscriptionConnection;
@@ -52,7 +52,7 @@ public class EventProcessingSubscriber<TScope> : IHostedService
         Subscription<TScope> subscription,
         EventTypeResolver eventTypeResolver,
         IServiceScopeFactory scopeFactory,
-        IEventProcessingRetryPolicy retryPolicy,
+        IEventProcessingRetryPolicy<TScope> retryPolicy,
         IEventReader reader)
     {
         _client = client;
@@ -98,7 +98,7 @@ public class EventProcessingSubscriber<TScope> : IHostedService
         // Set position to the latest successful processed event position of the snapshot.
         // This is done before a subscription connection is opened,
         // since when a subscription drops (eg. due to subscriber failure)
-        // the in-memory value Subscription.CurentPosition may already be higher, than the last successful processed event.
+        // the in-memory value Subscription.CurrentPosition may already be higher, than the last successful processed event.
         // Eg. this can be the case if the subscription drops.
         // (CheckPointReached may still be called, and there is no easy option to detect the drop of the subscription there).
         // (CheckPointReached gets called in the MoveNext of the event enumerator).

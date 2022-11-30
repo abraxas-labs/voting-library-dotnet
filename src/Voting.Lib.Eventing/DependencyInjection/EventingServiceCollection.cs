@@ -48,6 +48,7 @@ public class EventingServiceCollection : IEventingServiceCollection
         Services.TryAddSingleton<IEventPublisher, EventPublisher>();
         Services.TryAddSingleton<IAggregateEventReader, AggregateEventReader>();
         Services.TryAddScoped<IAggregateRepository, AggregateRepository>();
+        Services.TryAddScoped<IAggregateRepositoryHandler, AggregateRepositoryHandler>();
         Services.TryAddScoped<IAggregateFactory, AggregateFactory>();
         Services.TryAddSingleton<IEventSeeder, EventSeeder>();
         Services.AddHostedService<AggregateSeeder>();
@@ -80,7 +81,7 @@ public class EventingServiceCollection : IEventingServiceCollection
     public IEventingServiceCollection AddSubscription<TScope, TAssembly>(string streamName)
         where TScope : class, IEventProcessorScope
     {
-        Services.TryAddTransient<IEventProcessingRetryPolicy, EventProcessingRetryPolicy>();
+        Services.TryAddSingleton<IEventProcessingRetryPolicy<TScope>, EventProcessingRetryPolicy<TScope>>();
         Services.AddScheduledJob<LatestEventMonitor>(_config.LatestEventPositionMonitorInterval, true);
         Services.AddHostedService<EventProcessingSubscriber<TScope>>();
         Services.TryAddSingleton<EventProcessingHandler<TScope>>();

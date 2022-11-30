@@ -21,7 +21,7 @@ namespace Voting.Lib.DokConnector.Test;
 
 public class EaiDokConnectorTest
 {
-    private const string Host = "http://localhost";
+    private const string Host = "http://localhost/";
 
     [Fact]
     public async Task UploadShouldWork()
@@ -38,7 +38,7 @@ public class EaiDokConnectorTest
     {
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
-            .When(Host + "/upload")
+            .When(Host + "upload")
             .With(matcher)
             .Respond("text/plain", "my-file-id");
         var client = new HttpClient(mockHttp);

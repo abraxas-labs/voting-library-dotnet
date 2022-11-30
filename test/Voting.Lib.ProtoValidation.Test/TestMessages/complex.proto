@@ -17,6 +17,7 @@ message Contact {
   string phone = 2 [(abraxas.voting.validation.v1.rules).string.phone = true];
   ContactCompany company = 3;
   google.protobuf.Int32Value age = 4 [(abraxas.voting.validation.v1.rules).integer.min_value = 0];
+  google.protobuf.DoubleValue height = 5 [(abraxas.voting.validation.v1.rules).double.min_value = 0];
 }
 
 message ContactCompany {

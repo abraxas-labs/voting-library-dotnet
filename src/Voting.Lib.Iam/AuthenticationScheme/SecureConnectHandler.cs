@@ -121,7 +121,8 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
     private string? Tenant =>
         _tenant ??= Context.Request.Headers.FirstOrDefault(header => header.Key == Options.TenantHeaderName)
             .Value
-            .FirstOrDefault();
+            .FirstOrDefault()
+            ?? Options.DefaultTenantId;
 
     private IReadOnlyCollection<string> Apps =>
         _apps ??= Context.Request.Headers.FirstOrDefault(header => header.Key == Options.AppHeaderName).Value;
@@ -179,8 +180,11 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         var authStore = ServiceProvider.GetService<IAuthStore>();
         if (authStore != null)
         {
-            var user = await _userCache.GetOrAdd(sub, async () => await UserService.GetUser(sub, true) ?? new() { Loginid = sub });
-            var tenant = await _tenantCache.GetOrAdd(Tenant, async () => await TenantService.GetTenant(Tenant, true) ?? new() { Id = Tenant });
+            var user = await _userCache.GetOrAdd(sub, async () =>
+                await UserService.GetUser(sub, true).ConfigureAwait(false) ?? new() { Loginid = sub }).ConfigureAwait(false);
+            var tenant = await _tenantCache.GetOrAdd(Tenant, async () =>
+                await TenantService.GetTenant(Tenant, true).ConfigureAwait(false) ?? new() { Id = Tenant }).ConfigureAwait(false);
+
             authStore.SetValues(user, tenant, roles);
         }
 

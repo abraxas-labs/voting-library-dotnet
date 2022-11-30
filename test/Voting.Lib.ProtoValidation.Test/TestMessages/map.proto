@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+
+message Map {
+  map<string, string> translations = 1 [(abraxas.voting.validation.v1.rules).map.key.string.min_length = 2, (abraxas.voting.validation.v1.rules).map.value.string.max_length = 6];
+  map<int32, MapEntryChild> mapping = 2;
+}
+
+message MapEntryChild {
+  string description = 1 [(abraxas.voting.validation.v1.rules).string = { complex_sl_text: true, min_length: 4 }];
+}

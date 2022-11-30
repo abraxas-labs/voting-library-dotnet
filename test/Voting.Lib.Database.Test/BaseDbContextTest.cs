@@ -17,9 +17,11 @@ public abstract class BaseDbContextTest<TContext>
             .AddDbContext<TContext>()
             .AddVotingLibDatabase<TContext>()
             .AddTransient(typeof(ExposingTestDbRepository<,>))
+            .AddTransient(typeof(OverridingTestDbRepository<>))
             .BuildServiceProvider();
         Context = sp.GetRequiredService<TContext>();
         Repo = sp.GetRequiredService<ExposingTestDbRepository<TContext, TestEntity>>();
+        RepoOverride = sp.GetRequiredService<OverridingTestDbRepository<TContext>>();
 
         LoadInitialData();
     }
@@ -27,6 +29,8 @@ public abstract class BaseDbContextTest<TContext>
     protected TContext Context { get; }
 
     protected ExposingTestDbRepository<TContext, TestEntity> Repo { get; }
+
+    protected OverridingTestDbRepository<TContext> RepoOverride { get; }
 
     private void LoadInitialData()
     {

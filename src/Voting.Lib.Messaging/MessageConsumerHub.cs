@@ -14,6 +14,8 @@ public class MessageConsumerHub<TFilterMessage, TListenerMessage>
     : MessageConsumerHubBase<TFilterMessage, TListenerMessage>
     where TListenerMessage : class
 {
+    private readonly ILogger<MessageConsumerHub<TFilterMessage, TListenerMessage>> _logger;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageConsumerHub{TFilterMessage, TListenerMessage}"/> class.
     /// </summary>
@@ -21,6 +23,7 @@ public class MessageConsumerHub<TFilterMessage, TListenerMessage>
     public MessageConsumerHub(ILogger<MessageConsumerHub<TFilterMessage, TListenerMessage>> logger)
         : base(logger)
     {
+        _logger = logger;
     }
 
     /// <summary>
@@ -39,7 +42,12 @@ public class MessageConsumerHub<TFilterMessage, TListenerMessage>
 
     internal Task Consume(TFilterMessage message, TListenerMessage listenerMessage)
     {
-        var listenerTasks = GetConsumers(message).Select(x => x.Consume(listenerMessage));
+        var consumers = GetConsumers(message).ToList();
+
+        _logger.LogDebug("Consuming message by {ConsumersCount} consumers", consumers.Count);
+
+        var listenerTasks = consumers.Select(x => x.Consume(listenerMessage));
+
         return Task.WhenAll(listenerTasks);
     }
 }

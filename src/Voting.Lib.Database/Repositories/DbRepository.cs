@@ -80,26 +80,26 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// Always sets no tracking.
     /// </summary>
     /// <returns>An Instance of <see cref="IQueryable{TEntity}">Queryable</see>.</returns>
-    public IQueryable<TEntity> Query()
+    public virtual IQueryable<TEntity> Query()
         => Set.AsNoTracking();
 
     /// <inheritdoc />
-    public Task<TEntity?> GetByKey(TKey key)
+    public virtual Task<TEntity?> GetByKey(TKey key)
         => Query().FirstOrDefaultAsync(x => x.Id.Equals(key))!;
 
     /// <inheritdoc />
-    public Task<bool> ExistsByKey(TKey key)
+    public virtual Task<bool> ExistsByKey(TKey key)
         => Set.AnyAsync(x => key.Equals(x.Id));
 
     /// <inheritdoc />
-    public async Task Create(TEntity value)
+    public virtual async Task Create(TEntity value)
     {
         Context.Add(value);
         await Context.SaveChangesAsync().ConfigureAwait(false);
     }
 
     /// <inheritdoc />
-    public async Task CreateRange(IEnumerable<TEntity> values)
+    public virtual async Task CreateRange(IEnumerable<TEntity> values)
     {
         Context.AddRange(values);
         await Context.SaveChangesAsync().ConfigureAwait(false);
@@ -110,7 +110,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// If a tracked instance with the key of the value exists
     /// it is detached before updating the values.
     /// </summary>
-    public async Task Update(TEntity value)
+    public virtual async Task Update(TEntity value)
     {
         if (IsTracked(value.Id, out var entity))
         {
@@ -126,7 +126,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// If a tracked instance with the key of the value exists
     /// it is detached before updating the values.
     /// </summary>
-    public async Task UpdateRange(IEnumerable<TEntity> values)
+    public virtual async Task UpdateRange(IEnumerable<TEntity> values)
     {
         foreach (var value in values)
         {
@@ -146,7 +146,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// If a tracked instance with the key of the value exists
     /// it is detached before updating the values.
     /// </summary>
-    public async Task UpdateIgnoreRelations(TEntity value)
+    public virtual async Task UpdateIgnoreRelations(TEntity value)
     {
         if (IsTracked(value.Id, out var entity))
         {
@@ -164,7 +164,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// If a tracked instance with the key of the value exists
     /// it is detached before updating the values.
     /// </summary>
-    public async Task UpdateRangeIgnoreRelations(IEnumerable<TEntity> values)
+    public virtual async Task UpdateRangeIgnoreRelations(IEnumerable<TEntity> values)
     {
         foreach (var value in values)
         {
@@ -181,7 +181,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     }
 
     /// <inheritdoc />
-    public async Task DeleteByKey(TKey key)
+    public virtual async Task DeleteByKey(TKey key)
     {
         var entity = GetTrackedOrPseudoEntity(key);
         Set.Remove(entity);
@@ -189,7 +189,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     }
 
     /// <inheritdoc />
-    public async Task<bool> DeleteByKeyIfExists(TKey key)
+    public virtual async Task<bool> DeleteByKeyIfExists(TKey key)
     {
         if (!await ExistsByKey(key).ConfigureAwait(false))
         {
@@ -201,7 +201,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     }
 
     /// <inheritdoc />
-    public async Task DeleteRangeByKey(IEnumerable<TKey> keys)
+    public virtual async Task DeleteRangeByKey(IEnumerable<TKey> keys)
     {
         var toRemove = keys.Select(GetTrackedOrPseudoEntity).ToList();
         Set.RemoveRange(toRemove);

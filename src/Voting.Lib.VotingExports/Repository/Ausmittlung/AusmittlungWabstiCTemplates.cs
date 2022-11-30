@@ -50,17 +50,6 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
-    public static readonly TemplateModel WMPlausiGemeinden = new TemplateModel
-    {
-        Key = "WM_PlausiGemeinden",
-        Filename = "WM_PlausiGemeinden",
-        Description = "WM_PlausiGemeinden",
-        Format = ExportFileFormat.Csv,
-        EntityType = EntityType.MajorityElection,
-        ResultType = ResultType.MultiplePoliticalBusinessesResult,
-        GeneratedBy = VotingApp.VotingAusmittlung,
-    };
-
     public static readonly TemplateModel WMKandidaten = new TemplateModel
     {
         Key = "WM_Kandidaten",
@@ -110,17 +99,6 @@ public static class AusmittlungWabstiCTemplates
         Key = "WPStatic_Gemeinden",
         Filename = "WPStatic_Gemeinden",
         Description = "WPStatic_Gemeinden",
-        Format = ExportFileFormat.Csv,
-        EntityType = EntityType.ProportionalElection,
-        ResultType = ResultType.MultiplePoliticalBusinessesResult,
-        GeneratedBy = VotingApp.VotingAusmittlung,
-    };
-
-    public static readonly TemplateModel WPPlausiGemeinden = new TemplateModel
-    {
-        Key = "WP_PlausiGemeinden",
-        Filename = "WP_PlausiGemeinden",
-        Description = "WP_PlausiGemeinden",
         Format = ExportFileFormat.Csv,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.MultiplePoliticalBusinessesResult,
@@ -185,7 +163,7 @@ public static class AusmittlungWabstiCTemplates
     public static readonly TemplateModel SGStaticGeschaefte = new TemplateModel
     {
         Key = "SGStatic_Geschäfte",
-        Filename = "SGStatic_Geschäfte",
+        Filename = "SGStatic_Geschaefte",
         Description = "SGStatic_Geschäfte",
         Format = ExportFileFormat.Csv,
         EntityType = EntityType.Vote,
@@ -196,7 +174,7 @@ public static class AusmittlungWabstiCTemplates
     public static readonly TemplateModel SGGeschaefte = new TemplateModel
     {
         Key = "SG_Geschäfte",
-        Filename = "SG_Geschäfte",
+        Filename = "SG_Geschaefte",
         Description = "SG_Geschäfte",
         Format = ExportFileFormat.Csv,
         EntityType = EntityType.Vote,
@@ -225,17 +203,6 @@ public static class AusmittlungWabstiCTemplates
         ResultType = ResultType.MultiplePoliticalBusinessesResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
-
-    public static readonly TemplateModel SGPlausiGemeinden = new TemplateModel
-    {
-        Key = "SG_PlausiGemeinden",
-        Filename = "SG_PlausiGemeinden",
-        Description = "SG_PlausiGemeinden",
-        Format = ExportFileFormat.Csv,
-        EntityType = EntityType.Vote,
-        ResultType = ResultType.MultiplePoliticalBusinessesResult,
-        GeneratedBy = VotingApp.VotingAusmittlung,
-    };
 #pragma warning restore CS1591
 
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
@@ -243,13 +210,11 @@ public static class AusmittlungWabstiCTemplates
         WMWahl,
         WMGemeinden,
         WMStaticGemeinden,
-        WMPlausiGemeinden,
         WMKandidaten,
         WMKandidatenGde,
         WPWahl,
         WPGemeinden,
         WPStaticGemeinden,
-        WPPlausiGemeinden,
         WPKandidaten,
         WPStaticKandidaten,
         WPKandidatenGde,
@@ -259,6 +224,5 @@ public static class AusmittlungWabstiCTemplates
         SGGeschaefte,
         SGGemeinden,
         SGStaticGemeinden,
-        SGPlausiGemeinden,
     };
 }

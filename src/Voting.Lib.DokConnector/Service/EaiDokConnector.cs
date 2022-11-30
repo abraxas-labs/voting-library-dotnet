@@ -83,7 +83,7 @@ public class EaiDokConnector : IDokConnector
         using var fileStreamContent = new StreamContent(fileContent);
         requestContent.Add(fileStreamContent);
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, "/upload");
+        using var request = new HttpRequestMessage(HttpMethod.Post, "upload");
         request.Content = requestContent;
 
         using var resp = await _client.SendAsync(request, ct).ConfigureAwait(false);

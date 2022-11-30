@@ -7,14 +7,15 @@ using Voting.Lib.Eventing.Subscribe;
 
 namespace Voting.Lib.Eventing.IntegrationTest.Subscribe;
 
-public class TestRetryPolicy : IEventProcessingRetryPolicy
+public class TestRetryPolicy<TScope> : IEventProcessingRetryPolicy<TScope>
+    where TScope : IEventProcessorScope
 {
     private TaskCompletionSource? _failureWaiter;
     private int _failureWaitCounter;
 
-    public int SucceededCounter { get; set; }
+    public int SucceededCount { get; set; }
 
-    public int FailedCounter { get; set; }
+    public int FailureCount { get; set; }
 
     public Func<int, SubscriptionDroppedReason, Task<bool>> OnRetry { get; set; } = (_, _) => Task.FromResult(true);
 
@@ -25,7 +26,7 @@ public class TestRetryPolicy : IEventProcessingRetryPolicy
             throw new InvalidOperationException("Only one concurrent wait call is supported");
         }
 
-        if (FailedCounter >= count)
+        if (FailureCount >= count)
         {
             return Task.CompletedTask;
         }
@@ -37,18 +38,18 @@ public class TestRetryPolicy : IEventProcessingRetryPolicy
     }
 
     public void Succeeded()
-        => SucceededCounter++;
+        => SucceededCount++;
 
     public Task<bool> Failed(SubscriptionDroppedReason reason)
     {
-        FailedCounter++;
+        FailureCount++;
 
-        if (FailedCounter >= _failureWaitCounter)
+        if (FailureCount >= _failureWaitCounter)
         {
             _failureWaiter?.SetResult();
             _failureWaiter = null;
         }
 
-        return OnRetry(FailedCounter, reason);
+        return OnRetry(FailureCount, reason);
     }
 }

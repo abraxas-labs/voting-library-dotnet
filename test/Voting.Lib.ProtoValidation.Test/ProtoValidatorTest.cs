@@ -78,8 +78,12 @@ public class ProtoValidatorTest
     [Fact]
     public void ComplexWithInvalidPropertyAndWrapperShouldThrow()
     {
-        var msg = NewValidComplexObject(c => c.Contact.Age = -1);
-        ShouldThrowWithErrorMessage(msg, "'Age' is smaller than the MinValue 0");
+        var msg = NewValidComplexObject(c =>
+        {
+            c.Contact.Age = -1;
+            c.Contact.Height = -0.1;
+        });
+        ShouldThrowWithErrorMessage(msg, "'Age' is smaller than the MinValue 0\n'Height' is smaller than the MinValue 0");
     }
 
     [Fact]
@@ -118,6 +122,25 @@ public class ProtoValidatorTest
         ShouldThrowWithErrorMessage(msg, "'Description' is not a Complex Singleline Text.\n'Description' has Length 3, but the MinLength is 4\n'Description' has Length 0, but the MinLength is 4\n'Description' is not a Complex Singleline Text.");
     }
 
+    [Fact]
+    public void MapWithValidValuesShouldWork()
+    {
+        var msg = NewValidMapObject();
+        _validator.Validate(msg);
+    }
+
+    [Fact]
+    public void MapWithInvalidValuesShouldThrow()
+    {
+        var msg = NewValidMapObject(m =>
+        {
+            m.Translations.Add("x", "This string is to long");
+            m.Mapping.Add(1, new() { Description = string.Empty });
+        });
+
+        ShouldThrowWithErrorMessage(msg, "'Translations[x].key' has Length 1, but the MinLength is 2\n'Translations[x].value' has Length 22, but the MaxLength is 6\n'Description' has Length 0, but the MinLength is 4\n'Description' is not a Complex Singleline Text.");
+    }
+
     private Complex NewValidComplexObject(Action<Complex>? action = null)
     {
         var complex = new Complex
@@ -148,6 +171,25 @@ public class ProtoValidatorTest
 
         action?.Invoke(repeat);
         return repeat;
+    }
+
+    private Map NewValidMapObject(Action<Map>? action = null)
+    {
+        var map = new Map
+        {
+            Translations =
+            {
+                { "de", "Wert" },
+                { "en", "Val" },
+            },
+            Mapping =
+            {
+                { 0, new() { Description = "Test" } },
+            },
+        };
+
+        action?.Invoke(map);
+        return map;
     }
 
     private void ShouldThrowWithErrorMessage<TMessage>(TMessage message, string errorMessage)

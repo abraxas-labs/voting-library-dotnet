@@ -35,7 +35,7 @@ public class EventReaderMock : IEventReader
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, IDescriptor? metadataDescriptor = null, bool ignoreUnknownEvents = true)
+    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, Func<IMessage, IDescriptor>? metadataDescriptorProvider = null, bool ignoreUnknownEvents = true)
     {
         if (!_store.TryGetEvents(stream, out var events))
         {
@@ -44,16 +44,16 @@ public class EventReaderMock : IEventReader
 
         foreach (var ev in await Task.FromResult(events))
         {
-            yield return MapToEventReadResult((stream, ev), metadataDescriptor);
+            yield return MapToEventReadResult((stream, ev), metadataDescriptorProvider);
         }
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(Position startPositionExclusive, Func<EventReadResult, bool> endCondition, IDescriptor? metadataDescriptor = null, bool ignoreUnknownEvents = true)
+    public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(Position startPositionExclusive, Func<EventReadResult, bool> endCondition, Func<IMessage, IDescriptor>? metadataDescriptorProvider = null, bool ignoreUnknownEvents = true)
     {
         foreach (var ev in await Task.FromResult(_store.GetEvents(startPositionExclusive)))
         {
-            var eventReadResult = MapToEventReadResult(ev, metadataDescriptor);
+            var eventReadResult = MapToEventReadResult(ev, metadataDescriptorProvider);
 
             yield return eventReadResult;
 
@@ -69,11 +69,11 @@ public class EventReaderMock : IEventReader
         Position startPositionExclusive,
         IReadOnlyCollection<Type> eventTypes,
         Func<EventReadResult, bool> endCondition,
-        IDescriptor? metadataDescriptor = null)
+        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null)
     {
         foreach (var ev in await Task.FromResult(_store.GetEvents(startPositionExclusive)))
         {
-            var eventReadResult = MapToEventReadResult(ev, metadataDescriptor);
+            var eventReadResult = MapToEventReadResult(ev, metadataDescriptorProvider);
 
             if (!eventTypes.Contains(eventReadResult.Data.GetType()))
             {
@@ -121,14 +121,14 @@ public class EventReaderMock : IEventReader
     public async Task<Position?> GetLatestEventPosition(string stream, CancellationToken ct = default)
         => (await GetLatestEvent(stream, ct))?.Position;
 
-    private EventReadResult MapToEventReadResult((string Stream, EventReaderMockStoreData StoreData) data, IDescriptor? metadataType)
+    private EventReadResult MapToEventReadResult((string Stream, EventReaderMockStoreData StoreData) data, Func<IMessage, IDescriptor>? metadataTypeFunc)
     {
         var metadata = data.StoreData.Event.Metadata;
 
-        if (data.StoreData.Event.Metadata != null && metadataType != null)
+        if (data.StoreData.Event.Metadata != null && metadataTypeFunc != null)
         {
             var metadataSerialized = _serializer.Serialize(data.StoreData.Event.Metadata);
-            metadata = _serializer.Deserialize(metadataSerialized, metadataType.FullName);
+            metadata = _serializer.Deserialize(metadataSerialized, metadataTypeFunc(data.StoreData.Event.Data).FullName);
         }
 
         return new EventReadResult(

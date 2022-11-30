@@ -32,6 +32,14 @@ public class ExceptionInterceptorTest
     }
 
     [Fact]
+    public async Task NoDetailedErrorsExposedExceptionMessageShouldMapStatusCodeAndExceptionMessage()
+    {
+        var ex = await InvokeWithException<ExposedMessageTestException>(new TestExceptionInterceptor(false));
+        ex.Status.StatusCode.Should().Be(StatusCode.AlreadyExists);
+        ex.Status.Detail.Should().Be("Exception: exposed test message");
+    }
+
+    [Fact]
     public async Task DetailedErrorsShouldExposeDetails()
     {
         var ex = await InvokeWithException<TestException>(new TestExceptionInterceptor(true));
@@ -107,6 +115,14 @@ public class ExceptionInterceptorTest
         }
     }
 
+    private class ExposedMessageTestException : Exception
+    {
+        public ExposedMessageTestException()
+            : base("exposed test message")
+        {
+        }
+    }
+
     private class SimpleExceptionInterceptor : ExceptionInterceptor
     {
         public SimpleExceptionInterceptor()
@@ -128,12 +144,16 @@ public class ExceptionInterceptorTest
         protected override bool ExposeExceptionType(Exception ex)
             => ex is ExposedTestException;
 
+        protected override bool ExposeExceptionMessage(Exception ex)
+            => ex is ExposedMessageTestException;
+
         protected override StatusCode MapExceptionToStatusCode(Exception ex)
         {
             return ex switch
             {
                 TestException => StatusCode.AlreadyExists,
                 ExposedTestException => StatusCode.InvalidArgument,
+                ExposedMessageTestException => StatusCode.AlreadyExists,
                 _ => StatusCode.Internal,
             };
         }

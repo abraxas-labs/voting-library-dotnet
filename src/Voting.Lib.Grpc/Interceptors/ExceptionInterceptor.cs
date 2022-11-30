@@ -151,6 +151,14 @@ public abstract class ExceptionInterceptor : Interceptor
     /// <returns>Whether the exception type should be exposed.</returns>
     protected virtual bool ExposeExceptionType(Exception ex) => false;
 
+    /// <summary>
+    /// Decides whether the exception message should be exposed or not.
+    /// Note that in the http response an exception message is always exposed when detailed errors are enabled, no matter what value is returned here.
+    /// </summary>
+    /// <param name="ex">Exception.</param>
+    /// <returns>Whether the exception message should be exposed.</returns>
+    protected virtual bool ExposeExceptionMessage(Exception ex) => false;
+
     private Status SetContextStatus(ServerCallContext context, Exception ex)
     {
         var statusCode = MapExceptionToStatusCode(ex);
@@ -169,7 +177,7 @@ public abstract class ExceptionInterceptor : Interceptor
             ? ex.GetType().Name
             : nameof(Exception);
 
-        if (_enableDetailedErrors)
+        if (_enableDetailedErrors || ExposeExceptionMessage(ex))
         {
             msg += ": " + ex.Message;
         }

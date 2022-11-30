@@ -45,6 +45,11 @@ public class SecureConnectOptions : JwtBearerOptions
     public string TenantHeaderName { get; set; } = "x-tenant";
 
     /// <summary>
+    /// Gets or sets a default tenant id, if no value for <see cref="TenantHeaderName"/> is provided.
+    /// </summary>
+    public string? DefaultTenantId { get; set; }
+
+    /// <summary>
     /// Gets or sets name of the used http header to select the actual used app.
     /// </summary>
     public string AppHeaderName { get; set; } = "x-app";

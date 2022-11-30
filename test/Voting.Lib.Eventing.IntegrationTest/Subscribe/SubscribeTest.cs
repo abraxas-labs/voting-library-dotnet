@@ -87,7 +87,7 @@ public class SubscribeTest : EventStoreSampleDataFixture
     public async Task SubscribeShouldCallRetryPolicyOnFailureAndReconnectFromSnapshot()
     {
         await using var serviceProvider = new ServiceCollection()
-            .AddForwardRefSingleton<IEventProcessingRetryPolicy, TestRetryPolicy>()
+            .AddForwardRefSingleton<IEventProcessingRetryPolicy<TransientTestScope>, TestRetryPolicy<TransientTestScope>>()
             .AddSingleton<TestProcessorStore>()
             .AddVotingLibEventing(Configuration, typeof(TestEvent).Assembly)
             .AddSubscription<TransientTestScope>(WellKnownStreams.All)
@@ -99,17 +99,17 @@ public class SubscribeTest : EventStoreSampleDataFixture
 
         await serviceProvider.StartHostedServices();
 
-        var retryPolicy = serviceProvider.GetRequiredService<TestRetryPolicy>();
+        var retryPolicy = serviceProvider.GetRequiredService<TestRetryPolicy<TransientTestScope>>();
         await retryPolicy.WaitForNrOfFailures(10);
-        retryPolicy.SucceededCounter.Should().Be(0);
-        retryPolicy.FailedCounter.Should().Be(10);
+        retryPolicy.SucceededCount.Should().Be(0);
+        retryPolicy.FailureCount.Should().Be(10);
         store.EventProcessingShouldFail = false;
 
         var (nrOfEvents, sum) = await store.WaitForCatchUp();
         nrOfEvents.Should().Be(110);
         sum.Should().Be(4350);
-        retryPolicy.SucceededCounter.Should().Be(110);
-        retryPolicy.FailedCounter.Should().Be(10);
+        retryPolicy.SucceededCount.Should().Be(110);
+        retryPolicy.FailureCount.Should().Be(10);
 
         await serviceProvider.StopHostedServices();
     }
@@ -118,14 +118,14 @@ public class SubscribeTest : EventStoreSampleDataFixture
     public async Task SubscribeShouldCallRetryPolicyAndAbortIfNoRetry()
     {
         await using var serviceProvider = new ServiceCollection()
-            .AddForwardRefSingleton<IEventProcessingRetryPolicy, TestRetryPolicy>()
+            .AddForwardRefSingleton<IEventProcessingRetryPolicy<TransientTestScope>, TestRetryPolicy<TransientTestScope>>()
             .AddSingleton<TestProcessorStore>()
             .AddVotingLibEventing(Configuration, typeof(TestEvent).Assembly)
             .AddSubscription<TransientTestScope>(WellKnownStreams.All)
             .Services
             .BuildServiceProvider(true);
 
-        var retryPolicy = serviceProvider.GetRequiredService<TestRetryPolicy>();
+        var retryPolicy = serviceProvider.GetRequiredService<TestRetryPolicy<TransientTestScope>>();
         retryPolicy.OnRetry = (_, _) => Task.FromResult(false);
 
         var store = serviceProvider.GetRequiredService<TestProcessorStore>();
@@ -134,8 +134,8 @@ public class SubscribeTest : EventStoreSampleDataFixture
         await serviceProvider.StartHostedServices();
 
         await retryPolicy.WaitForNrOfFailures(1);
-        retryPolicy.SucceededCounter.Should().Be(0);
-        retryPolicy.FailedCounter.Should().Be(1);
+        retryPolicy.SucceededCount.Should().Be(0);
+        retryPolicy.FailureCount.Should().Be(1);
 
         await serviceProvider.StopHostedServices();
     }

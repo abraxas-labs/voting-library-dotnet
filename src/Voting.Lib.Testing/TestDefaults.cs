@@ -11,7 +11,7 @@ public static class TestDefaults
     /// <summary>
     /// The default tenant id used by this library.
     /// </summary>
-    public const string TenantId = "default-tenant-id";
+    public const string TenantId = "000000000000000000";
 
     /// <summary>
     /// The default user id by this library.

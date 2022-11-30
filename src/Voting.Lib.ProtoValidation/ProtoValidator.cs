@@ -68,6 +68,12 @@ public class ProtoValidator
             return;
         }
 
+        if (fieldValue is IDictionary map)
+        {
+            ValidateMap(context, map, fieldRules, fieldName);
+            return;
+        }
+
         if (fieldValue is IMessage complexObject)
         {
             // validate nested fields of the field.
@@ -101,6 +107,37 @@ public class ProtoValidator
         }
     }
 
+    private void ValidateMap(ProtoValidationContext context, IDictionary map, Rules? fieldRules, string fieldName)
+    {
+        foreach (DictionaryEntry mapEntry in map)
+        {
+            if (fieldRules != null)
+            {
+                // validate the key and value foreach map entry with the rules set on rules.map.key / rules.map.value
+                var keyValueFieldName = $"{fieldName}[{mapEntry.Key}]";
+                var keyRules = BuildRules(fieldRules.Map.Key);
+                var valueRules = BuildRules(fieldRules.Map.Value);
+
+                if (keyRules != null)
+                {
+                    ApplyValidators(context, keyRules, mapEntry.Key, $"{keyValueFieldName}.key");
+                }
+
+                if (valueRules != null)
+                {
+                    ApplyValidators(context, valueRules, mapEntry.Value, $"{keyValueFieldName}.value");
+                }
+            }
+
+            // validate the properties of a map entry value with the validation rules of the object itself if it is a complex proto message.
+            // keys may only contain simple data and do not need nested validation (https://developers.google.com/protocol-buffers/docs/proto3#maps)
+            if (mapEntry.Value is IMessage mapEntryValueMessage)
+            {
+                Validate(context, mapEntryValueMessage);
+            }
+        }
+    }
+
     private void ApplyValidators(ProtoValidationContext context, Rules rules, object? value, string fieldName)
     {
         foreach (var validator in _validators)
@@ -113,4 +150,12 @@ public class ProtoValidator
     {
         return fieldDescriptor.GetOptions()?.GetExtension<Rules>(RulesExtensions.Rules);
     }
+
+    private Rules? BuildRules(MapEntryComponentRules? mapEntryComponentRules)
+        => mapEntryComponentRules == null
+            ? null
+            : new()
+            {
+                String = mapEntryComponentRules.String,
+            };
 }
