@@ -14,8 +14,9 @@ public class EcdsaPrivateKey : EcdsaPublicKey, IPrivateKey
     /// Initializes a new instance of the <see cref="EcdsaPrivateKey"/> class.
     /// </summary>
     /// <param name="ecdsa">The system ECDSA implementation.</param>
-    internal EcdsaPrivateKey(ECDsa ecdsa)
-        : base(ecdsa)
+    /// <param name="id">The key id. If it is not provided, a random value is generated.</param>
+    internal EcdsaPrivateKey(ECDsa ecdsa, string? id = null)
+        : base(ecdsa, id)
     {
         PrivateKey = ecdsa.ExportPkcs8PrivateKey();
     }

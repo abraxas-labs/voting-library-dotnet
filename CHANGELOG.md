@@ -1,4 +1,4 @@
-# ✨ Changelog (`v7.25.0`)
+# ✨ Changelog (`v7.26.10`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v7.25.0
-Previous version ---- v7.17.1
+This version -------- v7.26.10
+Previous version ---- v7.25.0
 Initial version ----- v7.7.37
-Total commits ------- 19
+Total commits ------- 11
 ```
+
+## [v7.26.10] - 2023-01-25
+
+### 🔄 Changed
+
+- add scoped dmdoc httpclient
+
+## [v7.26.9] - 2023-01-25
+
+### 🔄 Changed
+
+- register dmdoc delegating handler
+
+## [v7.26.8] - 2023-01-24
+
+### 🔄 Changed
+
+- add a constant key id in asymmetric algorithm mocks
+
+## [v7.26.7] - 2023-01-24
+
+### 🔄 Changed
+
+- submit dmdoc username as part of the authentication header
+
+## [v7.26.6] - 2023-01-09
+
+### 🔄 Changed
+
+- rename protocol description and filename
+
+## [v7.26.5] - 2023-01-05
+
+### 🔄 Changed
+
+- add end result detail without empty and invalid votes protocol
+
+## [v7.26.4] - 2022-12-21
+
+### 🔄 Changed
+
+- provide additional role debug infos
+
+## [v7.26.3] - 2022-12-20
+
+### 🔄 Changed
+
+- improve dm doc bricks loading performance
+
+## [v7.26.2] - 2022-12-14
+
+### 🔄 Changed
+
+## [v7.26.1] - 2022-12-12
+
+### 🔄 Changed
+
+- extend role token subject validation to support OBO subject tokens.
+
+## [v7.26.0] - 2022-12-02
+
+### 🆕 Added
+
+- add headers to grpc request log output
 
 ## [v7.25.0] - 2022-11-29
 
@@ -186,7 +250,6 @@ Total commits ------- 19
 ### 🔄 Changed
 
 - proto string validator with trim check
-- update readme
 
 ## [v7.13.0] - 2022-08-25
 
@@ -199,15 +262,52 @@ Total commits ------- 19
 ### 🔄 Changed
 
 - update dependencies and clean up code smells
-- update changelog link
-- add readme.md
-- configure preview/public github urls and gpg key id for commit signing
 
 ## [v7.12.0] - 2022-08-08
 
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+- powershell client generator script
+
 ### 🔄 Changed
 
-- image processing
+- exclude parameters for successful generation
+
+### 🆕 Added
+
+- CORS configuration support
+
+these are for example eventstore internal events which are not interesting to voting at all
+
+use the overload without any position, since the position is unsigned and always exclusive
+
+BREAKING CHANGE: activity protocol by event store
+
+BREAKING CHANGE: persistent subscription apis removed
+
+BREAKING CHANGE: event signature
+
+BREAKING CHANGE: removed user store dependency and used generated swagger clients
+
+Replaces the userstore dependency with swagger generated clients
+
+Eventstore should use the default http client builder to ensure certificate pinning
+This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
+
+BREAKING CHANGE: VOTING-638 net6.0 update
+
+note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
+
+BREAKING CHANGE: dotnet 5
+
+also improve waiting for event store connection
+
+also fixed aggregate repo
 
 ## [v7.11.3] - 2022-07-27
 

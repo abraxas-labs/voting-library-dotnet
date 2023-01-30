@@ -3,8 +3,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Headers;
-using System.Threading;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Voting.Lib.DmDoc;
 using Voting.Lib.DmDoc.Configuration;
@@ -29,19 +27,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the DmDoc serialization format is invalid.</exception>
     public static IServiceCollection AddDmDoc(this IServiceCollection services, DmDocConfig config)
     {
-        services.AddHttpClient<IDmDocService, DmDocService>(c =>
-        {
-            c.Timeout = config.Timeout ?? Timeout.InfiniteTimeSpan;
-            c.BaseAddress = config.BaseAddress
-                ?? throw new ValidationException("DmDoc base address is required");
-
-            if (string.IsNullOrWhiteSpace(config.Token))
-            {
-                throw new ValidationException("DmDoc token is required");
-            }
-
-            c.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(config.Token);
-        });
+        services.TryAddTransient<IDmDocService, DmDocService>();
         services.TryAddSingleton(config);
         services.TryAddTransient<IDmDocUrlBuilder, DmDocUrlBuilder>();
         services.TryAddTransient<IDmDocUserNameProvider, DmDocConfigUserNameProvider>();

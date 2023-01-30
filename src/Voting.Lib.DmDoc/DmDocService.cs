@@ -3,10 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Voting.Lib.DmDoc.Configuration;
 using Voting.Lib.DmDoc.Exceptions;
 using Voting.Lib.DmDoc.Extensions;
 using Voting.Lib.DmDoc.Models;
@@ -21,27 +25,48 @@ namespace Voting.Lib.DmDoc;
 public class DmDocService : IDmDocService
 {
     private readonly HttpClient _http;
+    private readonly DmDocConfig _config;
+    private readonly IDmDocUserNameProvider _dmDocUserNameProvider;
     private readonly IDmDocUrlBuilder _urlBuilder;
     private readonly IDmDocDataSerializer _dataSerializer;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<DmDocService> _logger;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DmDocService"/> class.
     /// </summary>
-    /// <param name="http">The HTTP client.</param>
+    /// <param name="config">The DmDoc configuation.</param>
+    /// <param name="userNameProvider">The username provider.</param>
     /// <param name="urlBuilder">The DmDoc URL builder.</param>
     /// <param name="dataSerializer">The DmDoc data serializer.</param>
+    /// <param name="httpClientFactory">The http client factory.</param>
     /// <param name="logger">The logger.</param>
     public DmDocService(
-        HttpClient http,
+        DmDocConfig config,
+        IDmDocUserNameProvider userNameProvider,
         IDmDocUrlBuilder urlBuilder,
         IDmDocDataSerializer dataSerializer,
+        IHttpClientFactory httpClientFactory,
         ILogger<DmDocService> logger)
     {
-        _http = http;
+        _config = config;
+        _dmDocUserNameProvider = userNameProvider;
         _urlBuilder = urlBuilder;
         _dataSerializer = dataSerializer;
+        _httpClientFactory = httpClientFactory;
         _logger = logger;
+
+        if (string.IsNullOrWhiteSpace(_config.Token))
+        {
+            throw new ValidationException("DmDoc token is required");
+        }
+
+        if (string.IsNullOrWhiteSpace(_dmDocUserNameProvider.UserName))
+        {
+            throw new ValidationException("DmDoc username is required");
+        }
+
+        _http = CreateClient();
     }
 
     /// <inheritdoc />
@@ -192,6 +217,18 @@ public class DmDocService : IDmDocService
                 Content = content,
             });
         return (response.BrickId, response.Id);
+    }
+
+    private HttpClient CreateClient()
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = _config.Timeout ?? Timeout.InfiniteTimeSpan;
+        httpClient.BaseAddress = _config.BaseAddress ?? throw new ValidationException("DmDoc base address is required");
+
+        var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_dmDocUserNameProvider.UserName}:{_config.Token}"));
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DmDoc", authValue);
+
+        return httpClient;
     }
 
     private async Task<TResp> WithTemporaryDraft<TDraftData, TResp>(

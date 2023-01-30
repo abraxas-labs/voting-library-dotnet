@@ -1,8 +1,9 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using System.Text;
-using System.Text.Encodings.Web;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Voting.Lib.DmDoc;
 
@@ -11,17 +12,6 @@ namespace Voting.Lib.DmDoc;
 /// </summary>
 public class DmDocUrlBuilder : IDmDocUrlBuilder
 {
-    private readonly IDmDocUserNameProvider _userNameProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DmDocUrlBuilder"/> class.
-    /// </summary>
-    /// <param name="userNameProvider">The DmDoc user name provider.</param>
-    public DmDocUrlBuilder(IDmDocUserNameProvider userNameProvider)
-    {
-        _userNameProvider = userNameProvider;
-    }
-
     /// <inheritdoc />
     public string Categories()
         => BuildUrl("categories");
@@ -66,15 +56,15 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
 
     /// <inheritdoc />
     public string Bricks()
-        => BuildUrl("bricks", ("show_current", false), ("show_editable", true));
+        => BuildUrl("bricks", BuildBricksQueryString());
 
     /// <inheritdoc />
     public string Bricks(int categoryId)
-        => BuildUrl("bricks", ("category_id", categoryId), ("show_current", false), ("show_editable", true));
+        => BuildUrl("bricks", BuildBricksQueryString(("category_id", categoryId)));
 
     /// <inheritdoc />
     public string Bricks(string category)
-        => BuildUrl("bricks", ("category_name", category), ("show_current", false), ("show_editable", true));
+        => BuildUrl("bricks", BuildBricksQueryString(("category_name", category)));
 
     /// <inheritdoc />
     public string BricksContentEditor(int brickId, int brickContentId)
@@ -86,23 +76,11 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
 
     private string BuildUrl(string url, params (string, object?)[] query)
     {
-        var sb = new StringBuilder(url);
-        sb.Append("?user_name=").Append(UrlEncoder.Default.Encode(_userNameProvider.UserName));
-        foreach (var (key, value) in query)
-        {
-            var strValue = QueryToString(value);
-            if (strValue == null)
-            {
-                continue;
-            }
+        var queryParams = query
+            .Where(q => QueryToString(q) != null)
+            .ToDictionary(c => c.Item1, c => QueryToString(c.Item2));
 
-            sb.Append('&');
-            sb.Append(UrlEncoder.Default.Encode(key));
-            sb.Append('=');
-            sb.Append(UrlEncoder.Default.Encode(strValue));
-        }
-
-        return sb.ToString();
+        return QueryHelpers.AddQueryString(url, queryParams);
     }
 
     private string? QueryToString(object? query)
@@ -112,5 +90,24 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
             bool b => b ? "true" : "false", // use lower case since dm doc doesn't accept upper case (default to string of dotnet boolean).
             _ => query?.ToString(),
         };
+    }
+
+    private (string, object?)[] BuildBricksQueryString((string Field, object? Value)? param = null)
+    {
+        var paramList = new List<(string Field, object? Value)>
+        {
+            ("show_current", false),
+            ("show_editable", true),
+            ("skip_preview_data", true),
+            ("skip_containers", true),
+            ("skip_dirty_check", true),
+        };
+
+        if (param.HasValue)
+        {
+            paramList.Add(param.Value);
+        }
+
+        return paramList.ToArray();
     }
 }

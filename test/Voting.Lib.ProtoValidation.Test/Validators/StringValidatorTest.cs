@@ -330,7 +330,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     }
 
     [Theory]
-    [InlineData("Hello\nWorld.\nHow is the 120 _!?+-@,.:'()/ weather today")]
+    [InlineData("Hello\nWorld.\nHow is the 120 _!?+-@,.:'()/— weather today")]
     [InlineData("Hello\rWorld.")]
     public void ValidComplexMlTextShouldWork(string input)
     {
@@ -358,7 +358,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     }
 
     [Theory]
-    [InlineData("Hello _!?+-@,.:'()/ 120 World.")]
+    [InlineData("Hello _!?+-@,.:'()/— 120 World.")]
     public void ValidComplexSlTextShouldWork(string input)
     {
         ShouldHaveNoFailures(BuildRules(new() { ComplexSlText = true }), input);

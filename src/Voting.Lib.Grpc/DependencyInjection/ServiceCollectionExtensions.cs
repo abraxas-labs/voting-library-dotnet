@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Voting.Lib.Grpc.Configuration;
 using Voting.Lib.Grpc.Interceptors;
 
 namespace Voting.Lib.Grpc.DependencyInjection;
@@ -19,11 +20,16 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection.</param>
     /// <param name="environment">The web host environment.</param>
+    /// <param name="config">An optional config to register.</param>
     /// <returns>The IServiceCollectionReference.</returns>
-    public static IServiceCollection AddGrpcRequestLoggerInterceptor(this IServiceCollection services, IWebHostEnvironment environment)
+    public static IServiceCollection AddGrpcRequestLoggerInterceptor(
+        this IServiceCollection services,
+        IWebHostEnvironment environment,
+        RequestLoggerInterceptorConfig? config = null)
     {
         if (environment.IsDevelopment())
         {
+            services.AddSingleton(config ?? new RequestLoggerInterceptorConfig());
             services.AddGrpc(o => o.Interceptors.Add<RequestLoggerInterceptor>());
         }
 

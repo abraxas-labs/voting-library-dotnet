@@ -31,8 +31,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListVotesCountingCircleProtocol = new TemplateModel
     {
         Key = "proportional_election_lists_counting_circle_protocol",
-        Filename = "Wahlzettelreport - {0}",
-        Description = "Wahlzettelreport",
+        Filename = "Proporz_Formular1_Wahlzettelrapport_{0}_{1}",
+        Description = "1 - Wahlzettelrapport",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -45,8 +45,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListsCountingCircleProtocol = new TemplateModel
     {
         Key = "proportional_election_list_votes_counting_circle_protocol",
-        Filename = "Gemeindeprotokoll - {0}",
-        Description = "Gemeindeprotokoll",
+        Filename = "Proporz_Formular4_Gemeindeprotokoll_{0}_{1}",
+        Description = "4 - Gemeindeprotokoll",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -59,8 +59,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateVotesCountingCircleProtocol = new TemplateModel
     {
         Key = "proportional_election_list_candidate_votes_counting_circle_protocol",
-        Filename = "Kandidatenstimmen - {0}",
-        Description = "Kandidatenstimmen (Aushang)",
+        Filename = "Proporz_Formular2a_KandStimmen_{0}_{1}",
+        Description = "2a - Kandidierendenstimmen",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -73,8 +73,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateEmptyVotesCountingCircleProtocol = new TemplateModel
     {
         Key = "proportional_election_list_candidate_empty_votes_counting_circle_protocol",
-        Filename = "Kandidaten- Zusatz- und Parteistimmen - {0}",
-        Description = "Kandidaten-, Zusatz- und Parteistimmen",
+        Filename = "Proporz_Formular2_KandParteiStimmen_{0}_{1}",
+        Description = "2 - Kandidierenden- und Parteistimmen",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -87,8 +87,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateVoteSourcesCountingCircleProtocol = new TemplateModel
     {
         Key = "proportional_election_list_candidate_vote_sources_counting_circle_protocol",
-        Filename = "Stimmenherkunft inkl. Kumulierungen und Panaschierungen - {0}",
-        Description = "Stimmenherkunft inkl. Kumulierungen und Panaschierungen",
+        Filename = "Proporz_Formular3b_Stimmenherkunft_KumPan_{0}_{1}",
+        Description = "3b - Stimmenherkunft inkl. KumPan",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -101,8 +101,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListVotesEndResults = new TemplateModel
     {
         Key = "proportional_election_list_votes_end_results",
-        Filename = "Listenergbenisse - {0}",
-        Description = "Listenergbenisse",
+        Filename = "Proporz_FormularC_Listenergebnisse_{0}_{1}",
+        Description = "C - Listenergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -115,8 +115,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateVotesEndResults = new TemplateModel
     {
         Key = "proportional_election_list_candidate_votes_end_results",
-        Filename = "Kandidatenstimmen - {0}",
-        Description = "Kandidatenstimmen",
+        Filename = "Proporz_FormularB_KandStimmen_{0}_{1}",
+        Description = "B - Kandidierendenstimmen",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -129,8 +129,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateEndResults = new TemplateModel
     {
         Key = "proportional_election_list_candidate_end_results",
-        Filename = "Kandidatenergebnisse - {0}",
-        Description = "Kandidatenergebnisse",
+        Filename = "Proporz_Formular5b_KandParteiErgebnisse_{0}_{1}",
+        Description = "5b - Kandidierenden- und Parteiergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -143,8 +143,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel ListCandidateVoteSourcesEndResults = new TemplateModel
     {
         Key = "proportional_election_list_candidate_vote_sources_end_results",
-        Filename = "Stimmenherkunft inkl. Kumulierungen und Panaschierungen - {0}",
-        Description = "Stimmenherkunft inkl. Kumulierungen und Panaschierungen",
+        Filename = "Proporz_FormularD_Stimmenherkunft_KumPan_{0}_{1}",
+        Description = "D - Stimmenherkunft inkl. KumPan",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -157,8 +157,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel EndResultCalculation = new TemplateModel
     {
         Key = "proportional_election_end_result_calculation",
-        Filename = "Verteilung der Sitze - {0}",
-        Description = "Verteilung der Sitze",
+        Filename = "Proporz_Formular5a_Sitzverteilung_{0}_{1}",
+        Description = "5a - Sitzverteilung",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -171,8 +171,8 @@ public static class AusmittlungPdfProportionalElectionTemplates
     public static readonly TemplateModel EndResultListUnions = new TemplateModel
     {
         Key = "proportional_election_end_result_list_unions",
-        Filename = "Wahlprotokoll - {0}",
-        Description = "Wahlprotokoll",
+        Filename = "Proporz_Formular5_Wahlprotokoll_{0}_{1}",
+        Description = "5 - Wahlprotokoll",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,

@@ -17,8 +17,8 @@ public static class AusmittlungPdfVoteTemplates
     public static readonly TemplateModel EndResultProtocol = new TemplateModel
     {
         Key = "vote_overall_result",
-        Filename = "Gesamtergebnis aller Sachgeschäfte {0}",
-        Description = "Gesamtergebnis aller Sachgeschäfte",
+        Filename = "Abst_{0}_Gesamtergebnisse_{1}",
+        Description = "Gesamtergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
         ResultType = ResultType.MultiplePoliticalBusinessesResult,
@@ -32,8 +32,8 @@ public static class AusmittlungPdfVoteTemplates
     public static readonly TemplateModel TemporaryEndResultDomainOfInfluencesProtocol = new TemplateModel
     {
         Key = "vote_domain_of_influence_overall_temporary_end_result",
-        Filename = "Prov. Ergebnisse aller Auszählungskreise - {0}",
-        Description = "Prov. Ergebnisse aller Auszählungskreise",
+        Filename = "Abst_{0}_provisorischeErgebnisse_{1}_{2}",
+        Description = "Provisorische Ergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -46,8 +46,8 @@ public static class AusmittlungPdfVoteTemplates
     public static readonly TemplateModel EndResultDomainOfInfluencesProtocol = new TemplateModel
     {
         Key = "vote_domain_of_influence_overall_end_result",
-        Filename = "Definitive Ergebnisse aller Auszählungskreise - {0}",
-        Description = "Definitive Ergebnisse aller Auszählungskreise",
+        Filename = "Abst_{0}_Detailergebnisse_{1}_{2}",
+        Description = "Detailergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -60,7 +60,7 @@ public static class AusmittlungPdfVoteTemplates
     public static readonly TemplateModel ResultProtocol = new TemplateModel
     {
         Key = "vote_result",
-        Filename = "Abstimmungsprotokoll {0}",
+        Filename = "Abstimmungsprotokoll_{0}_{1}",
         Description = "Protokoll",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,

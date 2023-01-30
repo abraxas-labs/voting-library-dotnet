@@ -43,6 +43,8 @@ internal class RoleTokenHandler : IRoleTokenHandler
     /// <inheritdoc cref="IRoleTokenHandler"/>
     public async Task<IReadOnlyCollection<string>> GetRoles(string subjectToken, string tenantId, IEnumerable<string>? apps = null)
     {
+        _logger.LogDebug(SecurityLogging.SecurityEventId, "Get roles for tenant {TenantId}.", tenantId);
+
         if ((Options.ConfigurationManager == null && Options.Configuration == null) || Options.Audience == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "Failed getting roles because of missing Configuration and ConfigurationManager or Audience on the JwtBearerOptions");
@@ -63,6 +65,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
             _logger.LogInformation(SecurityLogging.SecurityEventId, "Limited apps to {Apps} because of apps header", string.Join(',', appShortcuts));
         }
 
+        _logger.LogDebug(SecurityLogging.SecurityEventId, "Get role token for apps {Apps}", string.Join(',', appShortcuts));
         var request = new RoleTokenRequestModel(subjectToken, appShortcuts);
         var config = await GetConfiguration().ConfigureAwait(false);
         using var response = await _httpClient.PostAsJsonAsync(config.TokenEndpoint, request, SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
@@ -93,6 +96,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
             return Array.Empty<string>();
         }
 
+        _logger.LogDebug(SecurityLogging.SecurityEventId, "Roles {Roles} in role token found.", roles);
         var permissions = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string[]>>>(
                 roles,
                 SecureConnectDefaults.JsonOptions);
@@ -122,7 +126,9 @@ internal class RoleTokenHandler : IRoleTokenHandler
             var validator = Options.SecurityTokenValidators.FirstOrDefault(v => v.CanReadToken(token));
             var roleTokenPrincipal = validator?.ValidateToken(token, validationParameters, out var validatedToken)
                 ?? throw new SecurityTokenValidationException("Could not find a token validator which can read the provided role token");
-            var subject = new JwtSecurityTokenHandler().ReadJwtToken(subjectToken).Subject;
+
+            var subject = ExtractSubject(subjectToken);
+
             if (subject?.Equals((validatedToken as JwtSecurityToken)?.Subject) != true)
             {
                 throw new SecurityTokenValidationException("Subject of role token is not valid");
@@ -168,5 +174,37 @@ internal class RoleTokenHandler : IRoleTokenHandler
         return addAppPrefix
             ? roles.Select(r => app + Options.RoleAppsSeparator + r)
             : roles;
+    }
+
+    private string ExtractSubject(string subjectToken)
+    {
+        var jwtSubjectToken = new JwtSecurityTokenHandler().ReadJwtToken(subjectToken);
+        var subjectTokenType = jwtSubjectToken.Claims.FirstOrDefault(e => e.Type.Equals(SecureConnectTokenClaimTypes.TokenType))?.Value;
+        if (string.IsNullOrWhiteSpace(subjectTokenType))
+        {
+            throw new SecurityTokenValidationException("Subject token has no token type defined");
+        }
+
+        string? subject = null;
+        if (subjectTokenType == SecureConnectTokenTypes.AccessToken)
+        {
+            subject = jwtSubjectToken.Subject;
+        }
+        else if (subjectTokenType == SecureConnectTokenTypes.OnBehalfOfToken)
+        {
+            var actor = jwtSubjectToken.Claims.FirstOrDefault(t => t.Type == SecureConnectTokenClaimTypes.Actor)?.Value;
+            subject = actor == null ? null : JsonDocument.Parse(actor).RootElement.GetProperty("sub").GetString();
+        }
+        else
+        {
+            throw new SecurityTokenValidationException("Unknown subject token type");
+        }
+
+        if (string.IsNullOrWhiteSpace(subject))
+        {
+            throw new SecurityTokenValidationException("Subject claim for subject token is not set");
+        }
+
+        return subject;
     }
 }

@@ -239,6 +239,80 @@ public class RoleTokenHandlerTest : IDisposable
         roles.Should().BeEmpty();
     }
 
+    [Fact]
+    public async Task GetRolesWithMissingTokenTypeShouldReturnEmpty()
+    {
+        var subjectToken = CreateSubjectToken(t => t.Subject = new ClaimsIdentity(new[] { new Claim("sub", "99999") }));
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRolesWithUndefinedTokenTypeShouldReturnEmpty()
+    {
+        _options.RoleTokenApps = new[] { "App1", "App2" };
+
+        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = string.Empty);
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRolesWithUnknownTokenTypeShouldReturnEmpty()
+    {
+        _options.RoleTokenApps = new[] { "App1", "App2" };
+
+        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = "non_existing_type");
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRolesLimitedToSingleAppShouldWorkWhenUsingOnBehalfOfToken()
+    {
+        _options.LimitRolesToAppHeaderApps = true;
+        _options.RoleTokenApps = new[] { "App1", "App2" };
+
+        var subjectToken = CreateSubjectToken(t =>
+        {
+            t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken;
+            t.Subject = new ClaimsIdentity(new[] { new Claim(SecureConnectTokenClaimTypes.Actor, @"{""sub"": ""12345""}") });
+        });
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEquivalentTo("App1::Role1", "App1::Role2");
+        _httpHandlerMock.VerifyNoOutstandingExpectation();
+    }
+
+    [Fact]
+    public async Task GetRolesWithMissingActorShouldReturnEmptyWhenUsingOnBehalfOfToken()
+    {
+        _options.RoleTokenApps = new[] { "App1", "App2" };
+
+        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken);
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRolesWithInvalidSubjectShouldReturnEmptyWhenUsingOnBehalfOfToken()
+    {
+        _options.RoleTokenApps = new[] { "App1", "App2" };
+
+        var subjectToken = CreateSubjectToken(t =>
+        {
+            t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken;
+            t.Subject = new ClaimsIdentity(new[] { new Claim(SecureConnectTokenClaimTypes.Actor, @"{""sub"": ""99999""}") });
+        });
+        ExpectTokenFetch();
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        roles.Should().BeEmpty();
+    }
+
     public void Dispose()
     {
         _httpHandlerMock.Dispose();
@@ -314,6 +388,10 @@ public class RoleTokenHandlerTest : IDisposable
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim("sub", "12345") }),
+            Claims = new Dictionary<string, object>
+            {
+                { SecureConnectTokenClaimTypes.TokenType, SecureConnectTokenTypes.AccessToken },
+            },
         };
         modifier?.Invoke(tokenDescriptor);
         return jwtHandler.CreateJwtSecurityToken(tokenDescriptor).RawData;

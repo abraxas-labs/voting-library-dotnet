@@ -12,6 +12,9 @@ namespace Voting.Lib.Cryptography.Testing.Mocks;
 /// </summary>
 public class AsymmetricAlgorithmAdapterMock : IAsymmetricAlgorithmAdapter<EcdsaPublicKey, EcdsaPrivateKey>
 {
+    private const int KeyIdMockStartIndex = 47;
+    private const int KeyIdMockLength = 24;
+
     private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
     private readonly string[] _pkcs8PrivateKeyBase64Store =
     {
@@ -31,8 +34,9 @@ public class AsymmetricAlgorithmAdapterMock : IAsymmetricAlgorithmAdapter<EcdsaP
     public EcdsaPrivateKey CreateRandomPrivateKey()
     {
         var ecdsa = ECDsa.Create();
-        ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(_pkcs8PrivateKeyBase64Store[_currentKeyIndex]), out _);
-        return new EcdsaPrivateKey(ecdsa);
+        var base64PrivateKey = _pkcs8PrivateKeyBase64Store[_currentKeyIndex];
+        ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(base64PrivateKey), out _);
+        return new EcdsaPrivateKey(ecdsa, base64PrivateKey.Substring(KeyIdMockStartIndex, KeyIdMockLength));
     }
 
     /// <inheritdoc />
