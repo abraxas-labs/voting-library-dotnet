@@ -32,7 +32,7 @@ public class SwaggerConfig
     public string SwaggerGeneratorRootTemplate { get; set; } = "swagger/{documentName}/swagger.json";
 
     /// <summary>
-    /// Gets or sets a list of xml documentation files which are included as part of the
+    /// Gets or sets a list of XML documentation files which are included as part of the
     /// generated swagger documentation.
     /// </summary>
     public IEnumerable<string>? XmlDocumentationFiles { get; set; }

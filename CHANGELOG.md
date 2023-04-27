@@ -1,4 +1,4 @@
-# ✨ Changelog (`v7.26.10`)
+# ✨ Changelog (`v10.12.5`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,159 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v7.26.10
-Previous version ---- v7.25.0
+This version -------- v10.12.5
+Previous version ---- v7.26.10
 Initial version ----- v7.7.37
-Total commits ------- 11
+Total commits ------- 30
 ```
+
+## [v10.12.5] - 2023-04-03
+
+### 🆕 Added
+
+- add service name to service user mock data
+
+## [v10.12.4] - 2023-03-30
+
+### 🔄 Changed
+
+- fixed encryption padding of aes mock
+
+## [v10.12.3] - 2023-03-24
+
+### 🔄 Changed
+
+- replace eCH ballot question ID separator with underscore
+
+## [v10.12.2] - 2023-03-22
+
+### 🔄 Changed
+
+- improve error message when DmDoc returns an unsuccessful response
+
+## [v10.12.1] - 2023-03-14
+
+### 🔄 Changed
+
+- fix AesCbcEncryptionMock
+
+## [v10.12.0] - 2023-03-13
+
+### 🆕 Added
+
+- Added ECDSA signature
+- Added AES-MAC encryption
+
+## [v10.11.1] - 2023-03-10
+
+### 🔄 Changed
+
+- truncate eCH delivery header values when they are too long
+
+## [v10.11.0] - 2023-03-08
+
+### 🔄 Changed
+
+- eCH ballot question ID generator
+
+## [v10.10.0] - 2023-02-24
+
+### 🆕 Added
+
+- Added bulk create signature
+- Added more supported types in ByteConverter
+
+## [v10.9.0] - 2023-02-23
+
+### 🔄 Changed
+
+- move method to match adjacent overload
+- acquire async lock with timeout
+- rest upload helpers
+
+## [v10.8.0] - 2023-02-23
+
+### 🔄 Changed
+
+- input-validation-allow-more-character
+
+## [v10.7.0] - 2023-02-22
+
+### 🆕 Added
+
+- add date only today value
+
+## [v10.6.0] - 2023-02-20
+
+### 🔄 Changed
+
+- wm wahlergebnisse report
+
+## [v10.5.1] - 2023-02-17
+
+### 🔄 Changed
+
+- wait until DmDoc draft is ready
+
+## [v10.5.0] - 2023-02-16
+
+### 🔄 Changed
+
+- allow saving of an aggregate without idempotency guarantee
+
+## [v10.4.0] - 2023-02-15
+
+### 🔄 Changed
+
+- ech 0045
+
+## [v10.3.0] - 2023-02-15
+
+### 🔄 Changed
+
+- add transaction util
+
+## [v10.2.0] - 2023-02-15
+
+### 🔄 Changed
+
+- string truncate extension
+
+## [v10.1.0] - 2023-02-15
+
+### 🔄 Changed
+
+- add echserializer to perform streamed serialization of enumerable items
+
+## [v10.0.0] - 2023-02-14
+
+BREAKING CHANGE: added bulk root parameter
+
+## [v9.0.0] - 2023-02-09
+
+BREAKING CHANGE: export template models domain of influence types is now a readonly set
+
+## [v8.1.0] - 2023-02-08
+
+### 🆕 Added
+
+- add overload for single file result creation to be independent of IFile
+
+## [v8.0.1] - 2023-02-07
+
+### 🔄 Changed
+
+- Add assertion attribute so sonarqube recognizes the assertions
+
+## [v8.0.0] - 2023-02-07
+
+BREAKING CHANGE: changed DmDoc API because of better streaming support
+
+## [v7.27.0] - 2023-01-30
+
+### 🔄 Changed
+
+- new export templates api
 
 ## [v7.26.10] - 2023-01-25
 
@@ -120,10 +268,62 @@ Total commits ------- 11
 
 ## [v7.21.0] - 2022-11-16
 
+### 🆕 Added
+
+- add log messages for debugging
+- add configure await to signal intention for continuation
+
 ### 🔄 Changed
 
-- add TryGet method to export template repository
-- move XML validation into Voting.Lib.Common
+- adapt correlation id header to changed name for logging
+
+### 🆕 Added
+
+- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+- powershell client generator script
+
+### 🔄 Changed
+
+- exclude parameters for successful generation
+
+### 🆕 Added
+
+- CORS configuration support
+
+these are for example eventstore internal events which are not interesting to voting at all
+
+use the overload without any position, since the position is unsigned and always exclusive
+
+BREAKING CHANGE: activity protocol by event store
+
+BREAKING CHANGE: persistent subscription apis removed
+
+BREAKING CHANGE: event signature
+
+BREAKING CHANGE: removed user store dependency and used generated swagger clients
+
+Replaces the userstore dependency with swagger generated clients
+
+Eventstore should use the default http client builder to ensure certificate pinning
+This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
+
+BREAKING CHANGE: VOTING-638 net6.0 update
+
+note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
+
+BREAKING CHANGE: dotnet 5
+
+also improve waiting for event store connection
+
+also fixed aggregate repo
 
 ## [v7.20.5] - 2022-11-11
 
@@ -265,49 +465,9 @@ Total commits ------- 11
 
 ## [v7.12.0] - 2022-08-08
 
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-- powershell client generator script
-
 ### 🔄 Changed
 
-- exclude parameters for successful generation
-
-### 🆕 Added
-
-- CORS configuration support
-
-these are for example eventstore internal events which are not interesting to voting at all
-
-use the overload without any position, since the position is unsigned and always exclusive
-
-BREAKING CHANGE: activity protocol by event store
-
-BREAKING CHANGE: persistent subscription apis removed
-
-BREAKING CHANGE: event signature
-
-BREAKING CHANGE: removed user store dependency and used generated swagger clients
-
-Replaces the userstore dependency with swagger generated clients
-
-Eventstore should use the default http client builder to ensure certificate pinning
-This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
-
-BREAKING CHANGE: VOTING-638 net6.0 update
-
-note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
-
-BREAKING CHANGE: dotnet 5
-
-also improve waiting for event store connection
-
-also fixed aggregate repo
+- image processing
 
 ## [v7.11.3] - 2022-07-27
 

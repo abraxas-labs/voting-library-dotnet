@@ -123,6 +123,7 @@ public static class SecureConnectTestDefaults
         Firstname = null,
         Lastname = null,
         Username = "service-user",
+        Servicename = "service-name",
     };
 
     /// <summary>

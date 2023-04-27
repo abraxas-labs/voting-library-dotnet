@@ -14,4 +14,9 @@ public interface IClock
     /// Gets the current date/time in the utc time zone.
     /// </summary>
     DateTime UtcNow { get; }
+
+    /// <summary>
+    /// Gets the current date only value.
+    /// </summary>
+    DateOnly Today { get; }
 }

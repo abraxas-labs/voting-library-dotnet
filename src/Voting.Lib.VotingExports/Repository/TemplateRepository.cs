@@ -32,16 +32,12 @@ public static class TemplateRepository
             .Concat(BasisXmlMajorityElectionTemplates.All)
             .Concat(BasisXmlProportionalElectionTemplates.All)
             .Concat(BasisXmlVoteTemplates.All)
+            .OrderBy(x => x.Key)
             .ToList();
 
-    private static readonly IReadOnlyDictionary<VotingApp, IReadOnlyCollection<TemplateModel>> ByGenerator = Templates
-        .GroupBy(x => x.GeneratedBy)
-        .ToDictionary(x => x.Key, x => (IReadOnlyCollection<TemplateModel>)x.OrderBy(y => y.Key).ToList());
+    private static readonly IReadOnlyDictionary<VotingApp, IReadOnlyCollection<TemplateModel>> ByGenerator = GetGrouped(x => x.GeneratedBy);
 
-    private static readonly IReadOnlyDictionary<(VotingApp, EntityType), IReadOnlyCollection<TemplateModel>> ByGeneratorAndEntityType =
-        Templates
-            .GroupBy(x => (x.GeneratedBy, x.EntityType))
-            .ToDictionary(x => x.Key, x => (IReadOnlyCollection<TemplateModel>)x.OrderBy(y => y.Key).ToList());
+    private static readonly IReadOnlyDictionary<(VotingApp, EntityType), IReadOnlyCollection<TemplateModel>> ByGeneratorAndEntityType = GetGrouped(x => (x.GeneratedBy, x.EntityType));
 
     private static readonly IReadOnlyDictionary<string, TemplateModel> ByKey =
         Templates.ToDictionary(x => x.Key);
@@ -113,114 +109,11 @@ public static class TemplateRepository
             : Array.Empty<TemplateModel>();
     }
 
-    /// <summary>
-    /// Resolves counting circle templates.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <param name="entityType">The entity type.</param>
-    /// <param name="doiType">The type of the domain of influence.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetCountingCircleResultTemplates(
-        VotingApp generatedBy,
-        EntityType entityType,
-        DomainOfInfluenceType doiType)
+    private static IReadOnlyDictionary<TKey, IReadOnlyCollection<TemplateModel>> GetGrouped<TKey>(Func<TemplateModel, TKey> keyExtractor)
+        where TKey : notnull
     {
-        return GetTemplates(
-            generatedBy,
-            entityType,
-            t => t.ResultType == ResultType.CountingCircleResult && (!t.DomainOfInfluenceType.HasValue || t.DomainOfInfluenceType == doiType));
-    }
-
-    /// <summary>
-    /// Resolves templates for political businesses.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <param name="entityType">The entity type.</param>
-    /// <param name="doiType">The type of the domain of influence.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetPoliticalBusinessResultTemplates(
-        VotingApp generatedBy,
-        EntityType entityType,
-        DomainOfInfluenceType doiType)
-    {
-        return GetTemplates(
-            generatedBy,
-            entityType,
-            t => t.ResultType == ResultType.PoliticalBusinessResult
-                 && t.EntityType == entityType
-                 && (!t.DomainOfInfluenceType.HasValue || t.DomainOfInfluenceType == doiType));
-    }
-
-    /// <summary>
-    /// Resolves templates for multiple political businesses.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetMultiplePoliticalBusinessesResultTemplates(VotingApp generatedBy)
-    {
-        return GetTemplates(
-            generatedBy,
-            null,
-            t => t.ResultType == ResultType.MultiplePoliticalBusinessesResult);
-    }
-
-    /// <summary>
-    /// Resolves templates for multiple political businesses counting circle results.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetMultiplePoliticalBusinessesCountingCircleResultTemplates(VotingApp generatedBy)
-    {
-        return GetTemplates(
-            generatedBy,
-            null,
-            t => t.ResultType == ResultType.MultiplePoliticalBusinessesCountingCircleResult);
-    }
-
-    /// <summary>
-    /// Resolves templates for political business unions.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <param name="entityType">The entity type.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetPoliticalBusinessUnionResultTemplates(
-        VotingApp generatedBy,
-        EntityType entityType)
-    {
-        return GetTemplates(
-            generatedBy,
-            entityType,
-            t => t.ResultType == ResultType.PoliticalBusinessUnionResult);
-    }
-
-    /// <summary>
-    /// Resolves templates for contests.
-    /// </summary>
-    /// <param name="generatedBy">Voting app, which generates this export.</param>
-    /// <returns>The resolved templates.</returns>
-    public static IReadOnlyCollection<TemplateModel> GetContestTemplates(VotingApp generatedBy)
-    {
-        return GetByGeneratorAndEntityType(
-            generatedBy,
-            EntityType.Contest);
-    }
-
-    private static IReadOnlyCollection<TemplateModel> GetTemplates(
-        VotingApp generatedBy,
-        EntityType? entityType,
-        Func<TemplateModel, bool>? predicate)
-    {
-        var templates = entityType.HasValue
-            ? GetByGeneratorAndEntityType(generatedBy, entityType.Value)
-            : GetByGenerator(generatedBy);
-
-        if (predicate == null)
-        {
-            return templates;
-        }
-
-        return templates
-            .Where(predicate)
-            .ToList();
+        return Templates
+            .GroupBy(keyExtractor)
+            .ToDictionary(x => x.Key, x => (IReadOnlyCollection<TemplateModel>)x.OrderBy(y => y.Key).ToList());
     }
 }

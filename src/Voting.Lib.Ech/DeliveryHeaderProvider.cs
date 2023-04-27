@@ -15,6 +15,9 @@ public class DeliveryHeaderProvider
 {
     private const string ActionNew = "1"; // new
     private const string DateFormat = "yyyy-MM-ddTHH:mm:ss.fff";
+    private const int MaxManufacturerLength = 50;
+    private const int MaxProductLength = 30;
+    private const int MaxProductVersionLength = 10;
 
     private readonly EchConfig _config;
     private readonly IClock _clock;
@@ -34,9 +37,9 @@ public class DeliveryHeaderProvider
         _messageIdProvider = messageIdProvider;
         _sendingApplication = new SendingApplication
         {
-            Manufacturer = _config.Manufacturer,
-            Product = _config.Product,
-            ProductVersion = _config.ProductVersion,
+            Manufacturer = Truncate(_config.Manufacturer, MaxManufacturerLength),
+            Product = Truncate(_config.Product, MaxProductLength),
+            ProductVersion = Truncate(_config.ProductVersion, MaxProductVersionLength),
         };
     }
 
@@ -57,4 +60,7 @@ public class DeliveryHeaderProvider
             MessageType = _config.MessageType,
         };
     }
+
+    private static string Truncate(string s, int maxLength)
+        => s.Length > maxLength ? s[..maxLength] : s;
 }

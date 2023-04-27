@@ -1,4 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  
+  <ItemGroup>
+    <PackageReference Include="eCH-0045-4-0" Version="2.0.14" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.Ech\Voting.Lib.Ech.csproj" />

@@ -19,6 +19,11 @@ public class MockedClock : ISystemClock, IClock
     public static DateTime UtcNowDate { get; } = new(2020, 1, 10, 13, 12, 10, 200, DateTimeKind.Utc);
 
     /// <summary>
+    /// Gets a fixed date only value of 2020-01-10.
+    /// </summary>
+    public static DateOnly NowDateOnly { get; } = new(2020, 1, 10);
+
+    /// <summary>
     /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC.
     /// </summary>
     public static DateTimeOffset UtcNowOffset { get; } = new(UtcNowDate);
@@ -37,6 +42,11 @@ public class MockedClock : ISystemClock, IClock
     /// Gets or sets a fixed timestamp of 2020-01-10 13:12:10.200 UTC or an overwritten value.
     /// </summary>
     public DateTime UtcNow { get; set; } = UtcNowDate;
+
+    /// <summary>
+    /// Gets or sets a fixed date only value of 2020-01-10 or an overwritten value.
+    /// </summary>
+    public DateOnly Today { get; set; } = NowDateOnly;
 
     /// <summary>
     /// Returns a fixed timestamp of 2020-01-10 13:12:10.200 UTC modified by the provided delta.

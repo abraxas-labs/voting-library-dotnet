@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,6 +38,7 @@ public static class SnapperExtensions
     /// <param name="snapshot">Items to snapshot-compare.</param>
     /// <param name="ignoredProps">Properties to be ignored.</param>
     /// <typeparam name="T">Type of the elements.</typeparam>
+    [AssertionMethod]
     public static void MatchSnapshot<T>(
         this IEnumerable<T> snapshot,
         params Expression<Func<T, dynamic>>[] ignoredProps)
@@ -49,6 +51,7 @@ public static class SnapperExtensions
     /// <param name="snapshot">Items to snapshot-compare.</param>
     /// <param name="ignoredProps">Properties to be ignored.</param>
     /// <typeparam name="T">Type of the elements.</typeparam>
+    [AssertionMethod]
     public static void MatchSnapshot<T>(
         this T snapshot,
         params Expression<Func<T, dynamic>>[] ignoredProps)
@@ -61,6 +64,7 @@ public static class SnapperExtensions
     /// <param name="snapshotName">Name of the snapshot.</param>
     /// <param name="ignoredProps">Properties to be ignored.</param>
     /// <typeparam name="T">Type of the elements.</typeparam>
+    [AssertionMethod]
     public static void MatchSnapshot<T>(
         this IEnumerable<T> snapshot,
         string snapshotName,
@@ -94,6 +98,7 @@ public static class SnapperExtensions
     /// <param name="snapshotName">Name of the snapshot.</param>
     /// <param name="ignoredProps">Properties to be ignored.</param>
     /// <typeparam name="T">Type of the elements.</typeparam>
+    [AssertionMethod]
     public static void MatchSnapshot<T>(
         this T snapshot,
         string snapshotName,
@@ -124,12 +129,55 @@ public static class SnapperExtensions
     }
 
     /// <summary>
+    /// Compares XML content (as a string, not an object) against a snapshot or updates the snapshot.
+    /// Formats the XML before comparing.
+    /// Generates the snapshot path based on the caller information.
+    /// </summary>
+    /// <param name="content">The content to compare with the snapshot.</param>
+    /// <param name="updateSnapshot">Whether to update the snapshot.</param>
+    /// <param name="childTestCaseName">The child name of the test case (use when multiple snapshots are taken in one test).</param>
+    /// <param name="memberName">The name of the source member / test method.</param>
+    /// <param name="filePath">The name of the source file path.</param>
+    [AssertionMethod]
+    public static void MatchXmlSnapshot(
+        this string content,
+        bool? updateSnapshot = null,
+        string childTestCaseName = "",
+        [CallerMemberName] string memberName = "",
+        [CallerFilePath] string filePath = "")
+    {
+        content = XmlUtil.FormatTestXml(content);
+        content.MatchCallerSnapshot("xml", updateSnapshot, childTestCaseName, memberName, filePath);
+    }
+
+    /// <summary>
+    /// Compares "raw content" (as a string, not an object) against a snapshot or updates the snapshot.
+    /// Generates the snapshot path based on the caller information.
+    /// </summary>
+    /// <param name="content">The content to compare with the snapshot.</param>
+    /// <param name="snapshotExt">The file extension of the snapshot.</param>
+    /// <param name="updateSnapshot">Whether to update the snapshot.</param>
+    /// <param name="childTestCaseName">The child name of the test case (use when multiple snapshots are taken in one test).</param>
+    /// <param name="memberName">The name of the source member / test method.</param>
+    /// <param name="filePath">The name of the source file path.</param>
+    [AssertionMethod]
+    public static void MatchRawCallerSnapshot(
+        this string content,
+        string snapshotExt,
+        bool? updateSnapshot = null,
+        string childTestCaseName = "",
+        [CallerMemberName] string memberName = "",
+        [CallerFilePath] string filePath = "")
+        => content.MatchCallerSnapshot(snapshotExt, updateSnapshot, childTestCaseName, memberName, filePath);
+
+    /// <summary>
     /// Compares "raw content" (as a string, not an object) against a snapshot or updates the snapshot.
     /// Since this method does not use Snapper, the path to the snapshot and whether to update the snapshot must be passed manually.
     /// </summary>
     /// <param name="content">The content to compare with the snapshot.</param>
     /// <param name="snapshotPath">Full path to the snapshot file.</param>
     /// <param name="updateSnapshot">Whether to update the snapshot.</param>
+    [AssertionMethod]
     public static void MatchRawSnapshot(this string content, string snapshotPath, bool updateSnapshot)
     {
         if (updateSnapshot)
@@ -146,6 +194,48 @@ public static class SnapperExtensions
                 .Should()
                 .Be(content);
         }
+    }
+
+    /// <summary>
+    /// Builds a snapshot file path.
+    /// </summary>
+    /// <param name="childTestCaseName">The name of the child test case.</param>
+    /// <param name="memberName">The test method name.</param>
+    /// <param name="sourceFilePath">The source file path.</param>
+    /// <param name="snapshotExt">The extension of the snapshot file.</param>
+    /// <returns>The path to the snapshot file.</returns>
+    public static string GetSnapshotFilePath(string childTestCaseName, string memberName, string sourceFilePath, string snapshotExt)
+    {
+        if (!string.IsNullOrEmpty(childTestCaseName))
+        {
+            childTestCaseName = "_" + childTestCaseName;
+        }
+
+        // Use the same base file name as the test class
+        // we group the snapshot files via <DependentUpon> with the test class.
+        return Path.Join(
+            Path.GetDirectoryName(sourceFilePath),
+            "_snapshots",
+            $"{Path.GetFileNameWithoutExtension(sourceFilePath)}_{memberName}{childTestCaseName}.{snapshotExt}");
+    }
+
+    private static void MatchCallerSnapshot(
+        this string content,
+        string snapshotExt,
+        bool? updateSnapshot,
+        string childTestCaseName,
+        string memberName,
+        string filePath)
+    {
+        var path = GetSnapshotFilePath(childTestCaseName, memberName, filePath, snapshotExt);
+
+#if DEBUG_UPDATE_SNAPSHOTS
+        updateSnapshot ??= true;
+#else
+        updateSnapshot ??= false;
+#endif
+
+        MatchRawSnapshot(content, path, updateSnapshot.Value);
     }
 
     /// <summary>

@@ -37,10 +37,10 @@ public class StringValidator : IProtoFieldValidator
     private static readonly Regex _simpleMlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} .'\-\r\n]+\z", RegexOptions.Compiled);
 
     // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _complexSlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} _!?+\-@,.:'()\/—]+\z", RegexOptions.Compiled);
+    private static readonly Regex _complexSlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} _!?+\-@,.:'()\/—\""«»;&]+\z", RegexOptions.Compiled);
 
     // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _complexMlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd}\r\n _!?+\-@,.:'()\/—]+\z", RegexOptions.Compiled);
+    private static readonly Regex _complexMlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd}\r\n _!?+\-@,.:'()\/—\""«»;&]+\z", RegexOptions.Compiled);
 
     private static readonly Regex _untrimmedRegex = new Regex(@"(^\s+)|(\s+\z)", RegexOptions.Compiled);
 

@@ -12,4 +12,12 @@ internal class CreateDraftRequest
     public string? TemplateName { get; set; }
 
     public List<CreateDraftData>? Data { get; set; }
+
+    public bool? Async { get; set; }
+
+    public string? CallbackUrl { get; set; }
+
+    public CallbackAction[]? CallbackActions { get; set; }
+
+    public FinishEditingData? FinishEditing { get; set; }
 }

@@ -4,6 +4,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Voting.Lib.Common.Json;
+using Voting.Lib.DmDoc.Models;
 
 namespace Voting.Lib.DmDoc.Serialization.Json;
 
@@ -14,9 +15,10 @@ internal static class DmDocJsonOptions
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         PropertyNamingPolicy = JsonSnakeCaseNamingPolicy.Instance,
         Converters =
-            {
-                new JsonStringEnumConverter(),
-                JsonBase64ByteConverter.Instance,
-            },
+        {
+            new JsonEnumSnakeCaseConverter<CallbackAction>(),
+            new JsonStringEnumConverter(),
+            JsonBase64ByteConverter.Instance,
+        },
     };
 }

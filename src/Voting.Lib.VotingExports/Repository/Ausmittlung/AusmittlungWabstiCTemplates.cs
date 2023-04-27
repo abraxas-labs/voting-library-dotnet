@@ -28,6 +28,17 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WMWahlergebnisse = new TemplateModel
+    {
+        Key = "WM_Wahlergebnisse",
+        Filename = "csv_Export_Detailergebnisse_{0}_{1}",
+        Description = "CSV_Detailergebnisse",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.MajorityElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel WMGemeinden = new TemplateModel
     {
         Key = "WM_Gemeinden",
@@ -208,6 +219,7 @@ public static class AusmittlungWabstiCTemplates
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         WMWahl,
+        WMWahlergebnisse,
         WMGemeinden,
         WMStaticGemeinden,
         WMKandidaten,

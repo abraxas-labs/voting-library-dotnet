@@ -1,6 +1,7 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.IO.Pipelines;
@@ -52,5 +53,17 @@ public static class SingleFileResult
     public static FileResult Create(IFile file, CancellationToken ct = default)
     {
         return new FileCallbackResult(file.MimeType, file.Filename, writer => file.Write(writer, ct));
+    }
+
+    /// <summary>
+    /// Creates a file result.
+    /// </summary>
+    /// <param name="mimeType">The content type.</param>
+    /// <param name="fileName">The file name.</param>
+    /// <param name="writerFunction">The writer function.</param>
+    /// <returns>Returns a file result for a single file.</returns>
+    public static FileResult Create(string mimeType, string fileName, Func<PipeWriter, Task> writerFunction)
+    {
+        return new FileCallbackResult(mimeType, fileName, writerFunction);
     }
 }

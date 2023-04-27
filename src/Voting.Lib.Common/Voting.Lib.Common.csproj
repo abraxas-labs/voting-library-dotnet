@@ -7,5 +7,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
   </ItemGroup>
 </Project>

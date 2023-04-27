@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Voting.Lib.DmDoc.Models;
@@ -70,12 +71,14 @@ public interface IDmDocService
     /// </summary>
     /// <param name="templateId">The template ID.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns the created draft.</returns>
     Task<Draft> CreateDraft<T>(
         int templateId,
         T templateData,
+        string? bulkRoot = null,
         CancellationToken ct = default);
 
     /// <summary>
@@ -83,13 +86,23 @@ public interface IDmDocService
     /// </summary>
     /// <param name="templateName">The template name.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns the created draft.</returns>
     Task<Draft> CreateDraft<T>(
         string templateName,
         T templateData,
+        string? bulkRoot = null,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Fetches a draft by its ID.
+    /// </summary>
+    /// <param name="draftId">The draft ID.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>The draft.</returns>
+    Task<Draft> GetDraft(int draftId, CancellationToken ct = default);
 
     /// <summary>
     /// Deletes a draft.
@@ -105,55 +118,104 @@ public interface IDmDocService
     /// <param name="draftId">The draft ID.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> PreviewDraftAsPdf(int draftId, CancellationToken ct = default);
+    Task<Stream> PreviewDraftAsPdf(int draftId, CancellationToken ct = default);
 
     /// <summary>
     /// Preview a template with data as PDF.
     /// </summary>
     /// <param name="templateId">The template ID.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> PreviewAsPdf<T>(int templateId, T templateData, CancellationToken ct = default);
+    Task<Stream> PreviewAsPdf<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default);
 
     /// <summary>
     /// Preview a template with data as PDF.
     /// </summary>
     /// <param name="templateName">The template name.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> PreviewAsPdf<T>(string templateName, T templateData, CancellationToken ct = default);
+    Task<Stream> PreviewAsPdf<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default);
 
     /// <summary>
     /// Finish a draft and return it as PDF.
+    /// This should only be used for small documents, as otherwise the PDF generation may take a long time.
     /// </summary>
     /// <param name="draftId">The draft ID.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> FinishDraftAsPdf(int draftId, CancellationToken ct = default);
+    Task<Stream> FinishDraftAsPdf(int draftId, CancellationToken ct = default);
 
     /// <summary>
     /// Finish a template and return it as PDF.
+    /// This should only be used for small documents, as otherwise the PDF generation may take a long time.
     /// </summary>
-    /// <param name="templateId">The draft ID.</param>
+    /// <param name="templateId">The template ID.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> FinishAsPdf<T>(int templateId, T templateData, CancellationToken ct = default);
+    Task<Stream> FinishAsPdf<T>(int templateId, T templateData, string? bulkRoot, CancellationToken ct = default);
 
     /// <summary>
     /// Finish a template and return it as PDF.
+    /// This should only be used for small documents, as otherwise the PDF generation may take a long time.
     /// </summary>
     /// <param name="templateName">The template name.</param>
     /// <param name="templateData">The template data.</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>Returns a PDF.</returns>
-    Task<byte[]> FinishAsPdf<T>(string templateName, T templateData, CancellationToken ct = default);
+    Task<Stream> FinishAsPdf<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default);
+
+    /// <summary>
+    /// Start the asynchronous PDF generation process, which completes via webhooks.
+    /// </summary>
+    /// <param name="templateId">The template ID.</param>
+    /// <param name="templateData">The template data.</param>
+    /// <param name="webhookEndpoint">The endpoint of the webhook callback (on error or completion).</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <typeparam name="T">The type of the template data.</typeparam>
+    /// <returns>The draft that is being generated.</returns>
+    Task<Draft> StartAsyncPdfGeneration<T>(
+        int templateId,
+        T templateData,
+        string webhookEndpoint,
+        string? bulkRoot,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Start the asynchronous PDF generation process, which completes via webhooks.
+    /// </summary>
+    /// <param name="templateName">The template name.</param>
+    /// <param name="templateData">The template data.</param>
+    /// <param name="webhookEndpoint">The endpoint of the webhook callback (on error or completion).</param>
+    /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <typeparam name="T">The type of the template data.</typeparam>
+    /// <returns>The draft that is being generated.</returns>
+    Task<Draft> StartAsyncPdfGeneration<T>(
+        string templateName,
+        T templateData,
+        string webhookEndpoint,
+        string? bulkRoot = null,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets the PDF for a finished print job.
+    /// </summary>
+    /// <param name="printJobId">The ID of the print job.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns the finished PDF of the print job.</returns>
+    Task<Stream> GetPdfForPrintJob(int printJobId, CancellationToken ct = default);
 
     /// <summary>
     /// Get all bricks.

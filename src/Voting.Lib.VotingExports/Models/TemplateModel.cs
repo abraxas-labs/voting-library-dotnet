@@ -1,6 +1,7 @@
 ﻿// (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Voting.Lib.VotingExports.Models;
@@ -57,7 +58,7 @@ public record TemplateModel
     /// Gets the supported <see cref="DomainOfInfluenceType"/>s of this template.
     /// If this is <c>null</c>, all types are considered as supported.
     /// </summary>
-    public DomainOfInfluenceType? DomainOfInfluenceType { get; init; }
+    public IReadOnlySet<DomainOfInfluenceType>? DomainOfInfluenceTypes { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether this template is specific per <see cref="DomainOfInfluenceType"/>.
@@ -76,4 +77,12 @@ public record TemplateModel
             throw new ValidationException($"{PerDomainOfInfluenceType} can only be true for multiple business exports");
         }
     }
+
+    /// <summary>
+    /// Whether this template model is available for a provided <see cref="DomainOfInfluenceTypes"/>.
+    /// </summary>
+    /// <param name="t">The type of the domain of influence.</param>
+    /// <returns>Whether this template model is available for the provided argument.</returns>
+    public bool MatchesDomainOfInfluenceType(DomainOfInfluenceType t)
+        => DomainOfInfluenceTypes?.Contains(t) != false;
 }

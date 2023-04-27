@@ -2,8 +2,10 @@
 // For license information see LICENSE file
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using Voting.Lib.Cryptography.Asymmetric;
+using Voting.Lib.Cryptography.Configuration;
 
 namespace Voting.Lib.Cryptography.Mocks;
 
@@ -19,7 +21,7 @@ public class Pkcs11DeviceAdapterMock : IPkcs11DeviceAdapter
     private byte[] Pkcs8PrivateKeyBytes => Convert.FromBase64String(Pkcs8PrivateKey);
 
     /// <inheritdoc />
-    public byte[] CreateSignature(byte[] data)
+    public byte[] CreateSignature(byte[] data, Pkcs11Config? pkcs11Config = null)
     {
         using var ecdsa = ECDsa.Create();
         ecdsa.ImportPkcs8PrivateKey(Pkcs8PrivateKeyBytes, out _);
@@ -27,7 +29,43 @@ public class Pkcs11DeviceAdapterMock : IPkcs11DeviceAdapter
     }
 
     /// <inheritdoc />
-    public bool VerifySignature(byte[] data, byte[] signature)
+    public byte[] CreateEcdsaSha384Signature(byte[] data, Pkcs11Config? pkcs11Config = null)
+    {
+        return this.CreateSignature(data, pkcs11Config);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<byte[]> BulkCreateSignature(ICollection<byte[]> bulkData, Pkcs11Config? pkcs11Config = null)
+    {
+        using var ecdsa = ECDsa.Create();
+        ecdsa.ImportPkcs8PrivateKey(Pkcs8PrivateKeyBytes, out _);
+
+        foreach (var data in bulkData)
+        {
+            yield return ecdsa.SignData(data, _hashAlgorithm);
+        }
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<byte[]> BulkCreateEcdsaSha384Signature(ICollection<byte[]> bulkData, Pkcs11Config? pkcs11Config = null)
+    {
+        return this.BulkCreateSignature(bulkData, pkcs11Config);
+    }
+
+    /// <inheritdoc />
+    public byte[] EncryptAesMac(byte[] cipher, Pkcs11Config pkcs11Config)
+    {
+        return AesCbcEncryptionMock.Encrypt(cipher);
+    }
+
+    /// <inheritdoc />
+    public byte[] DecryptAesMac(byte[] encryptedCipher, Pkcs11Config pkcs11Config)
+    {
+        return AesCbcEncryptionMock.Decrypt(encryptedCipher);
+    }
+
+    /// <inheritdoc />
+    public bool VerifySignature(byte[] data, byte[] signature, Pkcs11Config? pkcs11Config = null)
     {
         using var ecdsa = ECDsa.Create();
         ecdsa.ImportPkcs8PrivateKey(Pkcs8PrivateKeyBytes, out _);
@@ -35,5 +73,11 @@ public class Pkcs11DeviceAdapterMock : IPkcs11DeviceAdapter
     }
 
     /// <inheritdoc />
-    public bool IsHealthy() => true;
+    public bool VerifyEcdsaSha384Signature(byte[] data, byte[] signature, Pkcs11Config? pkcs11Config = null)
+    {
+        return VerifySignature(data, signature, pkcs11Config);
+    }
+
+    /// <inheritdoc />
+    public bool IsHealthy(Pkcs11Config? pkcs11Config = null) => true;
 }

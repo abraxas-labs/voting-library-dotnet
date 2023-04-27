@@ -74,6 +74,10 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
     public string BrickContentUpdate(int brickContentId)
         => BuildUrl($"brick_contents/{brickContentId}/update");
 
+    /// <inheritdoc />
+    public string PrintJobPdf(int printJobId)
+        => BuildUrl($"print_jobs/{printJobId}.pdf");
+
     private string BuildUrl(string url, params (string, object?)[] query)
     {
         var queryParams = query

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="eCH-0058-5-0" Version="2.0.8" />
+    <PackageReference Include="Eai.Common.eCH.AttributeChecker" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>

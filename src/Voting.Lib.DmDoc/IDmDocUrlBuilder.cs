@@ -111,4 +111,11 @@ public interface IDmDocUrlBuilder
     /// <param name="draftId">The draft ID.</param>
     /// <returns>Returns the URL to finish a draft as PDF.</returns>
     string DraftFinishAsPdf(int draftId);
+
+    /// <summary>
+    /// Gets the URL the finished PDF of a print job.
+    /// </summary>
+    /// <param name="printJobId">The print job ID.</param>
+    /// <returns>Returns the URL to the finished PDF of a print job.</returns>
+    string PrintJobPdf(int printJobId);
 }

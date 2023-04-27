@@ -4,6 +4,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Voting.Lib.Common;
@@ -27,13 +28,18 @@ public static class ByteConverter
         {
             var bytes = obj switch
             {
+                null => Array.Empty<byte>(),
                 byte byteValue => Convert(byteValue),
                 int intValue => Convert(intValue),
                 long longValue => Convert(longValue),
                 Guid guidValue => Convert(guidValue),
                 DateTime dateTimeValue => Convert(dateTimeValue),
+                DateOnly dateOnlyValue => Convert(dateOnlyValue),
+                bool boolValue => Convert(boolValue),
                 string stringValue => Convert(stringValue),
                 byte[] byteArrValue => byteArrValue,
+                IEnumerable<byte[]> byteArrEnumerableValue => Convert(byteArrEnumerableValue),
+                Enum enumValue => Convert(enumValue),
                 _ => throw new ArgumentException($"{obj.GetType()} is not supported and cannot be concatenated to the byte array."),
             };
             result.AddRange(bytes);
@@ -42,7 +48,7 @@ public static class ByteConverter
         return result.ToArray();
     }
 
-    private static byte[] Convert(byte value) => new byte[] { value };
+    private static byte[] Convert(byte value) => new[] { value };
 
     private static byte[] Convert(int value)
     {
@@ -64,4 +70,15 @@ public static class ByteConverter
     private static byte[] Convert(Guid value) => Convert(value.ToString());
 
     private static byte[] Convert(DateTime value) => Convert(new DateTimeOffset(value).ToUnixTimeMilliseconds());
+
+    private static byte[] Convert(DateOnly value) => Convert(value.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
+
+    private static byte[] Convert(bool value) => new[] { System.Convert.ToByte(value) };
+
+    private static byte[] Convert(Enum value) => Convert(Enum.GetName(value.GetType(), value)!);
+
+    private static IEnumerable<byte> Convert(IEnumerable<byte[]> byteArrEnumerableValue)
+    {
+        return byteArrEnumerableValue.SelectMany(x => x).ToArray();
+    }
 }

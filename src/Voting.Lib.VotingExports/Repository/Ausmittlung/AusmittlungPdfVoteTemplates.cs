@@ -36,6 +36,12 @@ public static class AusmittlungPdfVoteTemplates
         Description = "Provisorische Ergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+            DomainOfInfluenceType.Bz,
+        },
         ResultType = ResultType.PoliticalBusinessResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -50,6 +56,12 @@ public static class AusmittlungPdfVoteTemplates
         Description = "Detailergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+            DomainOfInfluenceType.Bz,
+        },
         ResultType = ResultType.PoliticalBusinessResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -66,6 +78,12 @@ public static class AusmittlungPdfVoteTemplates
         EntityType = EntityType.Vote,
         ResultType = ResultType.MultiplePoliticalBusinessesCountingCircleResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+            DomainOfInfluenceType.Bz,
+        },
         PerDomainOfInfluenceType = true,
     };
 

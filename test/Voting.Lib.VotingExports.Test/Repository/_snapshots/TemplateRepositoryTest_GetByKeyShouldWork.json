@@ -6,6 +6,6 @@
   "EntityType": 1,
   "ResultType": null,
   "GeneratedBy": 1,
-  "DomainOfInfluenceType": null,
+  "DomainOfInfluenceTypes": null,
   "PerDomainOfInfluenceType": false
 }

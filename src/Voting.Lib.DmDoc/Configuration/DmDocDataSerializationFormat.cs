@@ -14,7 +14,7 @@ public enum DmDocDataSerializationFormat
     Json,
 
     /// <summary>
-    /// Serializes dm doc data as xml.
+    /// Serializes dm doc data as XML.
     /// </summary>
     Xml,
 }

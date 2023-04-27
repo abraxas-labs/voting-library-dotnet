@@ -9,6 +9,11 @@ namespace Voting.Lib.VotingExports.Models;
 public enum ResultType
 {
     /// <summary>
+    /// Unspecified.
+    /// </summary>
+    Unspecified,
+
+    /// <summary>
     /// A single political business on a single counting circle.
     /// </summary>
     CountingCircleResult,

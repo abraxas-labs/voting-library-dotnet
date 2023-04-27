@@ -12,12 +12,12 @@ internal static class DmDocApiResponseExtensions
     {
         if (response == null)
         {
-            throw new DmDocException("no response content");
+            throw new DmDocException("Response content was empty.");
         }
 
         if (!response.Success)
         {
-            throw new DmDocException(response.GetErrorDescription());
+            throw new DmDocException($"Response was not successful: {response.GetErrorDescription()}");
         }
     }
 
@@ -26,6 +26,6 @@ internal static class DmDocApiResponseExtensions
     {
         response.EnsureSuccess();
         return response!.Data
-               ?? throw new DmDocException("no response content");
+            ?? throw new DmDocException("No response data provided.");
     }
 }

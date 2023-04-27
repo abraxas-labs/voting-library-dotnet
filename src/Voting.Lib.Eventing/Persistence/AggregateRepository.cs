@@ -74,25 +74,30 @@ public class AggregateRepository : IAggregateRepository
     }
 
     /// <inheritdoc/>
-    public async Task Save<TAggregate>(TAggregate aggregate)
+    public async Task Save<TAggregate>(TAggregate aggregate, bool disableIdempotencyGuarantee = false)
         where TAggregate : BaseEventSourcingAggregate
     {
-        await _aggregateRepositoryHandler.BeforeSaved(aggregate);
+        await _aggregateRepositoryHandler.BeforeSaved(aggregate).ConfigureAwait(false);
         var events = aggregate.GetUncommittedEvents().ToList();
         if (events.Count == 0)
         {
             return;
         }
 
-        await _eventPublisher.Publish(
-            aggregate.StreamName,
-            events.Select(ev => new EventWithMetadata(ev.Data, ev.Metadata, ev.Id)),
-            aggregate.OriginalVersion)
-            .ConfigureAwait(false);
+        var eventsWithMetadata = events.Select(ev => new EventWithMetadata(ev.Data, ev.Metadata, ev.Id));
+
+        if (disableIdempotencyGuarantee)
+        {
+            await _eventPublisher.PublishWithoutIdempotencyGuarantee(aggregate.StreamName, eventsWithMetadata).ConfigureAwait(false);
+        }
+        else
+        {
+            await _eventPublisher.Publish(aggregate.StreamName, eventsWithMetadata, aggregate.OriginalVersion).ConfigureAwait(false);
+        }
 
         aggregate.ClearUncommittedEvents();
         aggregate.OriginalVersion = aggregate.Version!.Value;
-        await _aggregateRepositoryHandler.AfterSaved(aggregate, events);
+        await _aggregateRepositoryHandler.AfterSaved(aggregate, events).ConfigureAwait(false);
     }
 
     private async Task<TAggregate> GetById<TAggregate>(Guid id, DateTime? endTimestampInclusive)

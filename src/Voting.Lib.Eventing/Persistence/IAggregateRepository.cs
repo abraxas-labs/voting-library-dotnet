@@ -58,7 +58,10 @@ public interface IAggregateRepository
     /// </summary>
     /// <typeparam name="TAggregate">The aggregate type to save.</typeparam>
     /// <param name="aggregate">The aggregate to save.</param>
+    /// <param name="disableIdempotencyGuarantee">Whether to disable the idempotency guarantee,
+    /// see <see cref="IEventPublisher.PublishWithoutIdempotencyGuarantee(string,Voting.Lib.Eventing.Persistence.EventWithMetadata)"/>.
+    /// Note that when setting this parameter to true, the aggregate version may be inaccurate.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    Task Save<TAggregate>(TAggregate aggregate)
+    Task Save<TAggregate>(TAggregate aggregate, bool disableIdempotencyGuarantee = false)
         where TAggregate : BaseEventSourcingAggregate;
 }

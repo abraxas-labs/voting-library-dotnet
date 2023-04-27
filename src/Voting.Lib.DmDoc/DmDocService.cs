@@ -4,8 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ namespace Voting.Lib.DmDoc;
 /// </summary>
 public class DmDocService : IDmDocService
 {
+    private const string DmDocAuthenticationScheme = "DmDoc";
     private readonly HttpClient _http;
     private readonly DmDocConfig _config;
     private readonly IDmDocUserNameProvider _dmDocUserNameProvider;
@@ -116,12 +119,25 @@ public class DmDocService : IDmDocService
     }
 
     /// <inheritdoc />
-    public Task<Draft> CreateDraft<T>(string templateName, T templateData, CancellationToken ct = default)
-        => CreateDraft(templateName, null, templateData, ct);
+    public Task<Draft> CreateDraft<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+    {
+        var draftRequest = new CreateDraftRequest { TemplateName = templateName };
+        return CreateDraft(draftRequest, templateData, bulkRoot, ct);
+    }
 
     /// <inheritdoc />
-    public Task<Draft> CreateDraft<T>(int templateId, T templateData, CancellationToken ct = default)
-        => CreateDraft(null, templateId, templateData, ct);
+    public Task<Draft> CreateDraft<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+    {
+        var draftRequest = new CreateDraftRequest { TemplateId = templateId };
+        return CreateDraft(draftRequest, templateData, bulkRoot, ct);
+    }
+
+    /// <inheritdoc />
+    public async Task<Draft> GetDraft(int draftId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.Draft(draftId);
+        return await _http.GetDmDoc<Draft>(url, ct).ConfigureAwait(false);
+    }
 
     /// <inheritdoc />
     public async Task DeleteDraft(int draftId, CancellationToken ct = default)
@@ -132,15 +148,13 @@ public class DmDocService : IDmDocService
     }
 
     /// <inheritdoc />
-    public async Task<byte[]> PreviewDraftAsPdf(int draftId, CancellationToken ct = default)
+    public async Task<Stream> PreviewDraftAsPdf(int draftId, CancellationToken ct = default)
     {
         var url = _urlBuilder.DraftPreviewAsPdf(draftId);
 
         try
         {
-            // use byte array instead of stream since, all other pdf endpoints return byte array too.
-            // other endpoints require the whole pdf in memory anyway since the response is embedded in the json as base64.
-            return await _http.GetByteArrayAsync(url, ct).ConfigureAwait(false);
+            return await _http.GetStreamAsync(url, ct).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -149,29 +163,61 @@ public class DmDocService : IDmDocService
     }
 
     /// <inheritdoc />
-    public Task<byte[]> PreviewAsPdf<T>(int templateId, T templateData, CancellationToken ct = default)
-        => WithTemporaryDraft(null, templateId, templateData, d => PreviewDraftAsPdf(d.Id, ct), ct);
+    public Task<Stream> PreviewAsPdf<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+        => WithTemporaryDraft(templateId, templateData, bulkRoot, d => PreviewDraftAsPdf(d.Id, ct), ct);
 
     /// <inheritdoc />
-    public Task<byte[]> PreviewAsPdf<T>(string templateName, T templateData, CancellationToken ct = default)
-        => WithTemporaryDraft(templateName, null, templateData, d => PreviewDraftAsPdf(d.Id, ct), ct);
+    public Task<Stream> PreviewAsPdf<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+        => WithTemporaryDraft(templateName, templateData, bulkRoot, d => PreviewDraftAsPdf(d.Id, ct), ct);
 
     /// <inheritdoc />
-    public async Task<byte[]> FinishDraftAsPdf(int draftId, CancellationToken ct = default)
+    public async Task<Stream> FinishDraftAsPdf(int draftId, CancellationToken ct = default)
     {
         var url = _urlBuilder.DraftFinishAsPdf(draftId);
-        var response = await _http.PutDmDoc<FinishEditingResponse>(url, ct).ConfigureAwait(false);
-        return response.ResultPdf
-            ?? throw new DmDocException("no pdf received");
+
+        using var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Pdf));
+
+        // Do not dispose the response, as that would in turn dispose the response content stream.
+        // Disposing the content stream should clean up all resources, no need to dispose anything of the response here.
+        var response = await _http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+        await response.EnsureSuccessStatusOrThrowDmDocEx().ConfigureAwait(false);
+
+        return await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
-    public Task<byte[]> FinishAsPdf<T>(int templateId, T templateData, CancellationToken ct = default)
-        => WithTemporaryDraft(null, templateId, templateData, d => FinishDraftAsPdf(d.Id, ct), ct);
+    public Task<Stream> FinishAsPdf<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+        => WithTemporaryDraft(templateId, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
 
     /// <inheritdoc />
-    public Task<byte[]> FinishAsPdf<T>(string templateName, T templateData, CancellationToken ct = default)
-        => WithTemporaryDraft(templateName, null, templateData, d => FinishDraftAsPdf(d.Id, ct), ct);
+    public Task<Stream> FinishAsPdf<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default)
+        => WithTemporaryDraft(templateName, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
+
+    /// <inheritdoc />
+    public Task<Draft> StartAsyncPdfGeneration<T>(
+        int templateId,
+        T templateData,
+        string webhookEndpoint,
+        string? bulkRoot = null,
+        CancellationToken ct = default)
+        => StartAsyncPdfGeneration(templateId, null, templateData, webhookEndpoint, bulkRoot, ct);
+
+    /// <inheritdoc />
+    public Task<Draft> StartAsyncPdfGeneration<T>(
+        string templateName,
+        T templateData,
+        string webhookEndpoint,
+        string? bulkRoot = null,
+        CancellationToken ct = default)
+        => StartAsyncPdfGeneration(null, templateName, templateData, webhookEndpoint, bulkRoot, ct);
+
+    /// <inheritdoc />
+    public Task<Stream> GetPdfForPrintJob(int printJobId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.PrintJobPdf(printJobId);
+        return _http.GetStreamAsync(url, ct);
+    }
 
     /// <inheritdoc />
     public Task<List<Brick>> ListBricks(CancellationToken ct = default)
@@ -215,32 +261,49 @@ public class DmDocService : IDmDocService
             {
                 Checkin = true, // creates a new version and thus a new brick id and content id.
                 Content = content,
-            });
+            },
+            ct);
         return (response.BrickId, response.Id);
     }
 
-    private HttpClient CreateClient()
+    private Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
+        int templateId,
+        TDraftData templateData,
+        string? bulkRoot,
+        Func<Draft, Task<TResp>> action,
+        CancellationToken ct)
     {
-        var httpClient = _httpClientFactory.CreateClient();
-        httpClient.Timeout = _config.Timeout ?? Timeout.InfiniteTimeSpan;
-        httpClient.BaseAddress = _config.BaseAddress ?? throw new ValidationException("DmDoc base address is required");
+        var draftRequest = new CreateDraftRequest { TemplateId = templateId };
+        return WithTemporaryDraft(draftRequest, templateData, bulkRoot, action, ct);
+    }
 
-        var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_dmDocUserNameProvider.UserName}:{_config.Token}"));
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("DmDoc", authValue);
-
-        return httpClient;
+    private Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
+        string templateName,
+        TDraftData templateData,
+        string? bulkRoot,
+        Func<Draft, Task<TResp>> action,
+        CancellationToken ct)
+    {
+        var draftRequest = new CreateDraftRequest { TemplateName = templateName };
+        return WithTemporaryDraft(draftRequest, templateData, bulkRoot, action, ct);
     }
 
     private async Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
-        string? templateName,
-        int? templateId,
+        CreateDraftRequest draftRequest,
         TDraftData templateData,
+        string? bulkRoot,
         Func<Draft, Task<TResp>> action,
-        CancellationToken ct = default)
+        CancellationToken ct)
     {
-        var draft = await CreateDraft(templateName, templateId, templateData, ct).ConfigureAwait(false);
+        var draft = await CreateDraft(draftRequest, templateData, bulkRoot, ct).ConfigureAwait(false);
         try
         {
+            // Serial letter drafts are not being generated immediately, they take some time
+            if (!string.IsNullOrEmpty(bulkRoot))
+            {
+                await PollUntilDraftReady(draft.Id, ct).ConfigureAwait(false);
+            }
+
             return await action(draft).ConfigureAwait(false);
         }
         finally
@@ -249,20 +312,15 @@ public class DmDocService : IDmDocService
         }
     }
 
-    private Task<Draft> CreateDraft<T>(string? templateName, int? templateId, T templateData, CancellationToken ct = default)
+    private Task<Draft> CreateDraft<T>(CreateDraftRequest draftRequest, T templateData, string? bulkRoot, CancellationToken ct)
     {
         var url = _urlBuilder.Drafts();
         var data = _dataSerializer.Serialize(templateData);
-        var request = new CreateDraftRequest
+        draftRequest.Data = new List<CreateDraftData>
         {
-            TemplateName = templateName,
-            TemplateId = templateId,
-            Data = new List<CreateDraftData>
-                {
-                    new(_dataSerializer.MimeType, data),
-                },
+            new(_dataSerializer.MimeType, data, bulkRoot),
         };
-        return _http.PostDmDoc<CreateDraftRequest, Draft>(url, request, ct);
+        return _http.PostDmDoc<CreateDraftRequest, Draft>(url, draftRequest, ct);
     }
 
     private async Task TryDeleteDraft(int id)
@@ -275,5 +333,62 @@ public class DmDocService : IDmDocService
         {
             _logger.LogError(e, "Cleaning up the draft {Id} failed", id);
         }
+    }
+
+    private Task<Draft> StartAsyncPdfGeneration<T>(
+        int? templateId,
+        string? templateName,
+        T templateData,
+        string webhookEndpoint,
+        string? bulkRoot,
+        CancellationToken ct)
+    {
+        var draftRequest = new CreateDraftRequest
+        {
+            TemplateId = templateId,
+            TemplateName = templateName,
+            Async = true,
+            CallbackUrl = webhookEndpoint,
+            CallbackActions = new[] { CallbackAction.CreateError, CallbackAction.FinishEditing, CallbackAction.FinishEditingError },
+            FinishEditing = new FinishEditingData(),
+        };
+        return CreateDraft(draftRequest, templateData, bulkRoot, ct);
+    }
+
+    private async Task PollUntilDraftReady(int draftId, CancellationToken ct)
+    {
+        for (var attempt = 0; attempt < _config.MaxDraftStatePollingAttempts; attempt++)
+        {
+            var draft = await GetDraft(draftId, ct).ConfigureAwait(false);
+
+            switch (draft.State)
+            {
+                case DraftState.Error:
+                    throw new DmDocException("Draft is in error state");
+                case DraftState.Editing:
+                    // Draft is ready
+                    return;
+            }
+
+            await Task.Delay(_config.DraftStatePollingDelay, ct).ConfigureAwait(false);
+        }
+
+        throw new DmDocException($"Draft was not ready after {_config.MaxDraftStatePollingAttempts} polling attempts");
+    }
+
+    private HttpClient CreateClient()
+    {
+        // IHttpClientFactory.CreateClient() creates a new HttpClient each time, but reuses the internal HttpClientHandler
+        // which caches data such as DNS (which improves performance). The created HttpClient does not need to be disposed.
+        // See https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests#httpclient-and-lifetime-management
+        // Since we only modify the created HttpClient and not the HttpClientHandler, this is a safe approach.
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = _config.Timeout ?? Timeout.InfiniteTimeSpan;
+        httpClient.BaseAddress = _config.BaseAddress ?? throw new ValidationException("DmDoc base address is required");
+
+        var authValue = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{_dmDocUserNameProvider.UserName}:{_config.Token}"));
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(DmDocAuthenticationScheme, authValue);
+
+        return httpClient;
     }
 }

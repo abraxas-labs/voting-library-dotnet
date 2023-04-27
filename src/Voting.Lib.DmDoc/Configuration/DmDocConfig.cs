@@ -35,4 +35,14 @@ public class DmDocConfig
     /// Gets or sets the serialization format for the dm doc data containers.
     /// </summary>
     public DmDocDataSerializationFormat DataSerializationFormat { get; set; } = DmDocDataSerializationFormat.Json;
+
+    /// <summary>
+    /// Gets or sets the maximum attempts when polling the draft state.
+    /// </summary>
+    public int MaxDraftStatePollingAttempts { get; set; } = 10;
+
+    /// <summary>
+    /// Gets or sets the delay between draft state polling attempts.
+    /// </summary>
+    public TimeSpan DraftStatePollingDelay { get; set; } = TimeSpan.FromSeconds(1);
 }

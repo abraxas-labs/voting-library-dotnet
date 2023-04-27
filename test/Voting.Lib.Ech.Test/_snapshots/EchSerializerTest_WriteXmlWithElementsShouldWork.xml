@@ -1,0 +1,31 @@
+<eCH-0045:voterDelivery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.ech.ch/xmlns/eCH-0045/4 http://www.ech.ch/xmlns/eCH-0045/4/eCH-0045-4-0.xsd" xmlns:eCH-0045="http://www.ech.ch/xmlns/eCH-0045/4">
+  <eCH-0045:deliveryHeader xmlns:eCH-0058="http://www.ech.ch/xmlns/eCH-0058/5">
+    <eCH-0058:senderId>ABX</eCH-0058:senderId>
+    <eCH-0058:messageId>123</eCH-0058:messageId>
+    <eCH-0058:messageType>1234</eCH-0058:messageType>
+    <eCH-0058:sendingApplication>
+      <eCH-0058:manufacturer>Abraxas</eCH-0058:manufacturer>
+      <eCH-0058:product>Voting.Lib.Tests</eCH-0058:product>
+      <eCH-0058:productVersion>0.0.1-dev</eCH-0058:productVersion>
+    </eCH-0058:sendingApplication>
+    <eCH-0058:messageDate>2020-01-10T13:12:10.200</eCH-0058:messageDate>
+    <eCH-0058:action>1</eCH-0058:action>
+    <eCH-0058:testDeliveryFlag>true</eCH-0058:testDeliveryFlag>
+  </eCH-0045:deliveryHeader>
+  <eCH-0045:voterList>
+    <eCH-0045:reportingAuthority>
+      <eCH-0045:cantonalRegister>
+        <eCH-0045:registerIdentification>SG</eCH-0045:registerIdentification>
+        <eCH-0045:cantonAbbreviation>SG</eCH-0045:cantonAbbreviation>
+        <eCH-0045:registerName>Ständiges Register</eCH-0045:registerName>
+      </eCH-0045:cantonalRegister>
+    </eCH-0045:reportingAuthority>
+    <eCH-0045:numberOfVoters>2</eCH-0045:numberOfVoters>
+    <eCH-0045:voter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0045="http://www.ech.ch/xmlns/eCH-0045/4">
+      <eCH-0045:dataLock>0</eCH-0045:dataLock>
+    </eCH-0045:voter>
+    <eCH-0045:voter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0045="http://www.ech.ch/xmlns/eCH-0045/4">
+      <eCH-0045:dataLock>0</eCH-0045:dataLock>
+    </eCH-0045:voter>
+  </eCH-0045:voterList>
+</eCH-0045:voterDelivery>

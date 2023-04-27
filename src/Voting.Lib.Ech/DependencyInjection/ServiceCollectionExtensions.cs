@@ -12,14 +12,15 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds voting lib ech helpers to the service collection.
+    /// Adds voting lib eCH helpers to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="config">The ech config.</param>
+    /// <param name="config">The eCH config.</param>
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddVotingLibEch(this IServiceCollection services, EchConfig config)
         => services
             .AddSingleton(config)
             .AddSingleton<IEchMessageIdProvider, DefaultEchMessageIdProvider>()
-            .AddSingleton<DeliveryHeaderProvider>();
+            .AddSingleton<DeliveryHeaderProvider>()
+            .AddSingleton<EchSerializer>();
 }

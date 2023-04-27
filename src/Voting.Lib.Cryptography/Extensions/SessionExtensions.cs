@@ -15,6 +15,9 @@ internal static class SessionExtensions
     internal static IObjectHandle GetPrivateKey(this ISession session, string ckaLabel)
         => session.GetKey(CKO.CKO_PRIVATE_KEY, ckaLabel);
 
+    internal static IObjectHandle GetSecretKey(this ISession session, string ckaLabel)
+        => session.GetKey(CKO.CKO_SECRET_KEY, ckaLabel);
+
     private static IObjectHandle GetKey(this ISession session, CKO ckaKeyType, string ckaLabel)
     {
         var attributes = new List<IObjectAttribute>

@@ -96,21 +96,23 @@ public class AggregateRepositoryMock : IAggregateRepository
     /// </summary>
     /// <typeparam name="TAggregate">The aggregate type to save.</typeparam>
     /// <param name="aggregate">The aggregate to save.</param>
+    /// <param name="disableIdempotencyGuarantee">Has no effect in the mock.</param>
     /// <returns>A task representing the asynchonous operation.</returns>
-    public async Task Save<TAggregate>(TAggregate aggregate)
+    public async Task Save<TAggregate>(TAggregate aggregate, bool disableIdempotencyGuarantee = false)
         where TAggregate : BaseEventSourcingAggregate
     {
-        await _aggregateRepositoryHandler.BeforeSaved(aggregate);
+        await _aggregateRepositoryHandler.BeforeSaved(aggregate).ConfigureAwait(false);
 
         var events = aggregate.GetUncommittedEvents().ToList();
         foreach (var ev in events)
         {
             _store.AddEvent(aggregate.Id, ev);
-            await _eventPublisher.Publish(aggregate.Id.ToString(), new EventWithMetadata(ev.Data, ev.Metadata, ev.Id), null).ConfigureAwait(false);
+            var eventWithMetadata = new EventWithMetadata(ev.Data, ev.Metadata, ev.Id);
+            await _eventPublisher.Publish(aggregate.Id.ToString(), eventWithMetadata, null).ConfigureAwait(false);
         }
 
         aggregate.ClearUncommittedEvents();
-        await _aggregateRepositoryHandler.AfterSaved(aggregate, events);
+        await _aggregateRepositoryHandler.AfterSaved(aggregate, events).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

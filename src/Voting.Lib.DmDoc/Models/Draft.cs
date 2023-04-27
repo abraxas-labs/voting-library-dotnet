@@ -1,6 +1,8 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System.Text.Json.Serialization;
+
 namespace Voting.Lib.DmDoc.Models;
 
 /// <summary>
@@ -12,4 +14,10 @@ public class Draft
     /// Gets or sets the draft ID.
     /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the draft state.
+    /// </summary>
+    [JsonPropertyName("istatus")]
+    public DraftState State { get; set; }
 }

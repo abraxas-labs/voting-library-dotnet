@@ -12,4 +12,7 @@ public class SystemClock : IClock
 {
     /// <inheritdoc />
     public DateTime UtcNow => DateTime.UtcNow;
+
+    /// <inheritdoc />
+    public DateOnly Today => DateOnly.FromDateTime(UtcNow);
 }

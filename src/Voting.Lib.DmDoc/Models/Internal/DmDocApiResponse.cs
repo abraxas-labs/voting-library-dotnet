@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Voting.Lib.DmDoc.Models.Internal;
 
@@ -12,17 +13,20 @@ internal class DmDocApiResponse
 
     public string? Error { get; set; }
 
+    [JsonPropertyName("msg")]
+    public string? Message { get; set; }
+
     public List<string>? Errors { get; set; }
 
     public string GetErrorDescription()
     {
         if (Errors == null)
         {
-            return Error ?? string.Empty;
+            return Error ?? Message ?? "No error information provided";
         }
 
         return
-            Error ?? string.Empty
+            Error ?? Message ?? string.Empty
             + Environment.NewLine
             + string.Join(
                 Environment.NewLine,

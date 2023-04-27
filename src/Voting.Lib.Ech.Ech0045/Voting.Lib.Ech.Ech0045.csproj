@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Ech\Voting.Lib.Ech.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="eCH-0045-4-0" Version="2.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\*.xsd" />
+  </ItemGroup>
+
+</Project>

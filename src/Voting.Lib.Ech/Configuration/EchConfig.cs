@@ -22,6 +22,16 @@ public class EchConfig
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EchConfig"/> class.
+    /// The assembly of the provided type is used to retrieve product information.
+    /// </summary>
+    /// <param name="t">The type to read retrieve the product information from its assembly.</param>
+    public EchConfig(Type t)
+        : this(t.Assembly)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EchConfig"/> class.
     /// </summary>
     /// <param name="assembly">The assembly used to retrieve product information.</param>
     public EchConfig(Assembly? assembly)
@@ -59,6 +69,15 @@ public class EchConfig
     /// Gets or sets the product version used in the delivery header.
     /// </summary>
     public string ProductVersion { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Creates a new <see cref="EchConfig"/> instance
+    /// and applies the product info based on the assembly of the provided type.
+    /// </summary>
+    /// <typeparam name="T">The type to read retrieve the product information from its assembly.</typeparam>
+    /// <returns>The created <see cref="EchConfig"/> instance.</returns>
+    public static EchConfig CreateWithProductInfo<T>()
+        => new(typeof(T));
 
     /// <summary>
     /// Set the product name from the assembly of the provided type.
