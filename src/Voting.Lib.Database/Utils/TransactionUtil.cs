@@ -1,6 +1,7 @@
 ﻿// (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Transactions;
 
 namespace Voting.Lib.Database.Utils;
@@ -16,9 +17,15 @@ public static class TransactionUtil
     /// <c>using var transaction = TransactionUtil.NewTransactionScope();</c>.
     /// <para>perform your changes on the repos and end it with:</para>
     /// <c>transaction.Complete();</c>.
-    /// <para>Note: By default isiolation level is Serializable but all modern db's use read committed as default. Therefore using ReadCommited.</para>
+    /// <para>Note: By default isolation level is Serializable but all modern db's use read committed as default. Therefore using ReadCommited.</para>
     /// </summary>
+    /// <remarks>
+    /// Use DbContext.Database.BeginTransactionAsync() instead, since the transaction scope brings lots of pitfalls.
+    /// Eg. if a database connection is opened before the transaction scope is opened, the connection may not be enlisted in the transaction
+    /// (see https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/distributed-transactions?redirectedfrom=MSDN#automatically-enlisting-in-a-distributed-transaction).
+    /// </remarks>
     /// <returns>A new <see cref="TransactionScope"/>.</returns>
+    [Obsolete("Use DbContext.Database.BeginTransactionAsync instead")]
     public static TransactionScope NewTransactionScope()
     {
         return new TransactionScope(

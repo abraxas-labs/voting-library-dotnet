@@ -14,9 +14,10 @@ public interface IAuthStore
     /// <summary>
     /// Set the current authentication values. Only call this method once per request/scope.
     /// </summary>
+    /// <param name="accessToken">The access token.</param>
     /// <param name="user">The current user.</param>
     /// <param name="tenant">The current tenant.</param>
     /// <param name="roles">The roles of the current user.</param>
     /// <exception cref="Exceptions.AlreadyAuthenticatedException">In case this method has already been called.</exception>
-    void SetValues(User user, Tenant tenant, IEnumerable<string>? roles);
+    void SetValues(string accessToken, User user, Tenant tenant, IEnumerable<string>? roles);
 }

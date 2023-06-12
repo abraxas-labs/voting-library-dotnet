@@ -185,7 +185,7 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
             var tenant = await _tenantCache.GetOrAdd(Tenant, async () =>
                 await TenantService.GetTenant(Tenant, true).ConfigureAwait(false) ?? new() { Id = Tenant }).ConfigureAwait(false);
 
-            authStore.SetValues(user, tenant, roles);
+            authStore.SetValues(SubjectToken, user, tenant, roles);
         }
 
         return result;

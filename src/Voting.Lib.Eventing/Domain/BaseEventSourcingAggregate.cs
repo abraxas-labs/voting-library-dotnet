@@ -100,12 +100,4 @@ public abstract class BaseEventSourcingAggregate
     /// </summary>
     /// <param name="eventData">The event data to apply.</param>
     protected abstract void Apply(IMessage eventData);
-
-    /// <summary>
-    /// Builds an action id of this aggregate.
-    /// </summary>
-    /// <param name="action">The name of the action.</param>
-    /// <returns>The action id.</returns>
-    protected ActionId BuildActionId(string action)
-        => new ActionId(action, StreamName, Version);
 }

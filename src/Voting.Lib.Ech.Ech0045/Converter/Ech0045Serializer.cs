@@ -16,7 +16,7 @@ namespace Voting.Lib.Ech.Ech0045.Converter;
 public class Ech0045Serializer
 {
     // Needs to match the order of SwissPersonType.Extension
-    private const int SwissAbroadExtensionXmlAttributeOrder = 6;
+    private const int PersonExtensionXmlAttributeOrder = 6;
     private const string ExtensionXmlAttributeName = "extension";
 
     private readonly DeliveryHeaderProvider _deliveryHeaderProvider;
@@ -59,10 +59,12 @@ public class Ech0045Serializer
         // ensure that eCH swiss abroad extension can be mapped, since in the contract the type is any.
         var xmlAttributeOverrides = new XmlAttributeOverrides();
         var swissPersonXmlAttributes = new XmlAttributes();
-        var swissAbroadExtensionXmlAttribute = new XmlElementAttribute(ExtensionXmlAttributeName, typeof(object));
-        swissAbroadExtensionXmlAttribute.Type = typeof(SwissAbroadPersonExtension);
-        swissAbroadExtensionXmlAttribute.Order = SwissAbroadExtensionXmlAttributeOrder;
-        swissPersonXmlAttributes.XmlElements.Add(swissAbroadExtensionXmlAttribute);
+
+        var swissExtensionXmlAttribute = new XmlElementAttribute(ExtensionXmlAttributeName, typeof(object));
+        swissExtensionXmlAttribute.Type = typeof(SwissPersonExtension);
+        swissExtensionXmlAttribute.Order = PersonExtensionXmlAttributeOrder;
+        swissPersonXmlAttributes.XmlElements.Add(swissExtensionXmlAttribute);
+
         xmlAttributeOverrides.Add(typeof(SwissPersonType), nameof(SwissPersonType.Extension), swissPersonXmlAttributes);
         return xmlAttributeOverrides;
     }

@@ -3,7 +3,6 @@
 
 using System;
 using System.Linq;
-using EventStore.Client;
 using FluentAssertions;
 using Google.Protobuf;
 using Moq;
@@ -85,32 +84,6 @@ public class BaseEventSourcingAggregateTest
         aggregate.GetUncommittedEvents().Should().BeEmpty();
     }
 
-    [Fact]
-    public void BuildActionIdOnFreshAggregateShouldWork()
-    {
-        var aggregate = new TestAggregate();
-        var actionId = aggregate.PrepareAdd();
-        actionId.Action.Should().Be("Add");
-        actionId.AggregateVersion.Should().BeNull();
-        actionId.AggregateStreamName.Should().Be("TestAggregate-1e48a477-44a6-4de2-9f7c-4569c4d37c31");
-        actionId.ComputeHash().Should().Be("8908e81ce63e4b1fd2e0b76fe12e65aa9f6af2dc460e6d72069ecbfeda08673e");
-    }
-
-    [Fact]
-    public void BuildActionIdOnAggregateWithEventsShouldWork()
-    {
-        var aggregate = new TestAggregate();
-        aggregate.Add();
-        aggregate.Add();
-        aggregate.Add();
-
-        var actionId = aggregate.PrepareAdd();
-        actionId.Action.Should().Be("Add");
-        actionId.AggregateVersion.Should().Be(new StreamRevision(2));
-        actionId.AggregateStreamName.Should().Be("TestAggregate-1e48a477-44a6-4de2-9f7c-4569c4d37c31");
-        actionId.ComputeHash().Should().Be("e431c5f505a0073de6b20d6302d71f4b2230255221677ab93f964dd4d2c00717");
-    }
-
     private class TestAggregate : BaseEventSourcingAggregate
     {
         public TestAggregate()
@@ -124,9 +97,6 @@ public class BaseEventSourcingAggregateTest
 
         public void Add()
             => RaiseEvent(new TestEvent { TestValue = Sum + 1 });
-
-        public ActionId PrepareAdd()
-            => BuildActionId(nameof(Add));
 
         protected override void Apply(IMessage eventData)
         {

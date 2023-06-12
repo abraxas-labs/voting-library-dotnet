@@ -1,7 +1,8 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using EventStore.Client;
+using System.Collections.Generic;
+using System.Linq;
 using Voting.Lib.Common;
 
 namespace Voting.Lib.Eventing.Domain;
@@ -11,40 +12,39 @@ namespace Voting.Lib.Eventing.Domain;
 /// </summary>
 public class ActionId
 {
+    private const string ActionIdSeparator = "-";
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ActionId"/> class.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="aggregateStreamName">The aggregate stream name.</param>
-    /// <param name="aggregateVersion">The aggregate version.</param>
-    public ActionId(string action, string aggregateStreamName, StreamRevision? aggregateVersion)
+    /// <param name="aggregates">The aggregates.</param>
+    public ActionId(string action, params BaseEventSourcingAggregate[] aggregates)
     {
         Action = action;
-        AggregateStreamName = aggregateStreamName;
-        AggregateVersion = aggregateVersion;
+        Aggregates = aggregates;
     }
 
     /// <summary>
-    /// Gets the action.
+    /// Gets the action, i.e. 'SubmissionFinished'.
     /// </summary>
     public string Action { get; }
 
     /// <summary>
-    /// Gets the aggregate stream name.
+    /// Gets the aggregates.
     /// </summary>
-    public string AggregateStreamName { get; }
+    public IReadOnlyCollection<BaseEventSourcingAggregate> Aggregates { get; }
 
     /// <summary>
-    /// Gets the aggregate version.
-    /// </summary>
-    public StreamRevision? AggregateVersion { get; }
-
-    /// <summary>
-    /// Computes the hash of this action ID.
+    /// Computes the SHA256 hash of this action ID.
+    /// The action ID includes the concatenated aggregates signature prepended with the action name,
+    /// i.e. 'SubmissionFinished-aggregate1-{GUID}@1-aggregate2-{GUID}@1'.
     /// </summary>
     /// <returns>Returns the computed hash.</returns>
     public string ComputeHash()
     {
-        return HashUtil.GetSHA256Hash($"{AggregateStreamName}-{Action}-@{AggregateVersion}");
+        var aggregateVersions = Aggregates.Select(x => $"{x.StreamName}@{x.Version}");
+        var input = string.Join(ActionIdSeparator, aggregateVersions.Prepend(Action));
+        return HashUtil.GetSHA256Hash(input);
     }
 }

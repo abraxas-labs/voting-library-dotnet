@@ -34,4 +34,10 @@ public interface IAuth
     /// </summary>
     /// <exception cref="NotAuthenticatedException">In case <see cref="IsAuthenticated"/> is false.</exception>
     public IReadOnlyCollection<string> Roles { get; }
+
+    /// <summary>
+    /// Gets the access token of the current user.
+    /// <exception cref="NotAuthenticatedException">In case <see cref="IsAuthenticated"/> is false.</exception>
+    /// </summary>
+    public string AccessToken { get; }
 }

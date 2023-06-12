@@ -16,7 +16,7 @@ public class AuthExtensionsTest
     public AuthExtensionsTest()
     {
         _auth = new AuthStore(new MockLogger<AuthStore>());
-        _auth.SetValues(new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        _auth.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
     }
 
     [Fact]

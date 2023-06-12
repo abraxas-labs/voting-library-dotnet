@@ -1,10 +1,12 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Moq;
 using Voting.Lib.Common;
 
 namespace Voting.Lib.Testing.Mocks;
@@ -28,6 +30,25 @@ public static class ServiceCollectionExtensions
         services.RemoveAll<TService>();
         services.TryAddSingleton<TMock>();
         services.AddSingleton<TService>(sp => sp.GetRequiredService<TMock>());
+        return services;
+    }
+
+    /// <summary>
+    /// Replaces all instances of TService with a singleton instance of a mock.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">The configuration method to setup the mock.</param>
+    /// <typeparam name="TService">The type of the service to be replaced.</typeparam>
+    /// <returns>The updated service collection.</returns>
+    public static IServiceCollection AddMock<TService>(this IServiceCollection services, Action<Mock<TService>> configure)
+        where TService : class
+    {
+        services.RemoveAll<TService>();
+
+        var mock = new Mock<TService>();
+        configure(mock);
+        services.AddSingleton(mock);
+        services.AddSingleton(mock.Object);
         return services;
     }
 

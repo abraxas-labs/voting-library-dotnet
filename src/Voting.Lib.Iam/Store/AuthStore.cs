@@ -18,6 +18,7 @@ internal sealed class AuthStore : IAuth, IAuthStore
     private readonly ILogger<AuthStore> _logger;
     private User _user = new();
     private Tenant _tenant = new();
+    private string _accessToken = string.Empty;
     private IReadOnlyCollection<string> _roles = Array.Empty<string>();
 
     public AuthStore(ILogger<AuthStore> logger)
@@ -35,10 +36,13 @@ internal sealed class AuthStore : IAuth, IAuthStore
     public Tenant Tenant => GetAuthValue(_tenant);
 
     /// <inheritdoc />
+    public string AccessToken => GetAuthValue(_accessToken);
+
+    /// <inheritdoc />
     public IReadOnlyCollection<string> Roles => GetAuthValue(_roles);
 
     /// <inheritdoc />
-    public void SetValues(User user, Tenant tenant, IEnumerable<string>? roles)
+    public void SetValues(string accessToken, User user, Tenant tenant, IEnumerable<string>? roles)
     {
         if (IsAuthenticated)
         {
@@ -47,6 +51,7 @@ internal sealed class AuthStore : IAuth, IAuthStore
         }
 
         IsAuthenticated = true;
+        _accessToken = accessToken;
         _user = user;
         _tenant = tenant;
         _roles = roles?.ToArray() ?? Array.Empty<string>();

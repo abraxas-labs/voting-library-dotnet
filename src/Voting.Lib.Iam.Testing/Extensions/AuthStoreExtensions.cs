@@ -14,11 +14,12 @@ public static class AuthStoreExtensions
     /// Set the current authentication values. Only call this method once per request/scope.
     /// </summary>
     /// <param name="authStore">The auth store.</param>
+    /// <param name="subjectAccessToken">The access token of the user.</param>
     /// <param name="userId">The current user ID.</param>
     /// <param name="tenantId">The current tenant ID.</param>
     /// <param name="roles">The roles of the current user.</param>
-    public static void SetValues(this IAuthStore authStore, string userId, string tenantId, IEnumerable<string>? roles)
+    public static void SetValues(this IAuthStore authStore, string subjectAccessToken, string userId, string tenantId, IEnumerable<string>? roles)
     {
-        authStore.SetValues(new() { Loginid = userId }, new() { Id = tenantId }, roles);
+        authStore.SetValues(subjectAccessToken, new() { Loginid = userId }, new() { Id = tenantId }, roles);
     }
 }

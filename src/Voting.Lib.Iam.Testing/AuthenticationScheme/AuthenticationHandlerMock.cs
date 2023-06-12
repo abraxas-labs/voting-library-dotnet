@@ -87,7 +87,7 @@ public class AuthenticationHandlerMock : SecureConnectHandler
         var tenant = await TenantService.GetTenant(tenantId, true) ?? new() { Id = tenantId };
 
         // the usage of the AuthStore should be Optional
-        ServiceProvider.GetService<IAuthStore>()?.SetValues(user, tenant, roles);
+        ServiceProvider.GetService<IAuthStore>()?.SetValues("mock-token", user, tenant, roles);
 
         return AuthenticateResult.Success(
                 new AuthenticationTicket(

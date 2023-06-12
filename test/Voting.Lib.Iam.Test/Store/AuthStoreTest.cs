@@ -19,7 +19,7 @@ public class AuthStoreTest
         var logger = new MockLogger<AuthStore>();
         var authStore = new AuthStore(logger);
         authStore.IsAuthenticated.Should().BeFalse();
-        authStore.SetValues(new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
         authStore.Roles.Should().BeEquivalentTo("Role1", "Role2");
         authStore.Tenant.Name.Should().Be("TenantName");
         authStore.User.Firstname.Should().Be("firstName");
@@ -43,9 +43,9 @@ public class AuthStoreTest
         var logger = new MockLogger<AuthStore>();
         var authStore = new AuthStore(logger);
         authStore.IsAuthenticated.Should().BeFalse();
-        authStore.SetValues(new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
 
-        Assert.Throws<AlreadyAuthenticatedException>(() => authStore.SetValues(new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" }));
+        Assert.Throws<AlreadyAuthenticatedException>(() => authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" }));
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class AuthStoreTest
         var logger = new MockLogger<AuthStore>();
         var authStore = new AuthStore(logger);
         var roles = new[] { "Role1", "Role2" };
-        authStore.SetValues(new() { Firstname = "firstName", Lastname = "lastName" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
+        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
         using (authStore.StartLogScope())
         {
             logger.ActiveScopes.Should().HaveCount(1);

@@ -36,7 +36,7 @@ public class IamLoggingHandlerTest
         await using var app = builder.Build();
         app.Use((ctx, next) =>
         {
-            ctx.RequestServices.GetRequiredService<AuthStore>().SetValues(new User(), new Tenant { Id = "123" }, new[] { "Role1" });
+            ctx.RequestServices.GetRequiredService<AuthStore>().SetValues("mock-token", new User(), new Tenant { Id = "123" }, new[] { "Role1" });
             return next(ctx);
         });
         app.UseMiddleware<IamLoggingHandler>();

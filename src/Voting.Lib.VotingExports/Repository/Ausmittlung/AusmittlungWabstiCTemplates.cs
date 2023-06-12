@@ -214,6 +214,17 @@ public static class AusmittlungWabstiCTemplates
         ResultType = ResultType.MultiplePoliticalBusinessesResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
+
+    public static readonly TemplateModel SGAbstimmungsergebnisse = new TemplateModel
+    {
+        Key = "SG_Abstimmungsergebnisse",
+        Filename = "csv_Export_Detailergebnisse_{0}",
+        Description = "CSV_Detailergebnisse",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.Vote,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
 #pragma warning restore CS1591
 
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
@@ -236,5 +247,6 @@ public static class AusmittlungWabstiCTemplates
         SGGeschaefte,
         SGGemeinden,
         SGStaticGemeinden,
+        SGAbstimmungsergebnisse,
     };
 }

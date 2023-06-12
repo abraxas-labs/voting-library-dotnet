@@ -1,4 +1,4 @@
-# ✨ Changelog (`v10.12.5`)
+# ✨ Changelog (`v10.17.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v10.12.5
-Previous version ---- v7.26.10
+This version -------- v10.17.0
+Previous version ---- 
 Initial version ----- v7.7.37
-Total commits ------- 30
+Total commits ------- 7
 ```
+
+## [v10.17.0] - 2023-05-23
+
+### 🔄 Changed
+
+- add header propagation
+
+## [v10.16.1] - 2023-05-17
+
+### 🔄 Changed
+
+- action id with multiple aggregates
+
+## [v10.16.0] - 2023-05-15
+
+### 🔄 Changed
+
+- add mock service collection extension helper
+
+## [v10.15.0] - 2023-05-15
+
+### 🔄 Changed
+
+- add sg abstimmungsergebnisse report
+
+## [v10.14.0] - 2023-05-11
+
+### 🔄 Changed
+
+- add gRPC http handler extensions, add auth store access token, add pass through grpc auth
+
+## [v10.13.1] - 2023-05-10
+
+### 🔄 Changed
+
+- mark transaction scope as obsolete
+
+## [v10.13.0] - 2023-05-03
+
+### 🔄 Changed
+
+- add ech0045 swiss extension
 
 ## [v10.12.5] - 2023-04-03
 
@@ -228,24 +270,6 @@ BREAKING CHANGE: changed DmDoc API because of better streaming support
 
 ## [v7.25.0] - 2022-11-29
 
-### 🔄 Changed
-
-- add health check for event subscription failures
-
-## [v7.24.0] - 2022-11-28
-
-### 🔄 Changed
-
-- add aggregate repository handling and event metadata read changes
-
-## [v7.23.1] - 2022-11-23
-
-### 🔄 Changed
-
-- basis input validation
-
-## [v7.23.0] - 2022-11-22
-
 ### 🆕 Added
 
 - add grpc request logger tooling to record load testing playbooks
@@ -253,20 +277,6 @@ BREAKING CHANGE: changed DmDoc API because of better streaming support
 ### 🔄 Changed
 
 - introduce project wide variable for grpc packages to align package versions
-
-## [v7.22.0] - 2022-11-21
-
-### 🔄 Changed
-
-- apply virtual keyword for repository public methods.
-
-## [v7.21.1] - 2022-11-17
-
-### 🔄 Changed
-
-- make DOK Connector upload uri relative
-
-## [v7.21.0] - 2022-11-16
 
 ### 🆕 Added
 
@@ -324,6 +334,47 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v7.24.0] - 2022-11-28
+
+### 🔄 Changed
+
+- add aggregate repository handling and event metadata read changes
+
+## [v7.23.1] - 2022-11-23
+
+### 🔄 Changed
+
+- basis input validation
+
+## [v7.23.0] - 2022-11-22
+
+### 🆕 Added
+
+- add grpc request logger tooling to record load testing playbooks
+
+### 🔄 Changed
+
+- introduce project wide variable for grpc packages to align package versions
+
+## [v7.22.0] - 2022-11-21
+
+### 🔄 Changed
+
+- apply virtual keyword for repository public methods.
+
+## [v7.21.1] - 2022-11-17
+
+### 🔄 Changed
+
+- make DOK Connector upload uri relative
+
+## [v7.21.0] - 2022-11-16
+
+### 🔄 Changed
+
+- add TryGet method to export template repository
+- move XML validation into Voting.Lib.Common
 
 ## [v7.20.5] - 2022-11-11
 
