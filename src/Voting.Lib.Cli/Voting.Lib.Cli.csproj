@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(MsExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(MsExtensionsVersion)" />
   </ItemGroup>
 
   <ItemGroup>

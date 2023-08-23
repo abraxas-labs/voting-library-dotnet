@@ -11,9 +11,9 @@ namespace Voting.Lib.Common.Net;
 public class CertificatePinningConfig
 {
     /// <summary>
-    /// Gets or sets a collection of certificate pins.
+    /// Gets a collection of certificate pins.
     /// </summary>
-    public List<DomainCertificatePinning> Pins { get; set; } = new();
+    public List<DomainCertificatePinning> Pins { get; } = new();
 
     /// <summary>
     /// Gets or sets a value indicating whether pinning is required for all requests / authorities.

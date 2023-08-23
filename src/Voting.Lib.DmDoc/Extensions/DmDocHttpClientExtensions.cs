@@ -52,7 +52,7 @@ internal static class DmDocHttpClientExtensions
         CancellationToken ct = default)
         where TResponse : DmDocApiResponse
     {
-        using var response = await client.PutAsync(url, null!, ct).ConfigureAwait(false);
+        using var response = await client.PutAsync(url, null, ct).ConfigureAwait(false);
         await response.EnsureSuccessStatusOrThrowDmDocEx().ConfigureAwait(false);
 
         var responseContent = await response.Content.ReadFromJsonAsync<TResponse>(DmDocJsonOptions.Instance, ct).ConfigureAwait(false);

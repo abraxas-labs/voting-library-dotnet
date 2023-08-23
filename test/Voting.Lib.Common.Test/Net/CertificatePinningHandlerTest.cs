@@ -3,11 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Voting.Lib.Common.Net;
 using Xunit;
@@ -30,6 +32,28 @@ public class CertificatePinningHandlerTest : IDisposable
         }
 
         GC.SuppressFinalize(this);
+    }
+
+    [Fact]
+    public void WithEnvironmentVariablesCaseInsensitiveShouldBindCorrectly()
+    {
+        var (cert, chain) = CreateCertificateWithChain();
+        var chainPublicKey = chain.ChainElements[0].Certificate.GetPublicKeyString();
+        Environment.SetEnvironmentVariable("Pins__0__PublicKeys__0", cert.GetPublicKeyString().ToLowerInvariant());
+        Environment.SetEnvironmentVariable("Pins__0__ChainPublicKeys__0__PublicKeys__0", chainPublicKey.ToLowerInvariant());
+
+        var configBuilder = new ConfigurationBuilder();
+        configBuilder.AddEnvironmentVariables();
+        var cfg = configBuilder.Build();
+        var certificateCfg = cfg.Get<CertificatePinningConfig>();
+        certificateCfg.Pins.Should().HaveCount(1);
+
+        var pin = certificateCfg.Pins[0];
+        pin.PublicKeys.Contains(cert.GetPublicKeyString()).Should().BeTrue();
+
+        pin.ChainPublicKeys.Should().HaveCount(1);
+        var chainPublicKeySet = pin.ChainPublicKeys!.Single();
+        chainPublicKeySet.PublicKeys.Contains(chainPublicKey).Should().BeTrue();
     }
 
     [Fact]
@@ -56,8 +80,8 @@ public class CertificatePinningHandlerTest : IDisposable
             {
                 new()
                 {
-                    Authorities = new() { "voting.example.com" },
-                    PublicKeys = new() { cert.GetPublicKeyString() },
+                    Authorities = { "voting.example.com" },
+                    PublicKeys = { cert.GetPublicKeyString() },
                 },
             },
         };
@@ -122,7 +146,7 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
+            Authorities = { "voting.example.com" },
         });
 
         Handle(config, cert, chain)
@@ -159,7 +183,7 @@ public class CertificatePinningHandlerTest : IDisposable
             {
                 new()
                 {
-                    Authorities = new() { "voting.example.com" },
+                    Authorities = { "voting.example.com" },
                     AllowWithoutAnyPins = true,
                 },
             },
@@ -177,8 +201,25 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
-            PublicKeys = new() { cert.GetPublicKeyString() },
+            Authorities = { "voting.example.com" },
+            PublicKeys = { cert.GetPublicKeyString() },
+        });
+
+        Handle(config, cert, chain)
+            .Should()
+            .BeTrue();
+    }
+
+    [Fact]
+    public void PinnedCertificateLowerPublicKeyShouldReturnTrue()
+    {
+        var config = new CertificatePinningConfig();
+        var (cert, chain) = CreateCertificateWithChain();
+
+        config.Pins.Add(new DomainCertificatePinning
+        {
+            Authorities = { "voting.example.com" },
+            PublicKeys = { cert.GetPublicKeyString().ToLowerInvariant() },
         });
 
         Handle(config, cert, chain)
@@ -194,8 +235,8 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
-            PublicKeys = new() { UnknownPublicKey, cert.GetPublicKeyString() },
+            Authorities = { "voting.example.com" },
+            PublicKeys = { UnknownPublicKey, cert.GetPublicKeyString() },
         });
 
         Handle(config, cert, chain)
@@ -211,8 +252,8 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
-            PublicKeys = new() { UnknownPublicKey },
+            Authorities = { "voting.example.com" },
+            PublicKeys = { UnknownPublicKey },
         });
 
         Handle(config, cert, chain)
@@ -228,7 +269,7 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
+            Authorities = { "voting.example.com" },
             ChainPublicKeys = new(),
         });
 
@@ -245,10 +286,30 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
+            Authorities = { "voting.example.com" },
             ChainPublicKeys = new()
             {
-                new() { PublicKeys = new() { chain.ChainElements[1].Certificate.GetPublicKeyString() } },
+                new() { PublicKeys = { chain.ChainElements[1].Certificate.GetPublicKeyString() } },
+            },
+        });
+
+        Handle(config, cert, chain)
+            .Should()
+            .BeTrue();
+    }
+
+    [Fact]
+    public void PinnedChainLowerPublicKeyShouldReturnTrue()
+    {
+        var config = new CertificatePinningConfig();
+        var (cert, chain) = CreateCertificateWithChain();
+
+        config.Pins.Add(new DomainCertificatePinning
+        {
+            Authorities = { "voting.example.com" },
+            ChainPublicKeys = new()
+            {
+                new() { PublicKeys = { chain.ChainElements[1].Certificate.GetPublicKeyString().ToLowerInvariant() } },
             },
         });
 
@@ -265,15 +326,12 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
+            Authorities = { "voting.example.com" },
             ChainPublicKeys = new()
             {
                 new()
                 {
-                    PublicKeys = new()
-                    {
-                        UnknownPublicKey,
-                    },
+                    PublicKeys = { UnknownPublicKey },
                 },
             },
         });
@@ -308,8 +366,8 @@ public class CertificatePinningHandlerTest : IDisposable
             {
                 new()
                 {
-                    Authorities = new() { "voting.example.com" },
-                    PublicKeys = new() { cert.GetPublicKeyString() },
+                    Authorities = { "voting.example.com" },
+                    PublicKeys = { cert.GetPublicKeyString() },
                     DangerouslyAcceptAnyCertificate = true,
                 },
             },
@@ -333,12 +391,12 @@ public class CertificatePinningHandlerTest : IDisposable
 
         config.Pins.Add(new DomainCertificatePinning
         {
-            Authorities = new() { "voting.example.com" },
+            Authorities = { "voting.example.com" },
             ChainPublicKeys = new()
             {
                 new()
                 {
-                    PublicKeys = new()
+                    PublicKeys =
                     {
                         UnknownPublicKey,
                         chain.ChainElements[1].Certificate.GetPublicKeyString(),
@@ -362,8 +420,8 @@ public class CertificatePinningHandlerTest : IDisposable
                 SslPolicyErrors.None);
     }
 
-    private CertificatePinningHandler CreateHandler(CertificatePinningConfig config) =>
-        new(config, NullLogger<CertificatePinningHandler>.Instance);
+    private CertificatePinningHandler CreateHandler(CertificatePinningConfig config)
+        => new(config, NullLogger<CertificatePinningHandler>.Instance);
 
     private (X509Certificate2 Cert, X509Chain Chain) CreateCertificateWithChain()
     {

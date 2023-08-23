@@ -1,6 +1,7 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -122,7 +123,7 @@ public class CertificatePinningHandler
             return true;
         }
 
-        var chainPks = chain.ChainElements.Select(x => x.Certificate.GetPublicKeyString()).ToHashSet();
+        var chainPks = chain.ChainElements.Select(x => x.Certificate.GetPublicKeyString()).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         // for each chain public key set at least one public key must be present in the chain
         if (pin.ChainPublicKeys.All(publicKeySet => publicKeySet.PublicKeys.Any(pk => chainPks.Contains(pk))))

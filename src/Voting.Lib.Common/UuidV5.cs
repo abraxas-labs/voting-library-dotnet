@@ -4,6 +4,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Voting.Lib.Common.Extensions;
 
 namespace Voting.Lib.Common;
 
@@ -46,7 +47,7 @@ public static class UuidV5
         hasher.TransformBlock(namespaceBytes, 0, namespaceBytes.Length, null, 0);
         hasher.TransformFinalBlock(name, 0, name.Length);
 
-        var guidBytes = new byte[16];
+        var guidBytes = new byte[GuidExtensions.GuidByteLength];
         Array.Copy(
             hasher.Hash ?? throw new InvalidOperationException(nameof(hasher.Hash) + " is null, this should never happen for a sha1 hash after the final block"),
             0,

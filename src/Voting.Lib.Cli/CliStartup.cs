@@ -18,6 +18,8 @@ namespace Voting.Lib.Cli;
 public class CliStartup
 {
     private const string DefaultAppSettingsName = "appsettings.json";
+    private const string EnvironmentAppSettingsFormat = "appsettings.{0}.json";
+    private const string NetCoreEnvironmentVariableName = "NETCORE_ENVIRONMENT";
 
     /// <summary>
     /// Registers all services of the app.
@@ -34,11 +36,14 @@ public class CliStartup
     /// Builds the configuration.
     /// By default json files, environment variables and command line args are added.
     /// </summary>
+    /// <typeparam name="TStartup">The type from the assembly to search for a user secret.</typeparam>
     /// <param name="args">The cli arguments.</param>
     /// <returns>The built configuration.</returns>
-    public virtual IConfiguration BuildConfig(string[] args)
+    public virtual IConfiguration BuildConfig<TStartup>(string[] args)
+        where TStartup : CliStartup
     {
         var configurationBuilder = new ConfigurationBuilder();
+        var environment = Environment.GetEnvironmentVariable(NetCoreEnvironmentVariableName);
 
         configurationBuilder.AddJsonFile(
             Path.Combine(AppContext.BaseDirectory, DefaultAppSettingsName),
@@ -48,7 +53,12 @@ public class CliStartup
             DefaultAppSettingsName,
             optional: true,
             reloadOnChange: false);
+        configurationBuilder.AddJsonFile(
+            string.Format(EnvironmentAppSettingsFormat, environment),
+            optional: true,
+            reloadOnChange: false);
 
+        configurationBuilder.AddUserSecrets<TStartup>();
         configurationBuilder.AddEnvironmentVariables();
         configurationBuilder.AddCommandLine(args);
         return configurationBuilder.Build();

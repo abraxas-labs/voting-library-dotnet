@@ -15,7 +15,7 @@ public class AsymmetricAlgorithmAdapterMock : IAsymmetricAlgorithmAdapter<EcdsaP
     private const int KeyIdMockStartIndex = 47;
     private const int KeyIdMockLength = 24;
 
-    private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
+    private readonly HashAlgorithmName _hashAlgorithm;
     private readonly string[] _pkcs8PrivateKeyBase64Store =
     {
         "MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBJ6bIsxdpJARUdCgNZWDtYisSSN7UKvBFPxxTPhZfesFsnDO4fNNE5ux99wnQwR3wIqdHR2e8l/xtRBgfhUmUBEehgYkDgYYABAH7PeX89h5QiRJtN2dRsnmB5zkc+REd6o7CXjWo0SkkOELNFLrTe4LHYDn+6VGJXqonfSCiZFndQRFASeoqyPrqrQDmOPDr3VUL1TWuA1OdzSLszZEjqP7JL1gpls45n17c7VZ8fCBoN2kSmHCr3+Iop/d0fCXYV7FPoYBFFFlB4jIY8g==",
@@ -26,6 +26,23 @@ public class AsymmetricAlgorithmAdapterMock : IAsymmetricAlgorithmAdapter<EcdsaP
     };
 
     private int _currentKeyIndex;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsymmetricAlgorithmAdapterMock"/> class.
+    /// </summary>
+    public AsymmetricAlgorithmAdapterMock()
+    {
+        _hashAlgorithm = HashAlgorithmName.SHA512;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsymmetricAlgorithmAdapterMock"/> class.
+    /// </summary>
+    /// <param name="hashAlgorithm">The hash algorithm to use.</param>
+    public AsymmetricAlgorithmAdapterMock(HashAlgorithmName hashAlgorithm)
+    {
+        _hashAlgorithm = hashAlgorithm;
+    }
 
     /// <summary>
     /// Creates a random key from a pool of private keys (not truly random).

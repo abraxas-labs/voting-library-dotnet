@@ -49,7 +49,53 @@ public static class SchedulerServiceCollectionExtensions
         }
 
         services.TryAddScoped<TJob>();
-        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<SchedulerService<TJob>>(sp, config));
+        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<IntervalSchedulerService<TJob>>(sp, config));
+        services.TryAddSingleton<JobRunner>();
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a cron job to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="cronSchedule">The cron schedule in which the job should run.</param>
+    /// <param name="cronTimeZone">The time zone in which the cron schedule should be evaluated.</param>
+    /// <typeparam name="TJob">The type of job to run.</typeparam>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddCronJob<TJob>(
+        this IServiceCollection services,
+        string cronSchedule,
+        string cronTimeZone = "Europe/Zurich")
+        where TJob : class, IScheduledJob
+    {
+        return services.AddCronJob<TJob>(new CronJobConfig { CronSchedule = cronSchedule, CronTimeZone = cronTimeZone });
+    }
+
+    /// <summary>
+    /// Adds a cron job to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="config">The job configuration.</param>
+    /// <typeparam name="TJob">The type of job to run.</typeparam>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddCronJob<TJob>(
+        this IServiceCollection services,
+        ICronJobConfig config)
+        where TJob : class, IScheduledJob
+    {
+        if (string.IsNullOrEmpty(config.CronSchedule))
+        {
+            throw new ValidationException($"{nameof(config.CronSchedule)} should not be empty");
+        }
+
+        if (string.IsNullOrEmpty(config.CronTimeZone))
+        {
+            throw new ValidationException($"{nameof(config.CronTimeZone)} should not be empty");
+        }
+
+        services.TryAddScoped<TJob>();
+        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<CronSchedulerService<TJob>>(sp, config));
+        services.TryAddSingleton<JobRunner>();
         return services;
     }
 }

@@ -33,6 +33,17 @@ public static class HttpClientBuilderExtensions
     }
 
     /// <summary>
+    /// Adds the <see cref="GrpcPathPrefixHandler"/> configured with the given path prefix.
+    /// </summary>
+    /// <param name="builder">The http client builder.</param>
+    /// <param name="pathPrefix">The path prefix to add to the request uri.</param>
+    /// <returns>The updated http client builder.</returns>
+    public static IHttpClientBuilder ConfigureGrpcPathPrefixHandler(this IHttpClientBuilder builder, string pathPrefix)
+    {
+        return builder.AddHttpMessageHandler(_ => new GrpcPathPrefixHandler(pathPrefix));
+    }
+
+    /// <summary>
     /// Configures pass through authentication.
     /// Adds the info from <see cref="Voting.Lib.Iam.Store.IAuth"/> to the call.
     /// </summary>

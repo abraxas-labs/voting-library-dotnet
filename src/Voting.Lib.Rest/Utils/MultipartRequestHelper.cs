@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text.Json;
@@ -54,9 +55,9 @@ public class MultipartRequestHelper
     }
 
     /// <summary>
-    /// Reads a multipart http request with one file section.
+    /// Reads a multipart HTTP request with one file section. The section needs to be named like <see cref="FormFieldNameFile"/>.
     /// </summary>
-    /// <param name="request">The http request to read data from.</param>
+    /// <param name="request">The HTTP request to read data from.</param>
     /// <param name="processRequest">The function to process the request content.</param>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <returns>The read data.</returns>
@@ -65,42 +66,47 @@ public class MultipartRequestHelper
         HttpRequest request,
         Func<MultipartFile, Task<TResult>> processRequest)
     {
-        if (!IsMultipartContentType(request.ContentType))
+        await foreach (var section in ReadSections(request))
         {
-            throw new ValidationException("Not a multipart request");
-        }
-
-        var boundary = GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), ContentTypeLenghtLimit);
-        var reader = new MultipartReader(boundary, request.Body);
-
-        while (await reader.ReadNextSectionAsync().ConfigureAwait(false) is { } section)
-        {
-            if (!ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
-            {
-                throw new ValidationException("encountered request section without content disposition");
-            }
-
-            var sectionName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
-
-            if (!HasFileContentDisposition(contentDisposition)
-                || !FormFieldNameFile.Equals(sectionName, StringComparison.OrdinalIgnoreCase))
+            var multipartFile = ReadMultipartFile(section);
+            if (multipartFile == null || !FormFieldNameFile.Equals(multipartFile.FormFieldName, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
-            var fileName = ReadFileName(contentDisposition);
-            await using var fileBody = section.Body;
-            var data = new MultipartFile(fileName, fileBody);
-            return await processRequest(data).ConfigureAwait(false);
+            return await processRequest(multipartFile).ConfigureAwait(false);
         }
 
         throw new ValidationException($"No file uploaded. Use a multipart request with a section named {FormFieldNameFile}.");
     }
 
     /// <summary>
-    /// Reads a multipart http request with two sections. One with a file and one named data with the json encoded data.
+    /// Reads a multipart HTTP request with multiple file sections.
     /// </summary>
-    /// <param name="request">The http request to read data from.</param>
+    /// <param name="request">The HTTP request to read data from.</param>
+    /// <param name="processFile">The function to process the file.</param>
+    /// <returns>The read data.</returns>
+    /// <exception cref="ValidationException">If the request format or section does not match the expected format or sections.</exception>
+    public async Task ReadFiles(
+        HttpRequest request,
+        Func<MultipartFile, Task> processFile)
+    {
+        await foreach (var section in ReadSections(request))
+        {
+            var multipartFile = ReadMultipartFile(section);
+            if (multipartFile == null)
+            {
+                continue;
+            }
+
+            await processFile(multipartFile).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>
+    /// Reads a multipart HTTP request with two sections. One with a file and one named data with the json encoded data.
+    /// </summary>
+    /// <param name="request">The HTTP request to read data from.</param>
     /// <param name="processRequest">The function to process the request content.</param>
     /// <param name="processRequestWithoutFile">The function to process the request data if no file was provided.</param>
     /// <typeparam name="TData">The type of the json encoded request data.</typeparam>
@@ -112,16 +118,8 @@ public class MultipartRequestHelper
         Func<MultipartData<TData>, Task<TResult>> processRequest,
         Func<TData, Task<TResult>>? processRequestWithoutFile = null)
     {
-        if (!IsMultipartContentType(request.ContentType))
-        {
-            throw new ValidationException("Not a multipart request");
-        }
-
-        var boundary = GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), ContentTypeLenghtLimit);
-        var reader = new MultipartReader(boundary, request.Body);
-
         var data = new MultipartRequestData<TData>();
-        while (await reader.ReadNextSectionAsync().ConfigureAwait(false) is { } section)
+        await foreach (var section in ReadSections(request))
         {
             var fileAndRequestData = await ProcessSection(section, data).ConfigureAwait(false);
             if (fileAndRequestData != null)
@@ -141,6 +139,38 @@ public class MultipartRequestHelper
         }
 
         return await processRequestWithoutFile(data.RequestData).ConfigureAwait(false);
+    }
+
+    private static async IAsyncEnumerable<MultipartSection> ReadSections(HttpRequest request)
+    {
+        if (!IsMultipartContentType(request.ContentType))
+        {
+            throw new ValidationException("Not a multipart request");
+        }
+
+        var boundary = GetBoundary(MediaTypeHeaderValue.Parse(request.ContentType), ContentTypeLenghtLimit);
+        var reader = new MultipartReader(boundary, request.Body);
+        while (await reader.ReadNextSectionAsync().ConfigureAwait(false) is { } section)
+        {
+            yield return section;
+        }
+    }
+
+    private static MultipartFile? ReadMultipartFile(MultipartSection section)
+    {
+        if (!ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
+        {
+            throw new ValidationException("encountered request section without content disposition");
+        }
+
+        var sectionName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
+        if (!HasFileContentDisposition(contentDisposition))
+        {
+            return null;
+        }
+
+        var fileName = ReadFileName(contentDisposition);
+        return new MultipartFile(fileName, section.Body, sectionName);
     }
 
     private static string ReadFileName(ContentDispositionHeaderValue contentDisposition)
@@ -237,8 +267,7 @@ public class MultipartRequestHelper
         }
 
         var fileName = ReadFileName(contentDisposition);
-        await using var fileBody = section.Body;
-        return new MultipartData<TData>(fileName, fileBody, data.RequestData);
+        return new MultipartData<TData>(fileName, section.Body, data.RequestData);
     }
 
     private async Task<T> ReadSectionAsJson<T>(MultipartSection section)

@@ -1,6 +1,8 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
+using System.Buffers;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,6 +14,8 @@ namespace Voting.Lib.Common;
 /// </summary>
 public static class HashUtil
 {
+    private const int Sha256Length = 256 / 8;
+
     /// <summary>
     /// Calculates the SHA256 hash of the input.
     /// </summary>
@@ -19,9 +23,30 @@ public static class HashUtil
     /// <returns>Returns the SHA256 hash of the input.</returns>
     public static string GetSHA256Hash(string input)
     {
-        using var sha256HashAlgorithm = SHA256.Create();
-        var data = sha256HashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
-        var sb = new StringBuilder();
+        var length = Encoding.UTF8.GetByteCount(input);
+        var data = ArrayPool<byte>.Shared.Rent(length);
+        try
+        {
+            var dataView = data.AsSpan(..length);
+            Encoding.UTF8.GetBytes(input, dataView);
+            Span<byte> hash = stackalloc byte[Sha256Length];
+            SHA256.HashData(dataView, hash);
+            return ToHexString(hash);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(data);
+        }
+    }
+
+    /// <summary>
+    /// Converts a byte sequence into a hex string.
+    /// </summary>
+    /// <param name="data">The byte sequence.</param>
+    /// <returns>The hex string.</returns>
+    public static string ToHexString(ReadOnlySpan<byte> data)
+    {
+        var sb = new StringBuilder(data.Length);
         foreach (var t in data)
         {
             sb.Append(t.ToString("x2", CultureInfo.InvariantCulture));

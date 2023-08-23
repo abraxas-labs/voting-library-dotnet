@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  
+
   <ItemGroup>
-    <PackageReference Include="eCH-0045-4-0" Version="2.0.14" />
+    <PackageReference Include="eCH-0045-4-0" Version="$(EaiEchLibVersion)" />
   </ItemGroup>
 
   <ItemGroup>

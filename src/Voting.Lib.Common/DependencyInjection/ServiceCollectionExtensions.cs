@@ -1,10 +1,13 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Net.Http;
+using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
+using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Common;
 using Voting.Lib.Common.Cache;
@@ -128,4 +131,56 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TService>(sp => sp.GetRequiredService<TImpl>());
         return services;
     }
+
+    /// <summary>
+    /// Adds an object pool to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="activator">An activator function to create new instances.</param>
+    /// <param name="reset">A reset function to reset an object instance.</param>
+    /// <typeparam name="T">The type of object to pool.</typeparam>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddObjectPool<T>(this IServiceCollection services, Func<T> activator, Action<T> reset)
+        where T : class
+        => services.AddObjectPool(new LambdaPooledObjectPolicy<T>(activator, reset));
+
+    /// <summary>
+    /// Adds an object pool with a default policy to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <typeparam name="T">The type of object to pool.</typeparam>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddObjectPool<T>(this IServiceCollection services)
+        where T : class, new()
+        => services.AddObjectPool(new DefaultPooledObjectPolicy<T>());
+
+    /// <summary>
+    /// Adds an object pool to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="policy">The policy used to activate and reset object instances.</param>
+    /// <typeparam name="T">The type of object to pool.</typeparam>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddObjectPool<T>(this IServiceCollection services, IPooledObjectPolicy<T> policy)
+        where T : class
+    {
+        services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+        services.TryAddSingleton(policy);
+        services.TryAddSingleton(static sp =>
+        {
+            var provider = sp.GetRequiredService<ObjectPoolProvider>();
+            var policy = sp.GetRequiredService<IPooledObjectPolicy<T>>();
+            return provider.Create(policy);
+        });
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="HashBuilder"/> pool.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="hashAlgorithmName">The hash algorithm name.</param>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddHashBuilderPool(this IServiceCollection services, HashAlgorithmName hashAlgorithmName)
+        => services.AddObjectPool(() => new HashBuilder(hashAlgorithmName), static x => x.GetHashAndReset());
 }

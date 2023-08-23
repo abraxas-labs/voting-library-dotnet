@@ -9,4 +9,5 @@ namespace Voting.Lib.Rest.Files;
 /// </summary>
 /// <param name="FileName">The name of the uploaded file.</param>
 /// <param name="Content">The content of the uploaded file.</param>
-public record MultipartFile(string? FileName, Stream Content);
+/// <param name="FormFieldName">The name of the form field in which this file was uploaded.</param>
+public record MultipartFile(string? FileName, Stream Content, string FormFieldName);

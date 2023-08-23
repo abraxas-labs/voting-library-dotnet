@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MsExtensionsVersion)" />
+    <PackageReference Include="Cronos" Version="0.7.1" />
   </ItemGroup>
 
   <ItemGroup>

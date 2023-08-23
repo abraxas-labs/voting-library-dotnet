@@ -35,7 +35,7 @@ public static class CliApplication
     {
         EnvironmentVariablesFixer.FixDotEnvironmentVariables();
         var startup = new TStartup();
-        var config = startup.BuildConfig(args);
+        var config = startup.BuildConfig<TStartup>(args);
 
         var services = new ServiceCollection();
         startup.ConfigureServices(services, config);

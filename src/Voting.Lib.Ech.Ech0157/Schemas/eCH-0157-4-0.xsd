@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2010 rel. 3 sp1 (http://www.altova.com) von Martin Stingelin (Stingelin Informatik GmbH) bearbeitet -->
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (http://www.altova.com) by Martin Stingelin (Stingelin Informatik GmbH) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by BITUSER (Bundesamt für Informatik und Telekommunikation) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0157="http://www.ech.ch/xmlns/eCH-0157/4" xmlns:eCH-0058="http://www.ech.ch/xmlns/eCH-0058/5" xmlns:eCH-0155="http://www.ech.ch/xmlns/eCH-0155/4" targetNamespace="http://www.ech.ch/xmlns/eCH-0157/4" elementFormDefault="qualified" attributeFormDefault="unqualified" version="4.0">
+	<xs:annotation>
+		<xs:documentation>Ausgabedatum: 16.07.2018</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0058/5" schemaLocation="http://www.ech.ch/xmlns/eCH-0058/5/eCH-0058-5-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0155/4" schemaLocation="http://www.ech.ch/xmlns/eCH-0155/4/eCH-0155-4-0.xsd"/>
+	<xs:attribute name="minorVersion" type="xs:integer">
+		<xs:annotation>
+			<xs:documentation>This attribute is used for indicating the minor version of an XML Schema instance in a standardized way. It SHOULD only appear on the document element of XML Schema instances.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:complexType name="eventInitialDelivery">
+		<xs:sequence>
+			<xs:element name="contest" type="eCH-0155:contestType"/>
+			<xs:element name="electionGroupBallot" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="electionGroupIdentification" type="eCH-0155:electionIdentificationType" minOccurs="0"/>
+						<xs:element name="electionGroupDescription" type="eCH-0155:electionGroupDescriptionType" minOccurs="0"/>
+						<xs:element name="domainOfInfluenceIdentification" type="eCH-0155:domainOfInfluenceIdentificationType"/>
+						<xs:element name="electionGroupPosition" type="eCH-0155:electionGroupPositionType" minOccurs="0"/>
+						<xs:element name="electionInformation" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="election" type="eCH-0155:electionType"/>
+									<xs:element name="candidate" type="eCH-0155:candidateType" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element name="list" type="eCH-0155:listType" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element name="listUnion" type="eCH-0155:listUnionType" minOccurs="0" maxOccurs="unbounded"/>
+									<xs:element name="extension" type="eCH-0155:extensionType" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="extension" type="eCH-0155:extensionType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="delivery">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="deliveryHeader" type="eCH-0058:headerType"/>
+				<xs:element name="initialDelivery" type="eCH-0157:eventInitialDelivery"/>
+			</xs:sequence>
+			<xs:attribute ref="eCH-0157:minorVersion"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

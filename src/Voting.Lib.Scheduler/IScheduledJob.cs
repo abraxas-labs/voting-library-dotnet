@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Voting.Lib.Scheduler;
 
 /// <summary>
-/// A job that is scheduled to run in intervals.
+/// A job that is runs in the background.
 /// </summary>
 public interface IScheduledJob
 {

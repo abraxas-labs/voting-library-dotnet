@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Iam.AuthenticationScheme;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Services.ApiClient.Identity;
@@ -51,6 +52,27 @@ public static class ServiceCollectionExtensions
             .AddSecureConnectAuthorization()
             .AddSecureConnectAuthentication();
     }
+
+    /// <summary>
+    /// Configures the <see cref="SecureConnectAppHandlerConfig"/> as singleton.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="appHeader">The app header value.</param>
+    /// <returns>The same service collection.</returns>
+    public static IServiceCollection AddSecureConnectAppHandler(this IServiceCollection services, string appHeader)
+        => services.AddSecureConnectAppHandler(new SecureConnectAppHandlerConfig(appHeader));
+
+    /// <summary>
+    /// Configures the <see cref="SecureConnectAppHandlerConfig"/> as singleton and
+    /// registers a scoped <see cref="SecureConnectAppHandler"/>.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="config">The config to add as singleton.</param>
+    /// <returns>The same service collection.</returns>
+    public static IServiceCollection AddSecureConnectAppHandler(this IServiceCollection services, SecureConnectAppHandlerConfig config)
+        => services
+            .AddSingleton(config)
+            .AddScoped<SecureConnectAppHandler>();
 
     /// <summary>
     /// Configures a service account based on a <see cref="IConfiguration"/>.

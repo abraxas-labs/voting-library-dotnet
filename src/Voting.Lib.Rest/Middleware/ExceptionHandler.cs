@@ -63,6 +63,11 @@ public abstract class ExceptionHandler
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     protected virtual Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        if (context.Response.HasStarted)
+        {
+            return HandleExceptionWithStartedResponseAsync(context, exception);
+        }
+
         var problem = GetProblemDetails(exception);
         if (problem.Status == StatusCodes.Status500InternalServerError)
         {
@@ -80,6 +85,33 @@ public abstract class ExceptionHandler
         context.Response.ContentType = MediaTypeNames.Application.Json;
         context.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
         return context.Response.WriteAsync(result);
+    }
+
+    /// <summary>
+    /// Handles an exception if the response has already started.
+    /// Since the status code has already sent over the wire and cannot be changed anymore
+    /// we do our best and just abort the request which should be recognized by the client or result in a generic error.
+    /// </summary>
+    /// <param name="context">The http context.</param>
+    /// <param name="exception">The exception.</param>
+    /// <returns>A task representing the async operation.</returns>
+    protected virtual Task HandleExceptionWithStartedResponseAsync(HttpContext context, Exception exception)
+    {
+        var status = MapExceptionToStatus(exception);
+        if (status == StatusCodes.Status500InternalServerError)
+        {
+            _logger.LogError(exception, "Unhandled exception caused internal server error, aborted the response since it already started");
+        }
+        else
+        {
+            _logger.LogWarning(
+                exception,
+                "Unhandled exception mapped to http status code {StatusCode}, aborted the response since it has already started, cannot set the exception status code",
+                status);
+        }
+
+        context.Abort();
+        return Task.CompletedTask;
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-# ✨ Changelog (`v10.17.0`)
+# ✨ Changelog (`v11.7.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,172 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v10.17.0
-Previous version ---- 
+This version -------- v11.7.0
+Previous version ---- v10.17.0
 Initial version ----- v7.7.37
-Total commits ------- 7
+Total commits ------- 30
 ```
+
+## [v11.7.0] - 2023-08-22
+
+### 🔄 Changed
+
+- update eai and validation proto dependency to deterministic version
+
+## [v11.6.1] - 2023-08-22
+
+### 🔄 Changed
+
+- add form field names to MultipartRequestHelper
+
+## [v11.6.0] - 2023-08-22
+
+### 🔄 Changed
+
+- add ability to handle multiple files to MultipartRequestHelper
+
+## [v11.5.0] - 2023-08-15
+
+### 🆕 Added
+
+- add user secret support to configuration builder
+
+## [v11.4.0] - 2023-08-15
+
+### 🆕 Added
+
+- add iam app handler to pass the configured app header with every request
+
+## [v11.3.0] - 2023-08-15
+
+### 🆕 Added
+
+- add grpc path prefix delegation handler
+
+## [v11.2.0] - 2023-08-15
+
+### 🆕 Added
+
+- add junit test reporting services
+
+## [v11.1.1] - 2023-08-10
+
+### 🔄 Changed
+
+- add eCH-0157 extension for candidate additions.
+
+## [v11.1.0] - 2023-08-09
+
+### 🔄 Changed
+
+- deterministic build and include sha256 of binary into nuget package
+
+## [v11.0.0] - 2023-07-25
+
+BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
+
+## [v10.29.0] - 2023-07-12
+
+### 🔄 Changed
+
+- cron jobs
+
+## [v10.28.0] - 2023-07-11
+
+### 🔄 Changed
+
+- abort the request if the response has already started
+- !(VOTING-3367): add option to keep the writer open when writing eCH async enumerable data
+
+## [v10.27.1] - 2023-07-05
+
+### 🔄 Changed
+
+- use pkcs11 interop factory for automated target platform high level api discovery
+
+## [v10.27.0] - 2023-07-05
+
+### 🆕 Added
+
+- extended malware scanner service for string content
+
+## [v10.26.1] - 2023-07-03
+
+### 🔄 Changed
+
+- Change default AES algorithm from CBC to GCM. Refine asymmetric and symmetric naming conventions.
+
+## [v10.26.0] - 2023-06-30
+
+### 🆕 Added
+
+- malware scanner service
+
+## [v10.25.0] - 2023-06-28
+
+### 🔄 Changed
+
+- age utility to calculate age
+
+## [v10.24.0] - 2023-06-27
+
+### 🔄 Changed
+
+- ICollection to IReadOnlyCollection support
+
+## [v10.23.1] - 2023-06-26
+
+### 🔄 Changed
+
+- ignore casing when comparing hex public keys of certificate pins
+
+## [v10.23.0] - 2023-06-21
+
+### 🔄 Changed
+
+- add Parse method to Ahvn13
+
+## [v10.22.1] - 2023-06-21
+
+### 🔄 Changed
+
+- extend byte converter and hash builder with delimited operations.
+
+## [v10.22.0] - 2023-06-15
+
+### 🔄 Changed
+
+- add hash builder pool
+
+## [v10.21.0] - 2023-06-13
+
+### 🔄 Changed
+
+- nullable support for byte converter and hash builder
+
+## [v10.20.0] - 2023-06-13
+
+### 🔄 Changed
+
+- hash builder and imporved performance for byte converter
+
+## [v10.19.1] - 2023-06-13
+
+### 🔄 Changed
+
+- extend complex text input validation rule, escape characters
+
+## [v10.19.0] - 2023-06-12
+
+### 🔄 Changed
+
+- add AHVN13
+
+## [v10.18.0] - 2023-06-06
+
+### 🔄 Changed
+
+- hsm public key extraction api
 
 ## [v10.17.0] - 2023-05-23
 
@@ -114,11 +275,88 @@ Total commits ------- 7
 
 ## [v10.9.0] - 2023-02-23
 
+### 🆕 Added
+
+- add date only today value
+
+BREAKING CHANGE: added bulk root parameter
+
+BREAKING CHANGE: export template models domain of influence types is now a readonly set
+
+### 🆕 Added
+
+- add overload for single file result creation to be independent of IFile
+
+BREAKING CHANGE: changed DmDoc API because of better streaming support
+
+### 🆕 Added
+
+- add headers to grpc request log output
+
+### 🆕 Added
+
+- add grpc request logger tooling to record load testing playbooks
+
 ### 🔄 Changed
 
-- move method to match adjacent overload
-- acquire async lock with timeout
-- rest upload helpers
+- introduce project wide variable for grpc packages to align package versions
+
+### 🆕 Added
+
+- add log messages for debugging
+- add configure await to signal intention for continuation
+
+### 🔄 Changed
+
+- adapt correlation id header to changed name for logging
+
+### 🆕 Added
+
+- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+- powershell client generator script
+
+### 🔄 Changed
+
+- exclude parameters for successful generation
+
+### 🆕 Added
+
+- CORS configuration support
+
+these are for example eventstore internal events which are not interesting to voting at all
+
+use the overload without any position, since the position is unsigned and always exclusive
+
+BREAKING CHANGE: activity protocol by event store
+
+BREAKING CHANGE: persistent subscription apis removed
+
+BREAKING CHANGE: event signature
+
+BREAKING CHANGE: removed user store dependency and used generated swagger clients
+
+Replaces the userstore dependency with swagger generated clients
+
+Eventstore should use the default http client builder to ensure certificate pinning
+This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
+
+BREAKING CHANGE: VOTING-638 net6.0 update
+
+note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
+
+BREAKING CHANGE: dotnet 5
+
+also improve waiting for event store connection
+
+also fixed aggregate repo
 
 ## [v10.8.0] - 2023-02-23
 
@@ -270,70 +508,9 @@ BREAKING CHANGE: changed DmDoc API because of better streaming support
 
 ## [v7.25.0] - 2022-11-29
 
-### 🆕 Added
-
-- add grpc request logger tooling to record load testing playbooks
-
 ### 🔄 Changed
 
-- introduce project wide variable for grpc packages to align package versions
-
-### 🆕 Added
-
-- add log messages for debugging
-- add configure await to signal intention for continuation
-
-### 🔄 Changed
-
-- adapt correlation id header to changed name for logging
-
-### 🆕 Added
-
-- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-- powershell client generator script
-
-### 🔄 Changed
-
-- exclude parameters for successful generation
-
-### 🆕 Added
-
-- CORS configuration support
-
-these are for example eventstore internal events which are not interesting to voting at all
-
-use the overload without any position, since the position is unsigned and always exclusive
-
-BREAKING CHANGE: activity protocol by event store
-
-BREAKING CHANGE: persistent subscription apis removed
-
-BREAKING CHANGE: event signature
-
-BREAKING CHANGE: removed user store dependency and used generated swagger clients
-
-Replaces the userstore dependency with swagger generated clients
-
-Eventstore should use the default http client builder to ensure certificate pinning
-This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
-
-BREAKING CHANGE: VOTING-638 net6.0 update
-
-note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
-
-BREAKING CHANGE: dotnet 5
-
-also improve waiting for event store connection
-
-also fixed aggregate repo
+- add health check for event subscription failures
 
 ## [v7.24.0] - 2022-11-28
 

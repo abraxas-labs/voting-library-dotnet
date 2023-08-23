@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.ServiceTokenHandling;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -71,6 +72,14 @@ public static class HttpClientBuilderExtensions
         builder.Services.Configure<SecureConnectServiceAccountOptions>(builder.Name, o => o.ApplyFrom(options));
         return builder.AddSecureConnectServiceToken();
     }
+
+    /// <summary>
+    /// Adds the <see cref="SecureConnectAppHandler"/> which adds app header name and value to the request headers.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <returns>The same builder.</returns>
+    public static IHttpClientBuilder AddSecureConnectAppHandler(this IHttpClientBuilder builder)
+        => builder.AddHttpMessageHandler<SecureConnectAppHandler>();
 
     private static ServiceTokenHttpMessageHandler BuildMessageHandler(
         IServiceProvider serviceProvider,

@@ -39,9 +39,15 @@ public class Ech0045Serializer
     /// <param name="writer">The writer.</param>
     /// <param name="voterList">The voter list without any voters.</param>
     /// <param name="persons">The voters.</param>
+    /// <param name="leaveWriterOpen">Whether to leave the writer open.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task WriteXml(PipeWriter writer, VoterListType voterList, IAsyncEnumerable<VotingPersonType> persons, CancellationToken ct)
+    public Task WriteXml(
+        PipeWriter writer,
+        VoterListType voterList,
+        IAsyncEnumerable<VotingPersonType> persons,
+        bool leaveWriterOpen,
+        CancellationToken ct)
     {
         var xmlData = VoterDelivery.Create(_deliveryHeaderProvider.BuildHeader(), voterList);
         voterList.Voter.Add(new VotingPersonType()); // add one prototype entry to be replaced
@@ -50,6 +56,7 @@ public class Ech0045Serializer
             Ech0045SerializerInfo.Voter,
             xmlData,
             persons,
+            leaveWriterOpen,
             BuildXmlAttributeOverrides(),
             ct);
     }

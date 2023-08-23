@@ -99,6 +99,7 @@ public class EchSerializer
     /// <param name="prototypeElementName">The XML element name of the items.</param>
     /// <param name="o">The object with exactly one prototype element.</param>
     /// <param name="elements">The elements which replace the prototype element.</param>
+    /// <param name="leaveOpen">Whether to leave the stream open.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="TRoot">The type of the xml root element.</typeparam>
@@ -109,10 +110,11 @@ public class EchSerializer
         XmlQualifiedName prototypeElementName,
         TRoot o,
         IAsyncEnumerable<TItem> elements,
+        bool leaveOpen = false,
         XmlAttributeOverrides? xmlAttributeOverrides = null,
         CancellationToken ct = default)
         where TItem : class
-        => WriteXmlWithElements(writer.AsStream(), prototypeElementName, o, elements, xmlAttributeOverrides, ct);
+        => WriteXmlWithElements(writer.AsStream(), prototypeElementName, o, elements, leaveOpen, xmlAttributeOverrides, ct);
 
     /// <summary>
     /// Writes an XML to the provided stream.
@@ -126,6 +128,7 @@ public class EchSerializer
     /// <param name="prototypeElementName">The XML element name of the items.</param>
     /// <param name="o">The object with exactly one prototype element.</param>
     /// <param name="elements">The elements which replace the prototype element.</param>
+    /// <param name="leaveOpen">Whether to leave the stream open.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="TRoot">The type of the xml root element.</typeparam>
@@ -136,6 +139,7 @@ public class EchSerializer
         XmlQualifiedName prototypeElementName,
         TRoot o,
         IAsyncEnumerable<TItem> elements,
+        bool leaveOpen = false,
         XmlAttributeOverrides? xmlAttributeOverrides = null,
         CancellationToken ct = default)
         where TItem : class
@@ -143,7 +147,7 @@ public class EchSerializer
         using var ms = RecyclableMemoryStreamManager.GetStream();
         WriteXml(ms, o, xmlAttributeOverrides, true);
         ms.Seek(0, SeekOrigin.Begin);
-        await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, xmlAttributeOverrides, ct);
+        await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, leaveOpen, xmlAttributeOverrides, ct);
     }
 
     private async Task CopyAndReplacePrototypeElement<T>(
@@ -151,6 +155,7 @@ public class EchSerializer
         Stream target,
         XmlQualifiedName elementName,
         IAsyncEnumerable<T> elements,
+        bool leaveTargetOpen,
         XmlAttributeOverrides? overrides,
         CancellationToken ct)
         where T : class
@@ -209,7 +214,7 @@ public class EchSerializer
         prototypeStream.Seek(0, SeekOrigin.Begin);
 
         using var prototypeReader = new StreamReader(prototypeStream);
-        await using var targetWriter = new StreamWriter(target, Encoding);
+        await using var targetWriter = new StreamWriter(target, Encoding, leaveOpen: leaveTargetOpen);
 
         // copy everything before the element to the target stream
         // -1 position, as we want to set the cursor before the element to skip

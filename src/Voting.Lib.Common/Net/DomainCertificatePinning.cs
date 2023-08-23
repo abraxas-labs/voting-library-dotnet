@@ -1,6 +1,7 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Collections.Generic;
 
 namespace Voting.Lib.Common.Net;
@@ -11,14 +12,14 @@ namespace Voting.Lib.Common.Net;
 public class DomainCertificatePinning
 {
     /// <summary>
-    /// Gets or sets a list to which domain authorities this pin configuration applies.
+    /// Gets list to which domain authorities this pin configuration applies.
     /// </summary>
-    public HashSet<string> Authorities { get; set; } = new();
+    public HashSet<string> Authorities { get; } = new();
 
     /// <summary>
-    /// Gets or sets a set of public keys which are valid for the specified <see cref="Authorities"/>.
+    /// Gets a set of public keys which are valid for the specified <see cref="Authorities"/>.
     /// </summary>
-    public HashSet<string>? PublicKeys { get; set; }
+    public HashSet<string> PublicKeys { get; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Gets or sets a set of required public key sets which need to be found in the certificate chain.
