@@ -64,12 +64,13 @@ public class AggregateRepositoryMock : IAggregateRepository
     public Task<TAggregate?> TryGetById<TAggregate>(Guid id)
         where TAggregate : BaseEventSourcingAggregate
     {
-        if (!_store.TryGetEvents(id, out var events))
+        var aggregate = _aggregateFactory.New<TAggregate>();
+
+        if (!_store.TryGetEvents(aggregate.AggregateName, id, out var events))
         {
             return Task.FromResult<TAggregate?>(null);
         }
 
-        var aggregate = _aggregateFactory.New<TAggregate>();
         foreach (var ev in events)
         {
             aggregate.ApplyEvent(ev);
@@ -106,7 +107,7 @@ public class AggregateRepositoryMock : IAggregateRepository
         var events = aggregate.GetUncommittedEvents().ToList();
         foreach (var ev in events)
         {
-            _store.AddEvent(aggregate.Id, ev);
+            _store.AddEvent(aggregate.AggregateName, aggregate.Id, ev);
             var eventWithMetadata = new EventWithMetadata(ev.Data, ev.Metadata, ev.Id);
             await _eventPublisher.Publish(aggregate.Id.ToString(), eventWithMetadata, null).ConfigureAwait(false);
         }
@@ -119,12 +120,13 @@ public class AggregateRepositoryMock : IAggregateRepository
     public Task<TAggregate> GetSnapshotById<TAggregate>(Guid id, DateTime endTimestampInclusive)
         where TAggregate : BaseEventSourcingAggregate
     {
-        if (!_store.TryGetEvents(id, out var events))
+        var aggregate = _aggregateFactory.New<TAggregate>();
+
+        if (!_store.TryGetEvents(aggregate.AggregateName, id, out var events))
         {
             throw new AggregateNotFoundException(id);
         }
 
-        var aggregate = _aggregateFactory.New<TAggregate>();
         foreach (var ev in events)
         {
             if (ev.Created > endTimestampInclusive)

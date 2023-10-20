@@ -104,10 +104,37 @@ public class Ahvn13
             return false;
         }
 
-        var digits = GetDigitsOfNumber(number);
+        var actualCheckDigit = CalculateChecksum(number);
+
+        // Last digit is the check digit
+        var expectedCheckDigit = number % 10;
+        return expectedCheckDigit == actualCheckDigit;
+    }
+
+    /// <summary>
+    /// Checks whether the supplied string is a valid AHVN13.
+    /// </summary>
+    /// <param name="s">The string to validate.</param>
+    /// <returns>Whether the string is a valid AHNV13.</returns>
+    public static bool IsValid([NotNullWhen(true)] string? s)
+    {
+        return
+            TryGetNumericValue(s, out var numberValue)
+            && IsValid(numberValue);
+    }
+
+    /// <summary>
+    /// Calculates the checksum of an ahv number.
+    /// Ignores the last digit, but the input needs to be a full ahvN13.
+    /// </summary>
+    /// <param name="ahvN13">A full 13 digit long ahv number.</param>
+    /// <returns>The calculated checksum for the provided ahvN13.</returns>
+    public static int CalculateChecksum(long ahvN13)
+    {
+        var digits = GetDigitsOfNumber(ahvN13);
         if (digits.Length != Ahvn13DigitCount || digits[0] != 7 || digits[1] != 5 || digits[2] != 6)
         {
-            return false;
+            return -1;
         }
 
         // For information on how to calculate the checksum, see
@@ -122,24 +149,7 @@ public class Ahvn13
         }
 
         // Calculate the difference to the next number divisible by ten
-        var actualCheckDigit = (10 - (calculatedChecksum % 10)) % 10;
-
-        // Last digit is the check digit
-        var expectedCheckDigit = digits[^1];
-
-        return expectedCheckDigit == actualCheckDigit;
-    }
-
-    /// <summary>
-    /// Checks whether the supplied string is a valid AHVN13.
-    /// </summary>
-    /// <param name="s">The string to validate.</param>
-    /// <returns>Whether the string is a valid AHNV13.</returns>
-    public static bool IsValid([NotNullWhen(true)] string? s)
-    {
-        return
-            TryGetNumericValue(s, out var numberValue)
-            && IsValid(numberValue);
+        return (10 - (calculatedChecksum % 10)) % 10;
     }
 
     /// <summary>

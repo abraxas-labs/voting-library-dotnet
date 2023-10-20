@@ -49,6 +49,7 @@ public static class ServiceCollectionExtensions
             .AddForwardRefScoped<IAuthStore, AuthStore>()
             .AddCache<User>(new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8) })
             .AddCache<Tenant>(new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8) })
+            .AddCache<UserRoles>(new() { AbsoluteExpirationRelativeToNow = config.RoleTokenExpirationTime })
             .AddSecureConnectAuthorization()
             .AddSecureConnectAuthentication();
     }

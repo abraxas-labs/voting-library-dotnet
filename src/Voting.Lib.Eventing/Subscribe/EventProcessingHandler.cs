@@ -51,7 +51,7 @@ public class EventProcessingHandler<TScope>
         using var logScope = _logger.BeginScope(new Dictionary<string, object>
         {
             ["Scope"] = subscription.ScopeName,
-            ["EventType"] = eventData.OriginalEvent.EventType,
+            ["EventType"] = eventData.Event.EventType,
             ["EventId"] = eventData.OriginalEvent.EventId,
             ["Position"] = eventData.OriginalEvent.Position,
             ["OriginalEventNumber"] = eventData.OriginalEventNumber,
@@ -70,7 +70,7 @@ public class EventProcessingHandler<TScope>
 
             var eventProcessingScope = scope.ServiceProvider.GetRequiredService<TScope>();
             await eventProcessingScope.Begin(eventData.OriginalEvent.Position, eventData.OriginalEventNumber).ConfigureAwait(false);
-            await processor.Process(eventData.Event, subscription.IsCatchUp).ConfigureAwait(false);
+            await processor.Process(eventData.Event.Data, subscription.IsCatchUp).ConfigureAwait(false);
             await eventProcessingScope.Complete(eventData.OriginalEvent.Position, eventData.OriginalEventNumber).ConfigureAwait(false);
             return true;
         }

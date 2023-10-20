@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Voting.Lib.Common.Configuration;
 
 namespace Voting.Lib.Common.Net;
 
@@ -28,6 +30,11 @@ public class DomainCertificatePinning
     public HashSet<PublicKeySet>? ChainPublicKeys { get; set; }
 
     /// <summary>
+    /// Gets or sets the health check configuration for the pinned authorities.
+    /// </summary>
+    public HttpProbeConfig HealthCheck { get; set; } = new();
+
+    /// <summary>
     /// Gets or sets a value indicating whether the configured <see cref="Authorities"/> are allow-listed,
     /// even when they don't have any pins configured.
     /// </summary>
@@ -41,4 +48,17 @@ public class DomainCertificatePinning
     internal bool HasPublicKeys => PublicKeys is { Count: > 0 };
 
     internal bool HasChainPublicKeys => ChainPublicKeys is { Count: > 0 };
+
+    internal IEnumerable<HttpProbeConfig> HealthCheckHttpProbes => Authorities.Select(authority => new HttpProbeConfig
+    {
+        Scheme = Uri.UriSchemeHttps,
+        Host = authority,
+        Path = HealthCheck.Path,
+        Method = HealthCheck.Method,
+        ExpectedResponseStatusCode = HealthCheck.ExpectedResponseStatusCode,
+        ExpectedResponseContent = HealthCheck.ExpectedResponseContent,
+        IsHealthCheckEnabled = HealthCheck.IsHealthCheckEnabled,
+        IsResponseStatusCheckEnabled = HealthCheck.IsResponseStatusCheckEnabled,
+        IsResponseContentCheckEnabled = HealthCheck.IsResponseContentCheckEnabled,
+    });
 }

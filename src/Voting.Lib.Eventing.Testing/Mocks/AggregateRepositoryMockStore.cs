@@ -9,11 +9,13 @@ using Voting.Lib.Eventing.Domain;
 namespace Voting.Lib.Eventing.Testing.Mocks;
 
 /// <summary>
-/// This is the in-memory mock store of the events which is registered as singleton.
+/// This is the in-memory mock store of the events.
 /// </summary>
 public class AggregateRepositoryMockStore
 {
-    private readonly Dictionary<Guid, List<IDomainEvent>> _eventPerAggregate = new();
+    // Multiple aggregates may have the same ID, we cannot simply store the aggregate ID
+    // Need to store the stream ID like in the real implementation.
+    private readonly Dictionary<string, List<IDomainEvent>> _eventPerAggregate = new();
 
     /// <summary>
     /// Clear all events.
@@ -23,12 +25,14 @@ public class AggregateRepositoryMockStore
     /// <summary>
     /// Try to get published events for an aggregate.
     /// </summary>
+    /// <param name="aggregateName">The name of the aggregate.</param>
     /// <param name="aggregateId">The aggregate ID.</param>
     /// <param name="events">The published events or null if no events have been published.</param>
     /// <returns>Returns true if events for the aggregate ID exist.</returns>
-    public bool TryGetEvents(Guid aggregateId, [MaybeNullWhen(false)] out IEnumerable<IDomainEvent> events)
+    public bool TryGetEvents(string aggregateName, Guid aggregateId, [MaybeNullWhen(false)] out IEnumerable<IDomainEvent> events)
     {
-        if (_eventPerAggregate.TryGetValue(aggregateId, out var domainEvents))
+        var streamName = BuildStreamName(aggregateName, aggregateId);
+        if (_eventPerAggregate.TryGetValue(streamName, out var domainEvents))
         {
             events = domainEvents;
             return true;
@@ -41,16 +45,21 @@ public class AggregateRepositoryMockStore
     /// <summary>
     /// Add an event for a specific aggregate to the mock store.
     /// </summary>
+    /// <param name="aggregateName">The name of the aggregate.</param>
     /// <param name="aggregateId">The aggregate ID.</param>
     /// <param name="ev">The event to add.</param>
-    public void AddEvent(Guid aggregateId, IDomainEvent ev)
+    public void AddEvent(string aggregateName, Guid aggregateId, IDomainEvent ev)
     {
-        if (_eventPerAggregate.TryGetValue(aggregateId, out var l))
+        var streamName = BuildStreamName(aggregateName, aggregateId);
+        if (_eventPerAggregate.TryGetValue(streamName, out var l))
         {
             l.Add(ev);
             return;
         }
 
-        _eventPerAggregate[aggregateId] = new List<IDomainEvent> { ev };
+        _eventPerAggregate[streamName] = new List<IDomainEvent> { ev };
     }
+
+    private string BuildStreamName(string aggregateName, Guid aggregateId)
+        => $"{aggregateName}-{aggregateId}";
 }

@@ -132,7 +132,12 @@ public class CertificatePinningHandler
             return true;
         }
 
-        _logger.LogError(SecurityLogging.SecurityEventId, "Could not find any pinned public key in certificate chain for {Authority}", authority);
+        _logger.LogError(
+            SecurityLogging.SecurityEventId,
+            "Could not find any pinned public key in certificate chain for {Authority}: {ReceivedCertChainPins}",
+            authority,
+            string.Join(", ", chainPks));
+
         return false;
     }
 
@@ -162,7 +167,12 @@ public class CertificatePinningHandler
             return true;
         }
 
-        _logger.LogError(SecurityLogging.SecurityEventId, "Invalid public key received for {Authority}", authority);
+        _logger.LogError(
+            SecurityLogging.SecurityEventId,
+            "Invalid public key received for {Authority}: {ReceivedCertPin}",
+            authority,
+            certificate.GetPublicKeyString());
+
         return false;
     }
 

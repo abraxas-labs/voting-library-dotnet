@@ -32,6 +32,26 @@ public static class AusmittlungPdfMajorityElectionTemplates
     };
 
     /// <summary>
+    /// Gets the counting circle e-voting protocol export template.
+    /// </summary>
+    public static readonly TemplateModel CountingCircleEVotingProtocol = new TemplateModel
+    {
+        Key = "majority_election_counting_circle_e_voting_protocol",
+        Filename = "Majorz_Gemeindeprotokoll_EVoting_{0}_{1}",
+        Description = "Gemeindeprotokoll E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.MajorityElection,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+            DomainOfInfluenceType.Bz,
+        },
+        ResultType = ResultType.CountingCircleResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
     /// Gets the end result protocol export template.
     /// </summary>
     public static readonly TemplateModel EndResultProtocol = new TemplateModel
@@ -39,6 +59,20 @@ public static class AusmittlungPdfMajorityElectionTemplates
         Key = "majority_election_end_result_protocol",
         Filename = "Majorz_Wahlprotokoll_{0}_{1}",
         Description = "Wahlprotokoll",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.MajorityElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the end result e-voting protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EndResultEVotingProtocol = new TemplateModel
+    {
+        Key = "majority_election_end_result_e_voting_protocol",
+        Filename = "Majorz_Wahlprotokoll_EVoting_{0}_{1}",
+        Description = "Wahlprotokoll E-Voting",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.MajorityElection,
         ResultType = ResultType.PoliticalBusinessResult,
@@ -96,7 +130,9 @@ public static class AusmittlungPdfMajorityElectionTemplates
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         CountingCircleProtocol,
+        CountingCircleEVotingProtocol,
         EndResultProtocol,
+        EndResultEVotingProtocol,
         EndResultDetailProtocol,
         EndResultDetailWithoutEmptyAndInvalidVotesProtocol,
         ResultBundleReview,

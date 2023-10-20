@@ -1,4 +1,4 @@
-# ✨ Changelog (`v11.7.0`)
+# ✨ Changelog (`v11.18.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v11.7.0
-Previous version ---- v10.17.0
+This version -------- v11.18.1
+Previous version ---- v11.7.0
 Initial version ----- v7.7.37
-Total commits ------- 30
+Total commits ------- 17
 ```
+
+## [v11.18.1] - 2023-10-19
+
+### 🔄 Changed
+
+- map correct is low prio health check
+
+## [v11.18.0] - 2023-10-18
+
+### 🔄 Changed
+
+- add detailed CSV activity protocol
+
+## [v11.17.1] - 2023-10-11
+
+### 🔄 Changed
+
+- use correct event position in eventing meter
+
+## [v11.17.0] - 2023-10-10
+
+### 🆕 Added
+
+- add roles cache to minimize calls to iam
+
+## [v11.16.0] - 2023-10-09
+
+### 🔄 Changed
+
+- ahvN13 calculate checksum
+
+## [v11.15.0] - 2023-10-04
+
+### 🔄 Changed
+
+- add meters for duration and count of event processing by event type
+
+## [v11.14.1] - 2023-09-25
+
+### 🔄 Changed
+
+- inject malware scanner config
+
+## [v11.14.0] - 2023-09-25
+
+### 🔄 Changed
+
+- add wp gemeinden bfs export
+
+## [v11.13.0] - 2023-09-21
+
+### 🔄 Changed
+
+- eVoting protocols
+
+## [v11.12.0] - 2023-08-31
+
+### 🆕 Added
+
+- config option to disable malware scanning
+
+### 🔄 Changed
+
+- skip malware scanning request if it is disabled by config
+
+## [v11.11.0] - 2023-08-28
+
+### 🆕 Added
+
+- add http probes health check for 3rd party apis
+
+### 🔄 Changed
+
+- extend cert pinning config with http probe health check option
+
+## [v11.10.0] - 2023-08-25
+
+### 🔄 Changed
+
+- enhance logging for cert pinning
+
+## [v11.9.1] - 2023-08-25
+
+### 🔄 Changed
+
+- use stream name instead of type in aggregate mock store
+
+## [v11.9.0] - 2023-08-25
+
+also store aggregate type in aggregate store mock
+
+## [v11.8.1] - 2023-08-24
+
+### 🔄 Changed
+
+- expand input validation
+
+## [v11.8.0] - 2023-08-23
+
+### 🔄 Changed
+
+- allow generic context type for list comparison
 
 ## [v11.7.0] - 2023-08-22
 
@@ -189,91 +291,19 @@ BREAKING CHANGE: This changes the hash / byte array if guids are involved. The o
 
 ## [v10.16.0] - 2023-05-15
 
-### 🔄 Changed
-
-- add mock service collection extension helper
-
-## [v10.15.0] - 2023-05-15
-
-### 🔄 Changed
-
-- add sg abstimmungsergebnisse report
-
-## [v10.14.0] - 2023-05-11
-
-### 🔄 Changed
-
-- add gRPC http handler extensions, add auth store access token, add pass through grpc auth
-
-## [v10.13.1] - 2023-05-10
-
-### 🔄 Changed
-
-- mark transaction scope as obsolete
-
-## [v10.13.0] - 2023-05-03
-
-### 🔄 Changed
-
-- add ech0045 swiss extension
-
-## [v10.12.5] - 2023-04-03
-
 ### 🆕 Added
 
 - add service name to service user mock data
-
-## [v10.12.4] - 2023-03-30
-
-### 🔄 Changed
-
-- fixed encryption padding of aes mock
-
-## [v10.12.3] - 2023-03-24
-
-### 🔄 Changed
-
-- replace eCH ballot question ID separator with underscore
-
-## [v10.12.2] - 2023-03-22
-
-### 🔄 Changed
-
-- improve error message when DmDoc returns an unsuccessful response
-
-## [v10.12.1] - 2023-03-14
-
-### 🔄 Changed
-
-- fix AesCbcEncryptionMock
-
-## [v10.12.0] - 2023-03-13
 
 ### 🆕 Added
 
 - Added ECDSA signature
 - Added AES-MAC encryption
 
-## [v10.11.1] - 2023-03-10
-
-### 🔄 Changed
-
-- truncate eCH delivery header values when they are too long
-
-## [v10.11.0] - 2023-03-08
-
-### 🔄 Changed
-
-- eCH ballot question ID generator
-
-## [v10.10.0] - 2023-02-24
-
 ### 🆕 Added
 
 - Added bulk create signature
 - Added more supported types in ByteConverter
-
-## [v10.9.0] - 2023-02-23
 
 ### 🆕 Added
 
@@ -357,6 +387,94 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v10.15.0] - 2023-05-15
+
+### 🔄 Changed
+
+- add sg abstimmungsergebnisse report
+
+## [v10.14.0] - 2023-05-11
+
+### 🔄 Changed
+
+- add gRPC http handler extensions, add auth store access token, add pass through grpc auth
+
+## [v10.13.1] - 2023-05-10
+
+### 🔄 Changed
+
+- mark transaction scope as obsolete
+
+## [v10.13.0] - 2023-05-03
+
+### 🔄 Changed
+
+- add ech0045 swiss extension
+
+## [v10.12.5] - 2023-04-03
+
+### 🆕 Added
+
+- add service name to service user mock data
+
+## [v10.12.4] - 2023-03-30
+
+### 🔄 Changed
+
+- fixed encryption padding of aes mock
+
+## [v10.12.3] - 2023-03-24
+
+### 🔄 Changed
+
+- replace eCH ballot question ID separator with underscore
+
+## [v10.12.2] - 2023-03-22
+
+### 🔄 Changed
+
+- improve error message when DmDoc returns an unsuccessful response
+
+## [v10.12.1] - 2023-03-14
+
+### 🔄 Changed
+
+- fix AesCbcEncryptionMock
+
+## [v10.12.0] - 2023-03-13
+
+### 🆕 Added
+
+- Added ECDSA signature
+- Added AES-MAC encryption
+
+## [v10.11.1] - 2023-03-10
+
+### 🔄 Changed
+
+- truncate eCH delivery header values when they are too long
+
+## [v10.11.0] - 2023-03-08
+
+### 🔄 Changed
+
+- eCH ballot question ID generator
+
+## [v10.10.0] - 2023-02-24
+
+### 🆕 Added
+
+- Added bulk create signature
+- Added more supported types in ByteConverter
+
+## [v10.9.0] - 2023-02-23
+
+### 🔄 Changed
+
+- move method to match adjacent overload
+- acquire async lock with timeout
+- rest upload helpers
 
 ## [v10.8.0] - 2023-02-23
 

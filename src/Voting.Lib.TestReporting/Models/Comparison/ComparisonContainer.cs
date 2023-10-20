@@ -99,19 +99,20 @@ public class ComparisonContainer
     /// Processes comparison of lists including count comparison entry.
     /// In case of unequal list entries count further element comparisons will not take place.
     /// </summary>
-    /// <typeparam name="T">The list item type.</typeparam>
+    /// <typeparam name="TListElement">The list item type.</typeparam>
+    /// <typeparam name="TContext">The context item type.</typeparam>
     /// <param name="ctx">The compare context.</param>
     /// <param name="listLeft">The list for left comparison.</param>
     /// <param name="listRight">The list for right comparison.</param>
     /// <param name="listItemIdentifierExtractor">The list item identifier extractor function.</param>
     /// <param name="listItemCompareFunction">The list item compare function to execute.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task CompareListAsync<T>(
-        IComparerContext ctx,
-        IReadOnlyList<T> listLeft,
-        IReadOnlyList<T> listRight,
-        Func<T, string> listItemIdentifierExtractor,
-        Func<IComparerContext, ComparisonContainer, T, T, Task> listItemCompareFunction)
+    public async Task CompareListAsync<TListElement, TContext>(
+        TContext ctx,
+        IReadOnlyList<TListElement> listLeft,
+        IReadOnlyList<TListElement> listRight,
+        Func<TListElement, string> listItemIdentifierExtractor,
+        Func<TContext, ComparisonContainer, TListElement, TListElement, Task> listItemCompareFunction)
     {
         AddEntry(listLeft.Count, listRight.Count);
 
@@ -133,18 +134,19 @@ public class ComparisonContainer
     /// Processes comparison of lists including count comparison entry.
     /// In case of unequal list entries count further element comparisons will not take place.
     /// </summary>
-    /// <typeparam name="T">The list item type.</typeparam>
+    /// <typeparam name="TListElement">The list item type.</typeparam>
+    /// <typeparam name="TContext">The context item type.</typeparam>
     /// <param name="ctx">The compare context.</param>
     /// <param name="listLeft">The list for left comparison.</param>
     /// <param name="listRight">The list for right comparison.</param>
     /// <param name="listItemIdentifierExtractor">The list item identifier extractor function.</param>
     /// <param name="listItemCompareFunction">The list item compare function to execute.</param>
-    public void CompareList<T>(
-        IComparerContext ctx,
-        IReadOnlyList<T> listLeft,
-        IReadOnlyList<T> listRight,
-        Func<T, string> listItemIdentifierExtractor,
-        Action<IComparerContext, ComparisonContainer, T, T> listItemCompareFunction)
+    public void CompareList<TListElement, TContext>(
+        TContext ctx,
+        IReadOnlyList<TListElement> listLeft,
+        IReadOnlyList<TListElement> listRight,
+        Func<TListElement, string> listItemIdentifierExtractor,
+        Action<TContext, ComparisonContainer, TListElement, TListElement> listItemCompareFunction)
     {
         AddEntry(listLeft.Count, listRight.Count);
 

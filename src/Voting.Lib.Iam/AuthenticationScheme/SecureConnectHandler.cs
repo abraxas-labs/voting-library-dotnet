@@ -28,6 +28,7 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
 {
     private readonly ICache<User> _userCache;
     private readonly ICache<Tenant> _tenantCache;
+    private readonly ICache<UserRoles> _rolesCache;
 
     private string? _tenant;
     private string? _subjectToken;
@@ -67,6 +68,7 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         TenantService = serviceProvider.GetRequiredService<ITenantService>();
         _userCache = serviceProvider.GetRequiredService<ICache<User>>();
         _tenantCache = serviceProvider.GetRequiredService<ICache<Tenant>>();
+        _rolesCache = serviceProvider.GetRequiredService<ICache<UserRoles>>();
     }
 
     internal SecureConnectHandler(
@@ -91,6 +93,7 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         TenantService = serviceProvider.GetRequiredService<ITenantService>();
         _userCache = serviceProvider.GetRequiredService<ICache<User>>();
         _tenantCache = serviceProvider.GetRequiredService<ICache<Tenant>>();
+        _rolesCache = serviceProvider.GetRequiredService<ICache<UserRoles>>();
     }
 
     /// <summary>
@@ -167,26 +170,35 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
             return AuthenticateResult.Fail("No sub present in token");
         }
 
-        Logger.LogDebug(SecurityLogging.SecurityEventId, "Fetching role token for user");
-        var roles = await RoleTokenHandler.GetRoles(SubjectToken, Tenant, Apps).ConfigureAwait(false);
-        if (Options.AnyRoleRequired && roles.Count == 0)
+        Logger.LogDebug(SecurityLogging.SecurityEventId, "Try get role token from cache");
+        var userRoles = await _rolesCache.GetOrAdd(BuildRolesCacheKey(), async () =>
+        {
+            Logger.LogDebug(SecurityLogging.SecurityEventId, "Fetching role token for user from IAM");
+            return new(await RoleTokenHandler.GetRoles(SubjectToken, Tenant, Apps).ConfigureAwait(false));
+        }).ConfigureAwait(false);
+
+        if (Options.AnyRoleRequired && userRoles.Roles.Count == 0)
         {
             return AuthenticateResult.Fail("No roles present in role token");
         }
 
-        roleIdentity.AddClaims(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        roleIdentity.AddClaims(userRoles.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         // The usage of the AuthStore is optional
         var authStore = ServiceProvider.GetService<IAuthStore>();
-        if (authStore != null)
-        {
-            var user = await _userCache.GetOrAdd(sub, async () =>
-                await UserService.GetUser(sub, true).ConfigureAwait(false) ?? new() { Loginid = sub }).ConfigureAwait(false);
-            var tenant = await _tenantCache.GetOrAdd(Tenant, async () =>
-                await TenantService.GetTenant(Tenant, true).ConfigureAwait(false) ?? new() { Id = Tenant }).ConfigureAwait(false);
 
-            authStore.SetValues(SubjectToken, user, tenant, roles);
+        if (authStore == null)
+        {
+            return result;
         }
+
+        var user = await _userCache.GetOrAdd(sub, async () =>
+            await UserService.GetUser(sub, true).ConfigureAwait(false) ?? new() { Loginid = sub }).ConfigureAwait(false);
+
+        var tenant = await _tenantCache.GetOrAdd(Tenant, async () =>
+            await TenantService.GetTenant(Tenant, true).ConfigureAwait(false) ?? new() { Id = Tenant }).ConfigureAwait(false);
+
+        authStore.SetValues(SubjectToken, user, tenant, userRoles.Roles);
 
         return result;
     }
@@ -209,4 +221,17 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
     /// <returns>Task for the challenge.</returns>
     protected override Task HandleChallengeAsync(AuthenticationProperties properties) =>
         JwtBearerHandler.ChallengeAsync(properties);
+
+    /// <summary>
+    /// Builds the roles cache key from subject token, tenant and apps.
+    /// </summary>
+    /// <returns>The cache key.</returns>
+    private string BuildRolesCacheKey()
+    {
+        return HashUtil.GetSHA256Hash(string.Join(
+            '-',
+            SubjectToken,
+            Tenant ?? string.Empty,
+            string.Join('-', Apps)));
+    }
 }

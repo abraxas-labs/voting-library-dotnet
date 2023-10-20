@@ -114,4 +114,14 @@ public class Ahvn13Test
         var isValid = Ahvn13.IsValid(input);
         isValid.Should().Be(expected);
     }
+
+    [Theory]
+    [InlineData(7561234567897)]
+    [InlineData(7561234567880)]
+    public void CalculateChecksumShouldWork(long input)
+    {
+        var actualChecksum = (int)(input % 10);
+        var checksum = Ahvn13.CalculateChecksum(input);
+        checksum.Should().Be(actualChecksum);
+    }
 }

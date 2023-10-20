@@ -15,6 +15,11 @@ public class SecureConnectApiOptions
     /// </summary>
     public Uri? BaseUrl { get; set; }
 
+    /// <summary>
+    /// Gets or sets the role token expiration time span relative to now.
+    /// </summary>
+    public TimeSpan? RoleTokenExpirationTime { get; set; } = TimeSpan.FromMinutes(5);
+
     internal Uri IdentityUrl => BuildUri("identity");
 
     internal Uri PermissionUrl => BuildUri("permission");

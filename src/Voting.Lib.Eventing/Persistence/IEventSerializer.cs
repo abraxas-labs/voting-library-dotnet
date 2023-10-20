@@ -51,6 +51,15 @@ public interface IEventSerializer
         where T : IMessage<T>, new();
 
     /// <summary>
+    /// Deserialize an event.
+    /// </summary>
+    /// <param name="data">The event data to deserialize.</param>
+    /// <typeparam name="T">The type of the deserialized event data.</typeparam>
+    /// <returns>Returns the deserialized event data.</returns>
+    T Deserialize<T>(ReadOnlyMemory<byte> data)
+        where T : IMessage<T>, new();
+
+    /// <summary>
     /// Tries to deserialize an event.
     /// </summary>
     /// <param name="eventRecord">The event to deserialize.</param>

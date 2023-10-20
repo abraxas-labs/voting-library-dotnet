@@ -19,11 +19,12 @@ public static class TemplateRepository
 {
     private static readonly IReadOnlyCollection<TemplateModel> Templates =
         AusmittlungCsvProportionalElectionTemplates.All
+            .Concat(AusmittlungCsvContestTemplates.All)
             .Concat(AusmittlungCsvProportionalElectionUnionTemplates.All)
             .Concat(AusmittlungWabstiCTemplates.All)
+            .Concat(AusmittlungPdfContestTemplates.All)
             .Concat(AusmittlungPdfVoteTemplates.All)
             .Concat(AusmittlungPdfMajorityElectionTemplates.All)
-            .Concat(AusmittlungPdfContestTemplates.All)
             .Concat(AusmittlungPdfProportionalElectionTemplates.All)
             .Concat(AusmittlungXmlVoteTemplates.All)
             .Concat(AusmittlungXmlMajorityElectionTemplates.All)

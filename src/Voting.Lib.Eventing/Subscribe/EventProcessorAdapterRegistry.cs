@@ -10,19 +10,21 @@ namespace Voting.Lib.Eventing.Subscribe;
 /// <summary>
 /// Type registry for <see cref="EventProcessorAdapter{TScope,TEvent}"/>.
 /// </summary>
-/// <typeparam name="TScope">The type of event processor scope.</typeparam>
-public class EventProcessorAdapterRegistry<TScope>
+public abstract class EventProcessorAdapterRegistry
 {
     private readonly ConcurrentDictionary<string, Type?> _processorTypes = new();
     private readonly IProtobufTypeRegistry _registry;
+    private readonly Type _scopeType;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventProcessorAdapterRegistry{TScope}"/> class.
+    /// Initializes a new instance of the <see cref="EventProcessorAdapterRegistry"/> class.
     /// </summary>
     /// <param name="registry">The protobuf type registry.</param>
-    public EventProcessorAdapterRegistry(IProtobufTypeRegistry registry)
+    /// <param name="scopeType">The type of event processor scope.</param>
+    protected EventProcessorAdapterRegistry(IProtobufTypeRegistry registry, Type scopeType)
     {
         _registry = registry;
+        _scopeType = scopeType;
     }
 
     internal IEventProcessorAdapter? GetProcessorAdapter(
@@ -41,6 +43,22 @@ public class EventProcessorAdapterRegistry<TScope>
 
         return descriptor == null
             ? null
-            : typeof(EventProcessorAdapter<,>).MakeGenericType(typeof(TScope), descriptor.ClrType);
+            : typeof(EventProcessorAdapter<,>).MakeGenericType(_scopeType, descriptor.ClrType);
+    }
+}
+
+/// <summary>
+/// Type registry for <see cref="EventProcessorAdapter{TScope,TEvent}"/>.
+/// </summary>
+/// <typeparam name="TScope">The type of event processor scope.</typeparam>
+public class EventProcessorAdapterRegistry<TScope> : EventProcessorAdapterRegistry
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EventProcessorAdapterRegistry{TScope}"/> class.
+    /// </summary>
+    /// <param name="registry">The protobuf type registry.</param>
+    public EventProcessorAdapterRegistry(IProtobufTypeRegistry registry)
+        : base(registry, typeof(TScope))
+    {
     }
 }

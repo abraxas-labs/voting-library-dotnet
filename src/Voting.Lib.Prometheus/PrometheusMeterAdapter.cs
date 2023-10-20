@@ -25,12 +25,14 @@ public sealed class PrometheusMeterAdapter : BackgroundService
     // This way we can easily predetermine the type at instrument creation time and not worry about it later.
     private readonly MeterListener _countersListener = new();
     private readonly MeterListener _gaugesListener = new();
+    private readonly MeterListener _histogramListener = new();
 
     // We use this to poll observable metrics once per second.
     private readonly PeriodicTimer _timer;
 
     private readonly ConcurrentDictionary<string, Counter> _counters = new();
     private readonly ConcurrentDictionary<string, Gauge> _gauges = new();
+    private readonly ConcurrentDictionary<string, Histogram> _histograms = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PrometheusMeterAdapter"/> class.
@@ -60,6 +62,17 @@ public sealed class PrometheusMeterAdapter : BackgroundService
 
         _gaugesListener.Start();
 
+        _histogramListener.InstrumentPublished += OnHistogramInstrumentPublished;
+        _histogramListener.SetMeasurementEventCallback<byte>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<short>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<int>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<long>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<float>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<double>(OnHistogramMeasurement);
+        _histogramListener.SetMeasurementEventCallback<decimal>(OnHistogramMeasurement);
+
+        _histogramListener.Start();
+
         _timer = new(config.Interval);
     }
 
@@ -69,6 +82,7 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         _timer.Dispose();
         _countersListener.Dispose();
         _gaugesListener.Dispose();
+        _histogramListener.Dispose();
         base.Dispose();
     }
 
@@ -76,6 +90,7 @@ public sealed class PrometheusMeterAdapter : BackgroundService
     {
         _countersListener.RecordObservableInstruments();
         _gaugesListener.RecordObservableInstruments();
+        _histogramListener.RecordObservableInstruments();
     }
 
     /// <summary>
@@ -106,6 +121,14 @@ public sealed class PrometheusMeterAdapter : BackgroundService
     {
         if (IsGenericType(instrument.GetType(), typeof(Counter<>))
             || IsGenericType(instrument.GetType(), typeof(ObservableCounter<>)))
+        {
+            listener.EnableMeasurementEvents(instrument);
+        }
+    }
+
+    private void OnHistogramInstrumentPublished(Instrument instrument, MeterListener listener)
+    {
+        if (IsGenericType(instrument.GetType(), typeof(Histogram<>)))
         {
             listener.EnableMeasurementEvents(instrument);
         }
@@ -174,6 +197,34 @@ public sealed class PrometheusMeterAdapter : BackgroundService
 
     private void OnGaugeMeasurement(Instrument instrument, decimal measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
         => OnGaugeMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, double measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+    {
+        var tagsDict = BuildTagsDictionary(tags);
+        var instrumentKey = BuildKey(instrument, tags);
+        var histogram = _histograms.GetOrAdd(
+            instrumentKey,
+            _ => Metrics.CreateHistogram(instrument.Name, instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
+        histogram.WithLabels(tagsDict.Values.ToArray()).Observe(measurement);
+    }
+
+    private void OnHistogramMeasurement(Instrument instrument, byte measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, short measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, int measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, long measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, float measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
+
+    private void OnHistogramMeasurement(Instrument instrument, decimal measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state)
+        => OnHistogramMeasurement(instrument, (double)measurement, tags, state);
 
     private string BuildKey(Instrument instrument, ReadOnlySpan<KeyValuePair<string, object?>> tags)
     {

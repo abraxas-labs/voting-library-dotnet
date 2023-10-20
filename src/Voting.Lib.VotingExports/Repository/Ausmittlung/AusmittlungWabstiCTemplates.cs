@@ -105,6 +105,17 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WPGemeindenBfs = new TemplateModel
+    {
+        Key = "WP_Gemeinden_BFS",
+        Filename = "WP_Gemeinden_BFS",
+        Description = "WP_Gemeinden_BFS",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel WPStaticGemeinden = new TemplateModel
     {
         Key = "WPStatic_Gemeinden",
@@ -237,6 +248,7 @@ public static class AusmittlungWabstiCTemplates
         WMKandidatenGde,
         WPWahl,
         WPGemeinden,
+        WPGemeindenBfs,
         WPStaticGemeinden,
         WPKandidaten,
         WPStaticKandidaten,

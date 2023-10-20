@@ -1,8 +1,8 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Threading.Tasks;
-using EventStore.Client;
 using Google.Protobuf;
 using Voting.Lib.Eventing.Persistence;
 
@@ -32,7 +32,7 @@ public class EventProcessorAdapter<TScope, TEvent> : IEventProcessorAdapter
     }
 
     /// <inheritdoc />
-    public async Task Process(EventRecord eventData, bool isCatchUp)
+    public async Task Process(ReadOnlyMemory<byte> eventData, bool isCatchUp)
     {
         var payload = _serializer.Deserialize<TEvent>(eventData);
         await _eventProcessor.Process(payload, isCatchUp).ConfigureAwait(false);

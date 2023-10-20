@@ -1,6 +1,7 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -21,6 +22,7 @@ public static class EventingMeter
 
     public const string PublishedEventsCounterName = VotingMeters.InstrumentNamePrefix + "events_published";
     public const string SubscriptionProcessedEventsCounterName = VotingMeters.InstrumentNamePrefix + "subscription_events_processed";
+    public const string SubscriptionEventTypeProcessedDurationSecondsName = VotingMeters.InstrumentNamePrefix + "subscription_events_processed_by_type_duration_seconds";
     public const string SubscriptionSnapshotPositionsGaugeName = VotingMeters.InstrumentNamePrefix + "subscription_snapshot_position";
     public const string SubscriptionSnapshotNumbersGaugeName = VotingMeters.InstrumentNamePrefix + "subscription_snapshot_number";
     public const string SubscriptionCheckpointPositionsGaugeName = VotingMeters.InstrumentNamePrefix + "subscription_checkpoint_position";
@@ -32,6 +34,7 @@ public static class EventingMeter
     public const string SubscriptionLatestEventNumberGaugeName = VotingMeters.InstrumentNamePrefix + "latest_event_number";
 
     public const string EventProcessorScopeLabelName = "eventProcessorScope";
+    public const string EventTypeLabelName = "eventType";
     public const string SubscriptionFailureReasonLabelName = "failure";
 #pragma warning restore CS1591
 
@@ -55,6 +58,11 @@ public static class EventingMeter
         SubscriptionProcessedEventsCounterName,
         "Event",
         "Number of processed events by subscription");
+
+    private static readonly Histogram<decimal> SubscriptionEventTypeProcessedDurationSeconds = Meter.CreateHistogram<decimal>(
+        SubscriptionEventTypeProcessedDurationSecondsName,
+        "s",
+        "Seconds spent processing a specific event type");
 
     private static readonly Counter<long> SubscriptionFailuresCounter = Meter.CreateCounter<long>(
         SubscriptionFailuresCounterName,
@@ -103,10 +111,11 @@ public static class EventingMeter
             description: "The event prepare position of the latest event in a stream");
     }
 
-    internal static void EventProcessed(string processorScopeName, EventRecord eventRecord)
+    internal static void EventProcessed(string processorScopeName, EventRecord originalEventRecord, EventRecord eventRecord, TimeSpan duration)
     {
         SubscriptionProcessedEventsCounter.Add(1, CreateProcessorScopeTag(processorScopeName));
-        SubscriptionSnapshotUpdated(processorScopeName, eventRecord.Position.CommitPosition, eventRecord.EventNumber);
+        SubscriptionEventTypeProcessedDurationSeconds.Record((decimal)duration.TotalSeconds, CreateProcessorScopeTag(processorScopeName), new(EventTypeLabelName, eventRecord.EventType));
+        SubscriptionSnapshotUpdated(processorScopeName, originalEventRecord.Position.CommitPosition, originalEventRecord.EventNumber);
     }
 
     internal static void SubscriptionSnapshotUpdated(string processorScopeName, ulong position, ulong eventNumber)

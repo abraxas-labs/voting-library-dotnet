@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Common;
 using Voting.Lib.Common.Cache;
+using Voting.Lib.Common.Configuration;
 using Voting.Lib.Common.Net;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -38,8 +40,8 @@ public static class ServiceCollectionExtensions
 
     /// <summary>
     /// Adds certificate pinning to the service collection
-    /// and all created <see cref="HttpClient"/> which are created via the "DefaultHttpMessageHandlerBuilder.Build"
-    /// (this includes clients created via the <see cref="IHttpClientFactory"/> contract implemented by "DefaultHttpClientFactory.CreateClient".
+    /// and all created <see cref="HttpClient"/> which are created via the "DefaultHttpMessageHandlerBuilder.Build".
+    /// This includes clients created via the <see cref="IHttpClientFactory"/> contract implemented by "DefaultHttpClientFactory.CreateClient".
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="config">The certificate pinning options.</param>
@@ -183,4 +185,63 @@ public static class ServiceCollectionExtensions
     /// <returns>The same service collection instance.</returns>
     public static IServiceCollection AddHashBuilderPool(this IServiceCollection services, HashAlgorithmName hashAlgorithmName)
         => services.AddObjectPool(() => new HashBuilder(hashAlgorithmName), static x => x.GetHashAndReset());
+
+    /// <summary>
+    /// Adds the passed http probe health check config as singleton to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="httpProbesHealthCheckConfig">The http probe health checks config.</param>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddHttpProbeHealthCheckConfig(
+        this IServiceCollection services,
+        HttpProbesHealthCheckConfig httpProbesHealthCheckConfig)
+    {
+        services.TryAddSingleton(httpProbesHealthCheckConfig);
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a merged <see cref="HttpProbesHealthCheckConfig"/> as singleton to the service collection,
+    /// based on the passed health check config and the certificate pinning config.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="httpProbesHealthCheckConfig">The http probe health checks config.</param>
+    /// <param name="certPinningConfig">The certificate pinning options.</param>
+    /// <returns>The same service collection instance.</returns>
+    public static IServiceCollection AddHttpProbeHealthCheckConfig(
+        this IServiceCollection services,
+        HttpProbesHealthCheckConfig httpProbesHealthCheckConfig,
+        CertificatePinningConfig certPinningConfig)
+    {
+        var config = new HttpProbesHealthCheckConfig();
+        MapHealthCheckConfig(config, httpProbesHealthCheckConfig);
+        MapHealthCheckConfig(config, certPinningConfig);
+        services.TryAddSingleton(config);
+        return services;
+    }
+
+    private static void MapHealthCheckConfig(HttpProbesHealthCheckConfig config, HttpProbesHealthCheckConfig? httpProbesHealthCheckConfig)
+    {
+        if (httpProbesHealthCheckConfig == null)
+        {
+            return;
+        }
+
+        config.IsHealthCheckEnabled = httpProbesHealthCheckConfig.IsHealthCheckEnabled;
+        config.RequestTimeout = httpProbesHealthCheckConfig.RequestTimeout;
+        config.Probes.AddRange(httpProbesHealthCheckConfig.Probes);
+    }
+
+    private static void MapHealthCheckConfig(HttpProbesHealthCheckConfig config, CertificatePinningConfig? certPinningConfig)
+    {
+        if (certPinningConfig == null)
+        {
+            return;
+        }
+
+        foreach (var pin in certPinningConfig.Pins.Where(pin => pin.HealthCheck.IsHealthCheckEnabled))
+        {
+            config.Probes.AddRange(pin.HealthCheckHttpProbes);
+        }
+    }
 }

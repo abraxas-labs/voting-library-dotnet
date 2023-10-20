@@ -1,7 +1,7 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using Voting.Lib.Common;
+using Voting.Lib.Common.HealthChecks;
 using Voting.Lib.Eventing.Diagnostics;
 using Voting.Lib.Eventing.Subscribe;
 
@@ -44,7 +44,7 @@ public static class HealthChecksBuilderExtensions
         where TSubscriptionScope : IEventProcessorScope
         => builder.AddCheck<EventStoreSubscriptionCatchUpReadinessCheck<TSubscriptionScope>>(
             EventStoreSubscriptionCatchUpReadinessCheck<TSubscriptionScope>.NamePrefix + typeof(TSubscriptionScope).FullName,
-            tags: new[] { EventStoreHealthCheck.Tag, HealthChecks.Tags.Readiness });
+            tags: new[] { EventStoreHealthCheck.Tag, HealthCheckTags.Readiness });
 
     /// <summary>
     /// Adds an event store subscription health check.

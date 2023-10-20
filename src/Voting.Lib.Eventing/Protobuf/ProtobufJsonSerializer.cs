@@ -74,8 +74,13 @@ public class ProtobufJsonSerializer : IEventSerializer
     /// <inheritdoc />
     public T Deserialize<T>(EventRecord eventRecord)
         where T : IMessage<T>, new()
+        => Deserialize<T>(eventRecord.Data);
+
+    /// <inheritdoc />
+    public T Deserialize<T>(ReadOnlyMemory<byte> data)
+        where T : IMessage<T>, new()
     {
-        var json = Encoding.UTF8.GetString(eventRecord.Data.ToArray());
+        var json = Encoding.UTF8.GetString(data.Span);
         return _parser.Parse<T>(json);
     }
 
@@ -96,7 +101,7 @@ public class ProtobufJsonSerializer : IEventSerializer
             return false;
         }
 
-        var json = Encoding.UTF8.GetString(data.ToArray());
+        var json = Encoding.UTF8.GetString(data.Span);
         message = _parser.Parse(json, messageDescriptor);
         return true;
     }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Eventing.Diagnostics;
 using Voting.Lib.Eventing.Read;
+using EventTypeFilter = EventStore.Client.EventTypeFilter;
 
 namespace Voting.Lib.Eventing.Subscribe;
 
@@ -175,12 +177,13 @@ public class EventProcessingSubscriber<TScope> : IHostedService
         _subscription.CurrentPosition = data.OriginalEvent.Position;
         _subscription.CurrentEventNumber = data.OriginalEvent.EventNumber;
 
+        var stopwatch = Stopwatch.StartNew();
         if (await _eventProcessingHandler.HandleEvent(_subscription, data).ConfigureAwait(false))
         {
             _retryPolicy.Succeeded();
         }
 
-        EventingMeter.EventProcessed(_subscription.ScopeName, data.OriginalEvent);
+        EventingMeter.EventProcessed(_subscription.ScopeName, data.OriginalEvent, data.Event, stopwatch.Elapsed);
     }
 
     /// <summary>

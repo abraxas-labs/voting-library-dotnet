@@ -40,6 +40,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
     };
 
     /// <summary>
+    /// Gets the list votes counting circle e-voting protocol export template.
+    /// </summary>
+    public static readonly TemplateModel ListVotesCountingCircleEVotingProtocol = new TemplateModel
+    {
+        Key = "proportional_election_lists_counting_circle_e_voting_protocol",
+        Filename = "Proporz_Formular1_Wahlzettelrapport_EVoting_{0}_{1}",
+        Description = "1 - Wahlzettelrapport E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.CountingCircleResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
     /// Gets the lists counting circle protocol export template.
     /// </summary>
     public static readonly TemplateModel ListsCountingCircleProtocol = new TemplateModel
@@ -75,6 +89,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
         Key = "proportional_election_list_candidate_empty_votes_counting_circle_protocol",
         Filename = "Proporz_Formular2_KandParteiStimmen_{0}_{1}",
         Description = "2 - Kandidierenden- und Parteistimmen",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.CountingCircleResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the list candidate empty votes counting circle e-voting protocol export template.
+    /// </summary>
+    public static readonly TemplateModel ListCandidateEmptyVotesCountingCircleEVotingProtocol = new TemplateModel
+    {
+        Key = "proportional_election_list_candidate_empty_votes_counting_circle_e_voting_protocol",
+        Filename = "Proporz_Formular2_KandParteiStimmen_EVoting_{0}_{1}",
+        Description = "2 - Kandidierenden- und Parteistimmen E-Voting",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.CountingCircleResult,
@@ -138,6 +166,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
     };
 
     /// <summary>
+    /// Gets the list candidate end results e-voting export template.
+    /// </summary>
+    public static readonly TemplateModel ListCandidateEndResultsEVoting = new TemplateModel
+    {
+        Key = "proportional_election_list_candidate_end_results_e_voting",
+        Filename = "Proporz_Formular5b_KandParteiErgebnisse_EVoting_{0}_{1}",
+        Description = "5b - Kandidierenden- und Parteiergebnisse E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
     /// Gets the list candidate vote sources end results export template.
     /// </summary>
     public static readonly TemplateModel ListCandidateVoteSourcesEndResults = new TemplateModel
@@ -180,6 +222,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
     };
 
     /// <summary>
+    /// Gets the end result list unions e-voting export template.
+    /// </summary>
+    public static readonly TemplateModel EndResultListUnionsEVoting = new TemplateModel
+    {
+        Key = "proportional_election_end_result_list_unions_e_voting",
+        Filename = "Proporz_Formular5_Wahlprotokoll_EVoting_{0}_{1}",
+        Description = "5 - Wahlprotokoll E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
     /// Gets the result bundle review export template.
     /// </summary>
     public static readonly TemplateModel ResultBundleReview = new TemplateModel
@@ -198,15 +254,19 @@ public static class AusmittlungPdfProportionalElectionTemplates
         VoterTurnoutProtocol,
         ListsCountingCircleProtocol,
         ListVotesCountingCircleProtocol,
+        ListVotesCountingCircleEVotingProtocol,
         ListCandidateVotesCountingCircleProtocol,
         ListCandidateEmptyVotesCountingCircleProtocol,
+        ListCandidateEmptyVotesCountingCircleEVotingProtocol,
         ListCandidateVoteSourcesCountingCircleProtocol,
         ListVotesEndResults,
         ListCandidateVotesEndResults,
         ListCandidateEndResults,
+        ListCandidateEndResultsEVoting,
         ListCandidateVoteSourcesEndResults,
         EndResultCalculation,
         EndResultListUnions,
+        EndResultListUnionsEVoting,
         ResultBundleReview,
     };
 }

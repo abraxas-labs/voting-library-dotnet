@@ -72,6 +72,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             .AddSingleton(_tenantServiceMock.Object)
             .AddCache(new CacheOptions<User>())
             .AddCache(new CacheOptions<Tenant>())
+            .AddCache(new CacheOptions<UserRoles>())
             .AddSingleton<IAuthStore>(_ => _authStore)
             .AddSingleton<IAuth>(_ => _authStore)
             .BuildServiceProvider(true);
