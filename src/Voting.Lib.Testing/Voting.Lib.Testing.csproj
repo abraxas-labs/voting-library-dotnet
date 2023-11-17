@@ -10,7 +10,7 @@
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MsAspNetCoreVersion)" />
         <PackageReference Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
-        <PackageReference Include="DotNet.Testcontainers" Version="1.6.0" />
+        <PackageReference Include="Testcontainers" Version="3.5.0" />
     </ItemGroup>
 
     <ItemGroup>

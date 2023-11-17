@@ -12,7 +12,7 @@ namespace Voting.Lib.Messaging.IntegrationTest;
 
 public class RabbitMqFixture : IAsyncLifetime
 {
-    private TestcontainersContainer _rabbitMqContainer = null!; // initialized during InitializeAsync
+    private IContainer _rabbitMqContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 

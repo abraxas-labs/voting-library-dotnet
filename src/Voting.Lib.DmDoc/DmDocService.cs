@@ -143,8 +143,21 @@ public class DmDocService : IDmDocService
     public async Task DeleteDraft(int draftId, CancellationToken ct = default)
     {
         var url = _urlBuilder.Draft(draftId);
-        using var response = await _http.DeleteAsync(url, ct).ConfigureAwait(false);
-        await response.EnsureSuccessStatusOrThrowDmDocEx().ConfigureAwait(false);
+        await DeleteAsync(url, ct).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task DeleteDraftContent(int draftId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.DraftContent(draftId);
+        await DeleteAsync(url, ct).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task DeleteDraftHard(int draftId, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.DraftHardDelete(draftId);
+        await DeleteAsync(url, ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -323,6 +336,12 @@ public class DmDocService : IDmDocService
         return _http.PostDmDoc<CreateDraftRequest, Draft>(url, draftRequest, ct);
     }
 
+    private async Task DeleteAsync(string url, CancellationToken ct)
+    {
+        using var response = await _http.DeleteAsync(url, ct).ConfigureAwait(false);
+        await response.EnsureSuccessStatusOrThrowDmDocEx().ConfigureAwait(false);
+    }
+
     private async Task TryDeleteDraft(int id)
     {
         try
@@ -350,7 +369,15 @@ public class DmDocService : IDmDocService
             Async = true,
             CallbackUrl = webhookEndpoint,
             CallbackActions = new[] { CallbackAction.CreateError, CallbackAction.FinishEditing, CallbackAction.FinishEditingError },
+            CallbackTimeout = _config.CallbackTimeout,
             FinishEditing = new FinishEditingData(),
+            CallbackRetryPolicy = new CallbackRetryData
+            {
+                RetryType = (int)_config.CallbackRetryConfig.RetryType,
+                MaxRetries = _config.CallbackRetryConfig.MaxRetries,
+                RetryInterval = _config.CallbackRetryConfig.RetryInterval,
+            },
+            FailAsyncJobOnCallbackFailure = _config.FailAsyncJobOnCallbackFailure,
         };
         return CreateDraft(draftRequest, templateData, bulkRoot, ct);
     }

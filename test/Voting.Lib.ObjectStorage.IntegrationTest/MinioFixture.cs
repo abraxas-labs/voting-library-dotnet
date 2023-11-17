@@ -11,7 +11,7 @@ namespace Voting.Lib.ObjectStorage.IntegrationTest;
 
 public class MinioFixture : IAsyncLifetime
 {
-    private TestcontainersContainer _minioContainer = null!; // initialized during InitializeAsync
+    private IContainer _minioContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 

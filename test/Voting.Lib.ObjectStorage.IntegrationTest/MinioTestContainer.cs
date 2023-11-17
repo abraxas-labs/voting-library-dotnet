@@ -15,7 +15,7 @@ public static class MinioTestContainer
     public const string Password = "password";
     private const string Image = "minio/minio:RELEASE.2022-05-08T23-50-31Z";
 
-    public static TestcontainersContainer Build()
+    public static IContainer Build()
     {
         return TestContainerBuilder.New("minio", Image)
             .WithEnvironment("MINIO_ROOT_USER", Username)

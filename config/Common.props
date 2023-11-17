@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="System.IO.Pipelines" Version="6.0.3"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MsExtensionsVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4"/>
     </ItemGroup>
 
     <Target Name="GenerateFileHashes" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">

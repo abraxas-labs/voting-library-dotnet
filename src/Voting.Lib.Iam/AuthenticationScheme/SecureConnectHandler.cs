@@ -26,6 +26,7 @@ namespace Voting.Lib.Iam.AuthenticationScheme;
 /// </summary>
 public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
 {
+    private const string AuthTimeClaimName = "auth_time";
     private readonly ICache<User> _userCache;
     private readonly ICache<Tenant> _tenantCache;
     private readonly ICache<UserRoles> _rolesCache;
@@ -171,11 +172,18 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         }
 
         Logger.LogDebug(SecurityLogging.SecurityEventId, "Try get role token from cache");
-        var userRoles = await _rolesCache.GetOrAdd(BuildRolesCacheKey(), async () =>
+        var key = BuildRolesCacheKey(roleIdentity.Claims);
+        var userRoles = _rolesCache.Get(key);
+        if (userRoles == null)
         {
             Logger.LogDebug(SecurityLogging.SecurityEventId, "Fetching role token for user from IAM");
-            return new(await RoleTokenHandler.GetRoles(SubjectToken, Tenant, Apps).ConfigureAwait(false));
-        }).ConfigureAwait(false);
+            var roles = await RoleTokenHandler.GetRoles(SubjectToken, Tenant, Apps).ConfigureAwait(false);
+            userRoles = new UserRoles(roles);
+            if (roles.Count > 0)
+            {
+                _rolesCache.Set(key, userRoles);
+            }
+        }
 
         if (Options.AnyRoleRequired && userRoles.Roles.Count == 0)
         {
@@ -226,11 +234,21 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
     /// Builds the roles cache key from subject token, tenant and apps.
     /// </summary>
     /// <returns>The cache key.</returns>
-    private string BuildRolesCacheKey()
+    private string BuildRolesCacheKey(IEnumerable<Claim> claims)
     {
+        // include the subject (=the user) in the cache key
+        var sub = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        // include the auth_time in the cache key
+        // the auth time is the time when the user has authenticated
+        // this is untouched when rolling the access tokens by using refresh flows
+        // therefore the roles are cached during refresh flows, but the cache is invalidated
+        // when the user authenticates again (explicitly logs out and logs in again).
+        var authTime = claims.FirstOrDefault(x => x.Type == AuthTimeClaimName)?.Value;
         return HashUtil.GetSHA256Hash(string.Join(
             '-',
-            SubjectToken,
+            sub,
+            authTime,
             Tenant ?? string.Empty,
             string.Join('-', Apps)));
     }

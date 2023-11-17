@@ -12,7 +12,7 @@ namespace Voting.Lib.Eventing.IntegrationTest;
 
 public class EventStoreFixture : IAsyncLifetime
 {
-    private TestcontainersContainer _eventStoreContainer = null!; // initialized during InitializeAsync
+    private IContainer _eventStoreContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 

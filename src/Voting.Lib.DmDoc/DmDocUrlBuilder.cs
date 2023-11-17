@@ -47,6 +47,13 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
     public string Draft(int draftId) => BuildUrl($"drafts/{draftId}");
 
     /// <inheritdoc />
+    public string DraftContent(int draftId) => BuildUrl($"drafts/{draftId}/content");
+
+    /// <inheritdoc />
+    public string DraftHardDelete(int draftId)
+        => BuildUrl($"drafts/{draftId}", ("hard_delete", true));
+
+    /// <inheritdoc />
     public string DraftPreviewAsPdf(int draftId)
         => BuildUrl($"drafts/{draftId}/preview.pdf");
 

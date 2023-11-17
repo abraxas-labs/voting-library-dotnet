@@ -99,6 +99,20 @@ public interface IDmDocUrlBuilder
     string Draft(int draftId);
 
     /// <summary>
+    /// Gets the URL of a specific draft's content.
+    /// </summary>
+    /// <param name="draftId">The draft ID.</param>
+    /// <returns>Returns the URL of a specific draft's content.</returns>
+    string DraftContent(int draftId);
+
+    /// <summary>
+    /// Gets the URL of a specific draft for hard deletion.
+    /// </summary>
+    /// <param name="draftId">The draft ID.</param>
+    /// <returns>Returns the URL of a specific draft for hard deletion.</returns>
+    string DraftHardDelete(int draftId);
+
+    /// <summary>
     /// Gets the URL to preview a draft as PDF.
     /// </summary>
     /// <param name="draftId">The draft ID.</param>

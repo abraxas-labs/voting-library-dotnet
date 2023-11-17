@@ -105,12 +105,28 @@ public interface IDmDocService
     Task<Draft> GetDraft(int draftId, CancellationToken ct = default);
 
     /// <summary>
-    /// Deletes a draft.
+    /// Deletes a draft and its corresponding print job softly, leaving it to be managed by cleanup job.
     /// </summary>
     /// <param name="draftId">The draft ID.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task DeleteDraft(int draftId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes a draft's content used for generation only. It will not delete the print job and its generated document.
+    /// </summary>
+    /// <param name="draftId">The draft ID.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task DeleteDraftContent(int draftId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes a draft and its corresponding print job directly.
+    /// </summary>
+    /// <param name="draftId">The draft ID.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task DeleteDraftHard(int draftId, CancellationToken ct = default);
 
     /// <summary>
     /// Create a PDF preview for a draft.

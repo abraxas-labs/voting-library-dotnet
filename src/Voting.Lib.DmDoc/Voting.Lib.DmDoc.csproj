@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Scheduler\Voting.Lib.Scheduler.csproj" />
   </ItemGroup>
 
 </Project>

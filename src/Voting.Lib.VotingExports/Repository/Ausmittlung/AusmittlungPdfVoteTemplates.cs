@@ -88,6 +88,58 @@ public static class AusmittlungPdfVoteTemplates
     };
 
     /// <summary>
+    /// Gets the e-voting result protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EVotingDetailsResultProtocol = new TemplateModel
+    {
+        Key = "vote_result_details_e_voting",
+        Filename = "Abstimmungsprotokoll_E-Voting_{0}",
+        Description = "Protokoll inkl. Details E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.Vote,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+        },
+    };
+
+    /// <summary>
+    /// Gets the counting circle e-voting result protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EVotingCountingCircleResultProtocol = new TemplateModel
+    {
+        Key = "vote_couting_circle_result_details_e_voting",
+        Filename = "Abstimmungsprotokoll_E-Voting_{0}",
+        Description = "Protokoll inkl. Details E-Voting",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.Vote,
+        ResultType = ResultType.MultiplePoliticalBusinessesCountingCircleResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the e-voting result protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EVotingResultProtocol = new TemplateModel
+    {
+        Key = "vote_result_e_voting_only",
+        Filename = "Abstimmungsprotokoll_E-Voting_Ergebnisse_{0}",
+        Description = "Protokoll E-Voting Ergebnisse",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.Vote,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
+        {
+            DomainOfInfluenceType.Ch,
+            DomainOfInfluenceType.Ct,
+        },
+    };
+
+    /// <summary>
     /// Gets the result bundle review export template.
     /// </summary>
     public static readonly TemplateModel ResultBundleReview = new TemplateModel
@@ -107,6 +159,9 @@ public static class AusmittlungPdfVoteTemplates
         TemporaryEndResultDomainOfInfluencesProtocol,
         EndResultDomainOfInfluencesProtocol,
         ResultProtocol,
+        EVotingDetailsResultProtocol,
+        EVotingCountingCircleResultProtocol,
+        EVotingResultProtocol,
         ResultBundleReview,
     };
 }

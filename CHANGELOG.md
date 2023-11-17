@@ -1,4 +1,4 @@
-# ✨ Changelog (`v11.18.1`)
+# ✨ Changelog (`v11.26.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,88 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v11.18.1
-Previous version ---- v11.7.0
+This version -------- v11.26.1
+Previous version ---- v11.18.1
 Initial version ----- v7.7.37
-Total commits ------- 17
+Total commits ------- 12
 ```
+
+## [v11.26.1] - 2023-11-17
+
+### 🔄 Changed
+
+- roles cache should not store empty roles
+
+## [v11.26.0] - 2023-11-14
+
+### 🔄 Changed
+
+- add csv vote e-voting details export
+
+## [v11.25.0] - 2023-11-10
+
+### 🆕 Added
+
+- add dmdoc callback fail policy
+- add dmdoc callback timeout parameter
+- add documentation
+
+## [v11.24.0] - 2023-11-09
+
+### 🔄 Changed
+
+- add vote e-voting protocols
+
+## [v11.23.0] - 2023-11-09
+
+### 🔄 Changed
+
+- add e-voting vote result protocol
+
+## [v11.22.0] - 2023-11-08
+
+### 🆕 Added
+
+- add dmdoc draft cleanup mode to handle cleanup requirements
+- separate dequeuing and processing of queued items and delay execution
+
+## [v11.21.0] - 2023-11-07
+
+### 🆕 Added
+
+- add dmdoc draft cleanup job
+- add dmdoc draft cleanup queue
+- add scheduler config and DI registration for the job and queue
+
+## [v11.20.0] - 2023-11-07
+
+### 🆕 Added
+
+- add dmdoc draft deletion options for hard deletion and content only
+
+## [v11.19.1] - 2023-11-07
+
+### 🔄 Changed
+
+- migrate from deprecated DotNet.Testcontainers to Testcontainers
+
+## [v11.19.0] - 2023-10-31
+
+### 🔄 Changed
+
+- add dmdoc callback retry policy and generator version
+
+## [v11.18.3] - 2023-10-23
+
+### 🔄 Changed
+
+- upgrade magick.net
+
+## [v11.18.2] - 2023-10-22
+
+### 🔄 Changed
+
+- role token cache key based on subject instead of access token
 
 ## [v11.18.1] - 2023-10-19
 
@@ -219,78 +296,6 @@ BREAKING CHANGE: This changes the hash / byte array if guids are involved. The o
 
 ## [v10.24.0] - 2023-06-27
 
-### 🔄 Changed
-
-- ICollection to IReadOnlyCollection support
-
-## [v10.23.1] - 2023-06-26
-
-### 🔄 Changed
-
-- ignore casing when comparing hex public keys of certificate pins
-
-## [v10.23.0] - 2023-06-21
-
-### 🔄 Changed
-
-- add Parse method to Ahvn13
-
-## [v10.22.1] - 2023-06-21
-
-### 🔄 Changed
-
-- extend byte converter and hash builder with delimited operations.
-
-## [v10.22.0] - 2023-06-15
-
-### 🔄 Changed
-
-- add hash builder pool
-
-## [v10.21.0] - 2023-06-13
-
-### 🔄 Changed
-
-- nullable support for byte converter and hash builder
-
-## [v10.20.0] - 2023-06-13
-
-### 🔄 Changed
-
-- hash builder and imporved performance for byte converter
-
-## [v10.19.1] - 2023-06-13
-
-### 🔄 Changed
-
-- extend complex text input validation rule, escape characters
-
-## [v10.19.0] - 2023-06-12
-
-### 🔄 Changed
-
-- add AHVN13
-
-## [v10.18.0] - 2023-06-06
-
-### 🔄 Changed
-
-- hsm public key extraction api
-
-## [v10.17.0] - 2023-05-23
-
-### 🔄 Changed
-
-- add header propagation
-
-## [v10.16.1] - 2023-05-17
-
-### 🔄 Changed
-
-- action id with multiple aggregates
-
-## [v10.16.0] - 2023-05-15
-
 ### 🆕 Added
 
 - add service name to service user mock data
@@ -387,6 +392,78 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v10.23.1] - 2023-06-26
+
+### 🔄 Changed
+
+- ignore casing when comparing hex public keys of certificate pins
+
+## [v10.23.0] - 2023-06-21
+
+### 🔄 Changed
+
+- add Parse method to Ahvn13
+
+## [v10.22.1] - 2023-06-21
+
+### 🔄 Changed
+
+- extend byte converter and hash builder with delimited operations.
+
+## [v10.22.0] - 2023-06-15
+
+### 🔄 Changed
+
+- add hash builder pool
+
+## [v10.21.0] - 2023-06-13
+
+### 🔄 Changed
+
+- nullable support for byte converter and hash builder
+
+## [v10.20.0] - 2023-06-13
+
+### 🔄 Changed
+
+- hash builder and imporved performance for byte converter
+
+## [v10.19.1] - 2023-06-13
+
+### 🔄 Changed
+
+- extend complex text input validation rule, escape characters
+
+## [v10.19.0] - 2023-06-12
+
+### 🔄 Changed
+
+- add AHVN13
+
+## [v10.18.0] - 2023-06-06
+
+### 🔄 Changed
+
+- hsm public key extraction api
+
+## [v10.17.0] - 2023-05-23
+
+### 🔄 Changed
+
+- add header propagation
+
+## [v10.16.1] - 2023-05-17
+
+### 🔄 Changed
+
+- action id with multiple aggregates
+
+## [v10.16.0] - 2023-05-15
+
+### 🔄 Changed
+
+- add mock service collection extension helper
 
 ## [v10.15.0] - 2023-05-15
 

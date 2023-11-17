@@ -15,7 +15,7 @@ public static class RabbitMqTestContainer
     public const string Password = "password";
     private const string Image = "rabbitmq:3.8-management-alpine";
 
-    public static TestcontainersContainer Build()
+    public static IContainer Build()
     {
         return TestContainerBuilder.New("rabbitmq", Image)
             .WithEnvironment("RABBITMQ_DEFAULT_USER", Username)

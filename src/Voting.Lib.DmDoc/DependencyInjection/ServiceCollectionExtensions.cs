@@ -9,6 +9,7 @@ using Voting.Lib.DmDoc.Configuration;
 using Voting.Lib.DmDoc.Serialization;
 using Voting.Lib.DmDoc.Serialization.Json;
 using Voting.Lib.DmDoc.Serialization.Xml;
+using Voting.Lib.Scheduler;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -27,10 +28,14 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the DmDoc serialization format is invalid.</exception>
     public static IServiceCollection AddDmDoc(this IServiceCollection services, DmDocConfig config)
     {
-        services.TryAddTransient<IDmDocService, DmDocService>();
         services.TryAddSingleton(config);
+        services.TryAddSingleton<IDmDocDraftCleanupQueue, DmDocDraftCleanupQueue>();
+
+        services.TryAddTransient<IDmDocService, DmDocService>();
         services.TryAddTransient<IDmDocUrlBuilder, DmDocUrlBuilder>();
         services.TryAddTransient<IDmDocUserNameProvider, DmDocConfigUserNameProvider>();
+
+        services.AddScheduledJob<DmDocDraftCleanupJob>(config.DraftCleanupScheduler);
 
         switch (config.DataSerializationFormat)
         {

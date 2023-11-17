@@ -1,5 +1,6 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
+
 using System.Runtime.InteropServices;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
@@ -13,7 +14,7 @@ public static class EventStoreTestContainer
     private const string Image = "eventstore/eventstore:21.10.0-bionic";
     private const string ArmImage = "ghcr.io/eventstore/eventstore:21.10.1-alpha-arm64v8";
 
-    public static TestcontainersContainer Build()
+    public static IContainer Build()
     {
         // EventStore does not yet support ARM via multi arch builds, only as separate image
         var image = RuntimeInformation.ProcessArchitecture == Architecture.Arm64
