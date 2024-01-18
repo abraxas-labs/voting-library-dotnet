@@ -38,20 +38,20 @@ public static class EndpointRouteBuilderExtensions
         endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
         {
             Predicate = x => !isLowPrioHealthCheck(x) && !IsReadinessHealthCheck(x),
-        });
+        }).AllowAnonymous();
 
         // /healthz/low-prio contains all non-mission critical (low-prio) health checks
         // (the service is still usable if one of them is unhealthy but some features may not work)
         endpoints.MapHealthChecks("/healthz/low-prio", new HealthCheckOptions
         {
             Predicate = x => isLowPrioHealthCheck(x) && !IsReadinessHealthCheck(x),
-        });
+        }).AllowAnonymous();
 
         // /readiness indicates whether a service is ready to accept traffic
         endpoints.MapHealthChecks("/readiness", new HealthCheckOptions
         {
             Predicate = IsReadinessHealthCheck,
-        });
+        }).AllowAnonymous();
 
         return endpoints;
     }

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!-- Mit XMLSpy v2010 rel. 3 sp1 (http://www.altova.com) von Martin Stingelin (Stingelin Informatik GmbH) bearbeitet -->
+    <!-- edited with XMLSpy v2012 rel. 2 sp1 (http://www.altova.com) by Martin Stingelin (Stingelin Informatik GmbH) -->
+    <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by BITUSER (Bundesamt für Informatik und Telekommunikation) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0097="http://www.ech.ch/xmlns/eCH-0097/4" xmlns:eCH-0007="http://www.ech.ch/xmlns/eCH-0007/6" xmlns:eCH-0008="http://www.ech.ch/xmlns/eCH-0008/3" xmlns:eCH-0010="http://www.ech.ch/xmlns/eCH-0010/6" xmlns:eCH-0098="http://www.ech.ch/xmlns/eCH-0098/4" xmlns:eCH-0046="http://www.ech.ch/xmlns/eCH-0046/4" targetNamespace="http://www.ech.ch/xmlns/eCH-0098/4" elementFormDefault="qualified" attributeFormDefault="unqualified" version="4.0">
+    <xs:annotation>
+        <xs:documentation xml:lang="de">Ausgabedatum: 20.12.2017</xs:documentation>
+    </xs:annotation>
+    <xs:import namespace="http://www.ech.ch/xmlns/eCH-0007/6" schemaLocation="http://www.ech.ch/xmlns/eCH-0007/6/eCH-0007-6-0.xsd"/>
+    <xs:import namespace="http://www.ech.ch/xmlns/eCH-0008/3" schemaLocation="http://www.ech.ch/xmlns/eCH-0008/3/eCH-0008-3-0.xsd"/>
+    <xs:import namespace="http://www.ech.ch/xmlns/eCH-0010/6" schemaLocation="http://www.ech.ch/xmlns/eCH-0010/6/eCH-0010-6-0.xsd"/>
+    <xs:import namespace="http://www.ech.ch/xmlns/eCH-0097/4" schemaLocation="http://www.ech.ch/xmlns/eCH-0097/4/eCH-0097-4-0.xsd"/>
+    <xs:import namespace="http://www.ech.ch/xmlns/eCH-0046/4" schemaLocation="http://www.ech.ch/xmlns/eCH-0046/4/eCH-0046-4-0.xsd"/>
+    <xs:simpleType name="typeOfResidenceType">
+        <xs:restriction base="xs:nonNegativeInteger">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="reportedOrganisationType">
+        <xs:sequence>
+            <xs:element name="organisation" type="eCH-0098:organisationType"/>
+            <xs:choice>
+                <xs:element name="hasMainResidence" type="eCH-0098:mainResidenceType"/>
+                <xs:element name="hasSecondaryResidence" type="eCH-0098:secondaryResidenceType"/>
+                <xs:element name="hasOtherResidence" type="eCH-0098:otherResidenceType"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="datePartiallyKnownType">
+        <xs:choice>
+            <xs:element name="yearMonthDay" type="xs:date"/>
+            <xs:element name="yearMonth" type="xs:gYearMonth"/>
+            <xs:element name="year" type="xs:gYear"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:simpleType name="languageType">
+        <xs:restriction base="xs:token">
+            <xs:maxLength value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="yesNoType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="0"/>
+            <xs:enumeration value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="unknownType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="NOGACodeType">
+        <xs:restriction base="xs:token">
+            <xs:minLength value="2"/>
+            <xs:maxLength value="6"/>
+            <xs:pattern value="\d{2,6}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="organisationType">
+        <xs:sequence>
+            <xs:element name="organisationIdentification" type="eCH-0097:organisationIdentificationType"/>
+            <xs:element name="uidBrancheText" type="eCH-0098:uidBrancheTextType" minOccurs="0"/>
+            <xs:element name="NOGACode" type="eCH-0098:NOGACodeType" minOccurs="0"/>
+            <xs:element name="foundation" type="eCH-0098:foundationType" minOccurs="0"/>
+            <xs:element name="liquidation" type="eCH-0098:liquidationType" minOccurs="0"/>
+            <xs:element name="address" type="eCH-0098:organisationAddressType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="contact" type="eCH-0046:contactType" minOccurs="0"/>
+            <xs:element name="languageOfCorrespondance" minOccurs="0">
+                <xs:simpleType>
+                    <xs:restriction base="eCH-0098:languageType">
+                        <xs:minLength value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="foundationType">
+        <xs:sequence>
+            <xs:element name="foundationDate" type="eCH-0098:datePartiallyKnownType" minOccurs="0"/>
+            <xs:element name="foundationReason" type="eCH-0098:foundationReasonType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="foundationReasonType">
+        <xs:restriction base="xs:nonNegativeInteger">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="liquidationType">
+        <xs:sequence>
+            <xs:element name="liquidationDate" type="eCH-0098:datePartiallyKnownType" minOccurs="0"/>
+            <xs:element name="liquidationStartDate" type="eCH-0098:datePartiallyKnownType" minOccurs="0"/>
+            <xs:element name="liquidationReason" type="eCH-0098:liquidationReasonType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="liquidationReasonType">
+        <xs:restriction base="xs:nonNegativeInteger">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="destinationType">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="unknown" type="eCH-0098:unknownType"/>
+                <xs:element name="swissTown" type="eCH-0007:swissMunicipalityType"/>
+                <xs:element name="foreignCountry">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="country" type="eCH-0008:countryType"/>
+                            <xs:element name="town" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:whiteSpace value="collapse"/>
+                                        <xs:maxLength value="100"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="mailAddress" type="eCH-0010:addressInformationType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="dwellingAddressType">
+        <xs:sequence>
+            <xs:element name="EGID" type="eCH-0098:EGIDType" minOccurs="0"/>
+            <xs:element name="EWID" type="eCH-0098:EWIDType" minOccurs="0"/>
+            <xs:element name="address" type="eCH-0010:swissAddressInformationType"/>
+            <xs:element name="movingDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="deliveryAddressType">
+        <xs:sequence>
+            <xs:element name="deliveryAddress" type="eCH-0010:mailAddressType"/>
+            <xs:element name="addressValidSince" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="uidBrancheTextType">
+        <xs:restriction base="xs:token">
+            <xs:maxLength value="500"/>
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="EGIDType">
+        <xs:restriction base="xs:unsignedInt">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="999999999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="EWIDType">
+        <xs:restriction base="xs:unsignedInt">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="mainResidenceType">
+        <xs:sequence>
+            <xs:element name="reportingMunicipality" type="eCH-0007:swissMunicipalityType"/>
+            <xs:element name="arrivalDate" type="xs:date"/>
+            <xs:element name="comesFrom" type="eCH-0098:destinationType" minOccurs="0"/>
+            <xs:element name="businessAddress" type="eCH-0098:dwellingAddressType"/>
+            <xs:element name="departureDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="goesTo" type="eCH-0098:destinationType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="secondaryResidenceType">
+        <xs:sequence>
+            <xs:element name="swissHeadquarter" type="eCH-0098:swissHeadquarterType" minOccurs="0"/>
+            <xs:element name="reportingMunicipality" type="eCH-0007:swissMunicipalityType"/>
+            <xs:element name="arrivalDate" type="xs:date"/>
+            <xs:element name="comesFrom" type="eCH-0098:destinationType" minOccurs="0"/>
+            <xs:element name="businessAddress" type="eCH-0098:dwellingAddressType"/>
+            <xs:element name="departureDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="goesTo" type="eCH-0098:destinationType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="otherResidenceType">
+        <xs:sequence>
+            <xs:element name="foreignHeadquarter" type="eCH-0098:foreignHeadquarterType" minOccurs="0"/>
+            <xs:element name="reportingMunicipality" type="eCH-0007:swissMunicipalityType"/>
+            <xs:element name="arrivalDate" type="xs:date"/>
+            <xs:element name="comesFrom" type="eCH-0098:destinationType" minOccurs="0"/>
+            <xs:element name="businessAddress" type="eCH-0098:dwellingAddressType"/>
+            <xs:element name="departureDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="goesTo" type="eCH-0098:destinationType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="swissHeadquarterType">
+        <xs:sequence>
+            <xs:element name="organisationIdentification" type="eCH-0097:organisationIdentificationType" minOccurs="0"/>
+            <xs:element name="headquarterMunicipality" type="eCH-0007:swissMunicipalityType" minOccurs="0"/>
+            <xs:element name="businessAddress" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice>
+                            <xs:element name="organisation" type="eCH-0010:organisationMailAddressInfoType"/>
+                            <xs:element name="person" type="eCH-0010:personMailAddressInfoType"/>
+                        </xs:choice>
+                        <xs:element name="addressInformation" type="eCH-0010:swissAddressInformationType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="foreignHeadquarterType">
+        <xs:sequence>
+            <xs:element name="businessAddress" type="eCH-0010:mailAddressType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="organisationAddressType">
+        <xs:sequence>
+            <xs:element name="addressCategory" type="eCH-0046:freeKategoryTextType" minOccurs="0"/>
+            <xs:element name="addressLine1" type="eCH-0010:addressLineType" minOccurs="0"/>
+            <xs:element name="addressLine2" type="eCH-0010:addressLineType" minOccurs="0"/>
+            <xs:sequence minOccurs="0">
+                <xs:element name="street" type="eCH-0010:streetType"/>
+                <xs:element name="houseNumber" type="eCH-0010:houseNumberType" minOccurs="0"/>
+                <xs:element name="dwellingNumber" type="eCH-0010:dwellingNumberType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:sequence minOccurs="0">
+                <xs:element name="postOfficeBoxNumber" type="eCH-0010:postOfficeBoxNumberType" minOccurs="0"/>
+            </xs:sequence>
+            <xs:element name="town" type="eCH-0010:townType"/>
+            <xs:choice>
+                <xs:sequence>
+                    <xs:element name="swissZipCode" type="eCH-0010:swissZipCodeType"/>
+                    <xs:element name="swissZipCodeAddOn" type="eCH-0010:swissZipCodeAddOnType" minOccurs="0"/>
+                    <xs:element name="municipalityId" type="eCH-0007:municipalityIdType" minOccurs="0"/>
+                    <xs:element name="cantonAbbreviation" type="eCH-0007:cantonAbbreviationType" minOccurs="0"/>
+                    <xs:element name="EGID" type="eCH-0098:EGIDType" minOccurs="0"/>
+                </xs:sequence>
+                <xs:element name="foreignZipCode" type="eCH-0010:foreignZipCodeType" minOccurs="0"/>
+            </xs:choice>
+            <xs:element name="countryIdISO2" type="eCH-0010:countryIdISO2Type"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="organisationRoot">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="reportedOrganisation" type="eCH-0098:reportedOrganisationType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

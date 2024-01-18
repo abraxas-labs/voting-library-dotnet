@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Voting.Lib.Common;
 using Voting.Lib.Common.Cache;
+using Voting.Lib.Iam.Authorization;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Store;
@@ -206,7 +207,11 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         var tenant = await _tenantCache.GetOrAdd(Tenant, async () =>
             await TenantService.GetTenant(Tenant, true).ConfigureAwait(false) ?? new() { Id = Tenant }).ConfigureAwait(false);
 
-        authStore.SetValues(SubjectToken, user, tenant, userRoles.Roles);
+        // The usage of the IPermissionProvider is optional
+        var permissionProvider = ServiceProvider.GetService<IPermissionProvider>();
+        var permissions = permissionProvider?.GetPermissionsForRoles(userRoles.Roles);
+
+        authStore.SetValues(SubjectToken, user, tenant, userRoles.Roles, permissions);
 
         return result;
     }

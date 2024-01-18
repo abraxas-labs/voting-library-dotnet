@@ -16,7 +16,12 @@ public class AuthExtensionsTest
     public AuthExtensionsTest()
     {
         _auth = new AuthStore(new MockLogger<AuthStore>());
-        _auth.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        _auth.SetValues(
+            "mock-token",
+            new() { Firstname = "firstName", Lastname = "lastName" },
+            new() { Name = "TenantName" },
+            new[] { "Role1", "Role2" },
+            new[] { "Permission1" });
     }
 
     [Fact]
@@ -45,5 +50,19 @@ public class AuthExtensionsTest
     {
         _auth.EnsureAnyRole("Role0", "Role1");
         Assert.Throws<ForbiddenException>(() => _auth.EnsureAnyRole("Role0", "Role3"));
+    }
+
+    [Fact]
+    public void HasPermissionShouldWork()
+    {
+        _auth.HasPermission("Permission1").Should().BeTrue();
+        _auth.HasPermission("Permission5").Should().BeFalse();
+    }
+
+    [Fact]
+    public void EnsurePermissionShouldWork()
+    {
+        _auth.EnsurePermission("Permission1");
+        Assert.Throws<ForbiddenException>(() => _auth.EnsurePermission("Permission5"));
     }
 }

@@ -19,6 +19,12 @@
       "commands": [
         "Abraxas.Feature.ApiClient.Generator"
       ]
+    },
+    "dotnet-xscgen": {
+      "version": "2.1.963",
+      "commands": [
+        "xscgen"
+      ]
     }
   }
 }

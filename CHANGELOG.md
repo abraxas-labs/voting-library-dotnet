@@ -1,4 +1,4 @@
-# ✨ Changelog (`v11.26.1`)
+# ✨ Changelog (`v11.30.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v11.26.1
-Previous version ---- v11.18.1
+This version -------- v11.30.0
+Previous version ---- v11.26.1
 Initial version ----- v7.7.37
-Total commits ------- 12
+Total commits ------- 5
 ```
+
+## [v11.30.0] - 2024-01-05
+
+### 🔄 Changed
+
+- add eCH-0252
+
+## [v11.29.0] - 2023-12-20
+
+### 🔄 Changed
+
+- add permissions to Voting.Lib.Iam
+
+## [v11.28.0] - 2023-12-19
+
+### 🔄 Changed
+
+- add eCH generator
+
+## [v11.27.1] - 2023-12-15
+
+### 🔄 Changed
+
+- typo in proto validation max value message
+
+## [v11.27.0] - 2023-11-29
+
+### 🔄 Changed
+
+- add DocPipe
 
 ## [v11.26.1] - 2023-11-17
 
@@ -276,25 +306,9 @@ BREAKING CHANGE: This changes the hash / byte array if guids are involved. The o
 
 - extended malware scanner service for string content
 
-## [v10.26.1] - 2023-07-03
-
-### 🔄 Changed
-
-- Change default AES algorithm from CBC to GCM. Refine asymmetric and symmetric naming conventions.
-
-## [v10.26.0] - 2023-06-30
-
 ### 🆕 Added
 
 - malware scanner service
-
-## [v10.25.0] - 2023-06-28
-
-### 🔄 Changed
-
-- age utility to calculate age
-
-## [v10.24.0] - 2023-06-27
 
 ### 🆕 Added
 
@@ -392,6 +406,30 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v10.26.1] - 2023-07-03
+
+### 🔄 Changed
+
+- Change default AES algorithm from CBC to GCM. Refine asymmetric and symmetric naming conventions.
+
+## [v10.26.0] - 2023-06-30
+
+### 🆕 Added
+
+- malware scanner service
+
+## [v10.25.0] - 2023-06-28
+
+### 🔄 Changed
+
+- age utility to calculate age
+
+## [v10.24.0] - 2023-06-27
+
+### 🔄 Changed
+
+- ICollection to IReadOnlyCollection support
 
 ## [v10.23.1] - 2023-06-26
 

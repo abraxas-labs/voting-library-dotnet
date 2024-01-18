@@ -1,12 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="eCH-0058-5-0" Version="$(EaiEchLibVersion)" />
-    <PackageReference Include="Eai.Common.eCH.AttributeChecker" Version="$(EaiEchLibVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0058_5_0\Voting.Lib.Ech.Ech0058_5_0.csproj" />
   </ItemGroup>
 
 </Project>

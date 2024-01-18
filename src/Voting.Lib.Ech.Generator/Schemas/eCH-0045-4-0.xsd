@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2010 rel. 3 sp1 (http://www.altova.com) von Martin Stingelin (Stingelin Informatik GmbH) bearbeitet -->
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (http://www.altova.com) by Martin Stingelin (Stingelin Informatik GmbH) -->
+<xs:schema xmlns:eCH-0045="http://www.ech.ch/xmlns/eCH-0045/4" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0044="http://www.ech.ch/xmlns/eCH-0044/4" xmlns:eCH-0011="http://www.ech.ch/xmlns/eCH-0011/8" xmlns:eCH-0008="http://www.ech.ch/xmlns/eCH-0008/3" xmlns:eCH-0007="http://www.ech.ch/xmlns/eCH-0007/6" xmlns:eCH-0010="http://www.ech.ch/xmlns/eCH-0010/6" xmlns:eCH-0058="http://www.ech.ch/xmlns/eCH-0058/5" xmlns:eCH-0021="http://www.ech.ch/xmlns/eCH-0021/7" xmlns:eCH-0155="http://www.ech.ch/xmlns/eCH-0155/4" targetNamespace="http://www.ech.ch/xmlns/eCH-0045/4" elementFormDefault="qualified" attributeFormDefault="unqualified" version="4.0">
+	<xs:annotation>
+		<xs:documentation>Ausgabedatum: 16.07.2018</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0044/4" schemaLocation="http://www.ech.ch/xmlns/eCH-0044/4/eCH-0044-4-1.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0011/8" schemaLocation="http://www.ech.ch/xmlns/eCH-0011/8/eCH-0011-8-1.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0008/3" schemaLocation="http://www.ech.ch/xmlns/eCH-0008/3/eCH-0008-3-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0007/6" schemaLocation="http://www.ech.ch/xmlns/eCH-0007/6/eCH-0007-6-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0010/6" schemaLocation="http://www.ech.ch/xmlns/eCH-0010/6/eCH-0010-6-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0058/5" schemaLocation="http://www.ech.ch/xmlns/eCH-0058/5/eCH-0058-5-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0021/7" schemaLocation="http://www.ech.ch/xmlns/eCH-0021/7/eCH-0021-7-0.xsd"/>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0155/4" schemaLocation="http://www.ech.ch/xmlns/eCH-0155/4/eCH-0155-4-0.xsd"/>
+	<xs:simpleType name="identifierType">
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="emailCategoryType">
+		<xs:restriction base="xs:integer">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="freeKategoryTextType">
+		<xs:restriction base="xs:token">
+			<xs:maxLength value="100"/>
+			<xs:whiteSpace value="collapse"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="emailAddressType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"/>
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*@[A-Za-zäöüÄÖÜ0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="contestType">
+		<xs:sequence>
+			<xs:element name="contestDate" type="xs:date"/>
+			<xs:element name="contestDescription" type="eCH-0155:contestDescriptionInformationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="emailType">
+		<xs:sequence>
+			<xs:choice minOccurs="0">
+				<xs:element name="emailCategory" type="eCH-0045:emailCategoryType"/>
+				<xs:element name="otherEmailCategory" type="eCH-0045:freeKategoryTextType"/>
+			</xs:choice>
+			<xs:element name="emailAddress" type="eCH-0045:emailAddressType"/>
+			<xs:element name="validity" type="eCH-0045:dateRangeType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="phoneCategoryType">
+		<xs:restriction base="xs:integer">
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="5"/>
+			<xs:enumeration value="6"/>
+			<xs:enumeration value="7"/>
+			<xs:enumeration value="8"/>
+			<xs:enumeration value="9"/>
+			<xs:enumeration value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="phoneNumberType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"/>
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="\d{10,20}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="phoneType">
+		<xs:sequence>
+			<xs:choice minOccurs="0">
+				<xs:element name="phoneCategory" type="eCH-0045:phoneCategoryType"/>
+				<xs:element name="otherPhoneCategory" type="eCH-0045:freeKategoryTextType"/>
+			</xs:choice>
+			<xs:element name="phoneNumber" type="eCH-0045:phoneNumberType"/>
+			<xs:element name="validity" type="eCH-0045:dateRangeType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="dateRangeType">
+		<xs:sequence>
+			<xs:element name="dateFrom" type="xs:date" minOccurs="0"/>
+			<xs:element name="dateTo" type="xs:date" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="cantonalRegisterType">
+		<xs:sequence>
+			<xs:element name="registerIdentification" type="eCH-0045:identifierType"/>
+			<xs:element name="cantonAbbreviation" type="eCH-0007:cantonAbbreviationType"/>
+			<xs:element name="registerName">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="municipalityRegisterType">
+		<xs:sequence>
+			<xs:element name="registerIdentification" type="eCH-0045:identifierType"/>
+			<xs:element name="municipalityName" type="eCH-0007:municipalityNameType"/>
+			<xs:element name="cantonAbbreviation" type="eCH-0007:cantonAbbreviationType" minOccurs="0"/>
+			<xs:element name="registerName">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="otherRegisterType">
+		<xs:sequence>
+			<xs:element name="registerIdentification" type="eCH-0045:identifierType"/>
+			<xs:element name="registerName">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="authorityType">
+		<xs:choice>
+			<xs:element name="municipalityRegister" type="eCH-0045:municipalityRegisterType"/>
+			<xs:element name="cantonalRegister" type="eCH-0045:cantonalRegisterType"/>
+			<xs:element name="otherRegister" type="eCH-0045:otherRegisterType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="votingPersonType">
+		<xs:sequence>
+			<xs:element name="person">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="swiss" type="eCH-0045:swissDomesticType"/>
+						<xs:element name="swissAbroad" type="eCH-0045:swissAbroadType"/>
+						<xs:element name="foreigner" type="eCH-0045:foreignerType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="dataLock" type="eCH-0021:dataLockType"/>
+			<xs:element name="electoralAddress" type="eCH-0010:personMailAddressType"/>
+			<xs:element name="deliveryAddress" type="eCH-0010:personMailAddressType" minOccurs="0"/>
+			<xs:element name="email" type="eCH-0045:emailType" minOccurs="0"/>
+			<xs:element name="phone" type="eCH-0045:phoneType" minOccurs="0"/>
+			<xs:element name="isEvoter" type="eCH-0045:yesnoType" minOccurs="0"/>
+			<xs:element name="domainOfInfluenceInfo" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="domainOfInfluence" type="eCH-0155:domainOfInfluenceType"/>
+						<xs:element name="countingCircle" type="eCH-0155:countingCircleType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="votingPersonOnlyType">
+		<xs:sequence>
+			<xs:element name="person">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="swiss" type="eCH-0045:swissDomesticType"/>
+						<xs:element name="swissAbroad" type="eCH-0045:swissAbroadType"/>
+						<xs:element name="foreigner" type="eCH-0045:foreignerType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="dataLock" type="eCH-0021:dataLockType"/>
+			<xs:element name="electoralAddress" type="eCH-0010:personMailAddressType"/>
+			<xs:element name="deliveryAddress" type="eCH-0010:personMailAddressType" minOccurs="0"/>
+			<xs:element name="email" type="eCH-0045:emailType" minOccurs="0"/>
+			<xs:element name="phone" type="eCH-0045:phoneType" minOccurs="0"/>
+			<xs:element name="isEvoter" type="eCH-0045:yesnoType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="electoralAddressType">
+		<xs:sequence>
+			<xs:element name="person" type="eCH-0010:personMailAddressInfoType"/>
+			<xs:element name="addressInformation" type="eCH-0010:addressInformationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="languageType">
+		<xs:restriction base="xs:string">
+			<xs:length value="2"/>
+			<xs:enumeration value="de"/>
+			<xs:enumeration value="fr"/>
+			<xs:enumeration value="it"/>
+			<xs:enumeration value="rm"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="propagandaType">
+		<xs:restriction base="eCH-0045:yesnoType"/>
+	</xs:simpleType>
+	<xs:simpleType name="yesnoType">
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:complexType name="personType">
+		<xs:sequence>
+			<xs:element name="personIdentification" type="eCH-0044:personIdentificationType"/>
+			<xs:element name="callName" type="eCH-0044:baseNameType" minOccurs="0"/>
+			<xs:element name="allianceName" type="eCH-0044:baseNameType" minOccurs="0"/>
+			<xs:element name="languageOfCorrespondance" type="eCH-0045:languageType"/>
+			<xs:element name="religionData" type="eCH-0011:religionDataType" minOccurs="0"/>
+			<xs:element name="extension" type="xs:anyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="foreignerPersonType">
+		<xs:complexContent>
+			<xs:extension base="eCH-0045:personType">
+				<xs:sequence minOccurs="0">
+					<xs:choice minOccurs="0">
+						<xs:element name="nameOnForeignPassport" type="eCH-0011:foreignerNameType" minOccurs="0"/>
+						<xs:element name="declaredForeignName" type="eCH-0011:foreignerNameType" minOccurs="0"/>
+					</xs:choice>
+					<xs:element name="residencePermit" type="eCH-0011:residencePermitDataType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="swissPersonType">
+		<xs:complexContent>
+			<xs:extension base="eCH-0045:personType">
+				<xs:sequence>
+					<xs:element name="placeOfOrigin" type="eCH-0011:placeOfOriginType" maxOccurs="unbounded"/>
+					<xs:element name="placeOfOriginAddonData" type="eCH-0021:placeOfOriginAddonDataType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="swissAbroadType">
+		<xs:sequence>
+			<xs:element name="swissAbroadPerson" type="eCH-0045:swissPersonType"/>
+			<xs:element name="dateOfRegistration" type="xs:date"/>
+			<xs:element name="residenceCountry" type="eCH-0008:countryType"/>
+			<xs:choice>
+				<xs:element name="municipality" type="eCH-0007:swissMunicipalityType"/>
+				<xs:element name="canton" type="eCH-0007:cantonAbbreviationType"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="swissDomesticType">
+		<xs:sequence>
+			<xs:element name="swissDomesticPerson" type="eCH-0045:swissPersonType"/>
+			<xs:element name="municipality" type="eCH-0007:swissMunicipalityType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="foreignerType">
+		<xs:sequence>
+			<xs:element name="foreignerPerson" type="eCH-0045:foreignerPersonType"/>
+			<xs:element name="municipality" type="eCH-0007:swissMunicipalityType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="voterListType">
+		<xs:sequence>
+			<xs:element name="reportingAuthority" type="eCH-0045:authorityType"/>
+			<xs:element name="contest" type="eCH-0045:contestType" minOccurs="0"/>
+			<xs:element name="numberOfVoters" type="eCH-0045:numberOfVotersType"/>
+			<xs:element name="voter" type="eCH-0045:votingPersonType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="numberOfVotersType">
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	<xs:complexType name="eventAddVoterType">
+		<xs:sequence>
+			<xs:element name="reportingAuthority" type="eCH-0045:authorityType"/>
+			<xs:element name="contest" type="eCH-0045:contestType" minOccurs="0"/>
+			<xs:element name="voter" type="eCH-0045:votingPersonType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="eventRemoveVoterType">
+		<xs:sequence>
+			<xs:element name="reportingAuthority" type="eCH-0045:authorityType"/>
+			<xs:element name="contest" type="eCH-0045:contestType" minOccurs="0"/>
+			<xs:element name="voter" type="eCH-0044:personIdentificationType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="eventChangeVotingRightsType">
+		<xs:sequence>
+			<xs:element name="reportingAuthority" type="eCH-0045:authorityType"/>
+			<xs:element name="contest" type="eCH-0045:contestType" minOccurs="0"/>
+			<xs:element name="voter">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="person" type="eCH-0044:personIdentificationType"/>
+						<xs:element name="domainOfInfluenceInfo" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="domainOfInfluence" type="eCH-0155:domainOfInfluenceType"/>
+									<xs:element name="countingCircle" type="eCH-0155:countingCircleType" minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="voterDelivery">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="deliveryHeader" type="eCH-0058:headerType"/>
+				<xs:choice>
+					<xs:element name="voterList" type="eCH-0045:voterListType"/>
+					<xs:element name="addVoter" type="eCH-0045:eventAddVoterType"/>
+					<xs:element name="changeVotingRights" type="eCH-0045:eventChangeVotingRightsType"/>
+					<xs:element name="removeVoter" type="eCH-0045:eventRemoveVoterType"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -18,8 +18,9 @@ public static class AuthStoreExtensions
     /// <param name="userId">The current user ID.</param>
     /// <param name="tenantId">The current tenant ID.</param>
     /// <param name="roles">The roles of the current user.</param>
-    public static void SetValues(this IAuthStore authStore, string subjectAccessToken, string userId, string tenantId, IEnumerable<string>? roles)
+    /// <param name="permissions">The permissions of the current user.</param>
+    public static void SetValues(this IAuthStore authStore, string subjectAccessToken, string userId, string tenantId, IEnumerable<string>? roles, IEnumerable<string>? permissions = null)
     {
-        authStore.SetValues(subjectAccessToken, new() { Loginid = userId }, new() { Id = tenantId }, roles);
+        authStore.SetValues(subjectAccessToken, new() { Loginid = userId }, new() { Id = tenantId }, roles, permissions);
     }
 }

@@ -55,7 +55,7 @@ public class IntegerValidator : IProtoFieldValidator
     {
         if (value > maxValue)
         {
-            context.Failures.Add(new ProtoValidationError(fieldName, $"is smaller than the MaxValue {maxValue}"));
+            context.Failures.Add(new ProtoValidationError(fieldName, $"is greater than the MaxValue {maxValue}"));
         }
     }
 }

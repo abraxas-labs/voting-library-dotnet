@@ -4,8 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Voting.Lib.Common;
 
@@ -88,6 +90,46 @@ public static class XmlUtil
         }
 
         return xmlSchemaSet;
+    }
+
+    /// <summary>
+    /// Gets the name of an enum from the <see cref="XmlEnumAttribute" />.
+    /// </summary>
+    /// <param name="value">Enum value.</param>
+    /// <typeparam name="TEnum">Type of the enum.</typeparam>
+    /// <returns>Name of the <see cref="XmlEnumAttribute"/>.</returns>
+    /// <exception cref="ArgumentException">If no valid enum type is provided or the member cannot be found.</exception>
+    public static string? GetXmlEnumAttributeValueFromEnum<TEnum>(TEnum? value)
+    {
+        if (value == null || value.ToString() == null)
+        {
+            return null;
+        }
+
+        var enumType = typeof(TEnum);
+        if (enumType.IsGenericType && enumType.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            enumType = Nullable.GetUnderlyingType(enumType);
+        }
+
+        if (enumType?.IsEnum != true)
+        {
+            throw new ArgumentException($"No valid enum type {typeof(TEnum)}");
+        }
+
+        var member = enumType.GetMember(value.ToString()!).FirstOrDefault();
+        if (member == null)
+        {
+            throw new ArgumentException($"No member {value.ToString()} found for enum type {typeof(TEnum)}");
+        }
+
+        var attribute = member.GetCustomAttributes(false).OfType<XmlEnumAttribute>().FirstOrDefault();
+        if (attribute == null)
+        {
+            throw new ArgumentException($"No {nameof(XmlEnumAttribute)} found.");
+        }
+
+        return attribute.Name;
     }
 
     private static XmlReaderSettings CreateXmlSettings(XmlSchemaSet schemas, XmlReaderSettings? settings)

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Iam.AuthenticationScheme;
+using Voting.Lib.Iam.Authorization;
 using Voting.Lib.Iam.Store;
 
 namespace Voting.Lib.Iam.Testing.AuthenticationScheme;
@@ -86,8 +87,9 @@ public class AuthenticationHandlerMock : SecureConnectHandler
         var user = await UserService.GetUser(userId, true) ?? new() { Loginid = userId };
         var tenant = await TenantService.GetTenant(tenantId, true) ?? new() { Id = tenantId };
 
-        // the usage of the AuthStore should be Optional
-        ServiceProvider.GetService<IAuthStore>()?.SetValues("mock-token", user, tenant, roles);
+        // the usage of the AuthStore and IPermissionProvider is optional
+        var permissions = ServiceProvider.GetService<IPermissionProvider>()?.GetPermissionsForRoles(roles ?? Enumerable.Empty<string>());
+        ServiceProvider.GetService<IAuthStore>()?.SetValues("mock-token", user, tenant, roles, permissions);
 
         return AuthenticateResult.Success(
                 new AuthenticationTicket(

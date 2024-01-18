@@ -56,4 +56,27 @@ public static class AuthExtensions
             throw new ForbiddenException();
         }
     }
+
+    /// <summary>
+    /// Checks whether a user has a given permission.
+    /// </summary>
+    /// <param name="auth">The auth provider.</param>
+    /// <param name="permission">The permission to look for.</param>
+    /// <returns>True if the user has this role in the auth store.</returns>
+    public static bool HasPermission(this IAuth auth, string permission)
+        => auth.Permissions.Contains(permission);
+
+    /// <summary>
+    /// Checks whether a user has a given permission. Throws otherwise.
+    /// </summary>
+    /// <param name="auth">The auth provider.</param>
+    /// <param name="permission">The permission to look for.</param>
+    /// <exception cref="ForbiddenException">if the user doesn't have the specified permission.</exception>
+    public static void EnsurePermission(this IAuth auth, string permission)
+    {
+        if (!auth.HasPermission(permission))
+        {
+            throw new ForbiddenException();
+        }
+    }
 }

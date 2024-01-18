@@ -1,13 +1,38 @@
 {
-  "senderId": "Voting.Lib.Tests.Sender",
-  "messageId": "constant-message-id",
-  "messageType": "1710967",
-  "sendingApplication": {
-    "manufacturer": "Abraxas Informatik AG",
-    "product": "Voting.Lib.Tests",
-    "productVersion": "0.1.2"
+  "SenderId": "Voting.Lib.Tests.Sender",
+  "OriginalSenderId": null,
+  "DeclarationLocalReference": null,
+  "RecipientIdSpecified": false,
+  "MessageId": "constant-message-id",
+  "ReferenceMessageId": null,
+  "BusinessProcessId": null,
+  "OurBusinessReferenceId": null,
+  "YourBusinessReferenceId": null,
+  "UniqueIdBusinessTransaction": null,
+  "MessageType": "1710967",
+  "SubMessageType": null,
+  "SendingApplication": {
+    "Manufacturer": "Abraxas Informatik AG",
+    "Product": "Voting.Lib.Tests",
+    "ProductVersion": "0.1.2"
   },
-  "messageDate": "2020-01-10T13:12:10.200",
-  "action": "1",
-  "testDeliveryFlag": true
+  "PartialDelivery": null,
+  "Subject": null,
+  "Comment": null,
+  "MessageDate": "2020-01-10T13:12:10.2Z",
+  "InitialMessageDateValueSpecified": false,
+  "InitialMessageDate": null,
+  "EventDateValueSpecified": false,
+  "EventDate": null,
+  "ModificationDateValueSpecified": false,
+  "ModificationDate": null,
+  "Action": 0,
+  "AttachmentSpecified": false,
+  "TestDeliveryFlag": true,
+  "ResponseExpectedValueSpecified": false,
+  "ResponseExpected": null,
+  "BusinessCaseClosedValueSpecified": false,
+  "BusinessCaseClosed": null,
+  "NamedMetaDataSpecified": false,
+  "Extension": null
 }

@@ -59,7 +59,7 @@ public class IntegerValidatorTest : ProtoValidatorBaseTest
     public void InvalidMaxValueShouldFail(int maxValue, int value)
     {
         var failure = Validate(BuildRules(new() { MaxValue = maxValue }), value).Single();
-        failure.ErrorMessage.Should().Be($"'{FieldName}' is smaller than the MaxValue {maxValue}");
+        failure.ErrorMessage.Should().Be($"'{FieldName}' is greater than the MaxValue {maxValue}");
     }
 
     [Fact]

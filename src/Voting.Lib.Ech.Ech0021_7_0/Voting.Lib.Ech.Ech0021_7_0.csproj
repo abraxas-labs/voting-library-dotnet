@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0011_8_1\Voting.Lib.Ech.Ech0011_8_1.csproj"/>
+  </ItemGroup>
+
+</Project>

@@ -20,6 +20,7 @@ internal sealed class AuthStore : IAuth, IAuthStore
     private Tenant _tenant = new();
     private string _accessToken = string.Empty;
     private IReadOnlyCollection<string> _roles = Array.Empty<string>();
+    private IReadOnlyCollection<string> _permissions = Array.Empty<string>();
 
     public AuthStore(ILogger<AuthStore> logger)
     {
@@ -42,7 +43,10 @@ internal sealed class AuthStore : IAuth, IAuthStore
     public IReadOnlyCollection<string> Roles => GetAuthValue(_roles);
 
     /// <inheritdoc />
-    public void SetValues(string accessToken, User user, Tenant tenant, IEnumerable<string>? roles)
+    public IReadOnlyCollection<string> Permissions => GetAuthValue(_permissions);
+
+    /// <inheritdoc />
+    public void SetValues(string accessToken, User user, Tenant tenant, IEnumerable<string>? roles, IEnumerable<string>? permissions = null)
     {
         if (IsAuthenticated)
         {
@@ -55,6 +59,7 @@ internal sealed class AuthStore : IAuth, IAuthStore
         _user = user;
         _tenant = tenant;
         _roles = roles?.ToArray() ?? Array.Empty<string>();
+        _permissions = permissions?.ToArray() ?? Array.Empty<string>();
     }
 
     // Note: The log scope needs to be started manually at the right place, since log scopes don't flow up in the call stack, only down.

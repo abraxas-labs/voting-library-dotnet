@@ -1,15 +1,14 @@
 // (c) Copyright 2022 by Abraxas Informatik AG
 // For license information see LICENSE file
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using eCH_0007_6_0;
-using eCH_0045_4_0;
-using eCH_0058_5_0;
+using Ech0007_6_0;
+using Ech0045_4_0;
+using Ech0058_5_0;
 using Microsoft.Extensions.Logging.Abstractions;
 using Voting.Lib.Ech.Extensions;
 using Voting.Lib.Testing.Mocks;
@@ -20,7 +19,6 @@ namespace Voting.Lib.Ech.Test;
 
 public class EchSerializerTest
 {
-    private const string DateFormat = "yyyy-MM-ddTHH:mm:ss.fff";
     private readonly EchSerializer _serializer = new EchSerializer(NullLogger<EchSerializer>.Instance);
 
     [Fact]
@@ -61,15 +59,36 @@ public class EchSerializerTest
 
     private VoterDelivery CreateDelivery(uint countOfVoters, bool addVoters)
     {
-        var authority = AuthorityType.Create(CantonalRegisterType.Create("SG", "Ständiges Register", CantonAbbreviation.SG));
-        var votersToAdd = addVoters ? (int)countOfVoters : 1; // always add 1 prototype
-        var voters = Enumerable.Range(0, votersToAdd).Select(_ => new VotingPersonType()).ToList();
-        var voterList = VoterListType.Create(authority, null, countOfVoters, voters);
-        var deliveryHeader = new Header
+        var cantonalRegister = new CantonalRegisterType
         {
-            Action = "1",
+            RegisterIdentification = "SG",
+            CantonAbbreviation = CantonAbbreviationType.Sg,
+            RegisterName = "Ständiges Register",
+        };
+
+        var authority = new AuthorityType
+        {
+            CantonalRegister = cantonalRegister,
+        };
+
+        var votersToAdd = addVoters ? (int)countOfVoters : 1; // always add 1 prototype
+        var voterList = new VoterListType
+        {
+            ReportingAuthority = authority,
+            Contest = null,
+            NumberOfVoters = countOfVoters.ToString(),
+        };
+
+        foreach (var voter in Enumerable.Range(0, votersToAdd).Select(_ => new VotingPersonType()))
+        {
+            voterList.Voter.Add(voter);
+        }
+
+        var deliveryHeader = new HeaderType
+        {
+            Action = ActionType.Item1,
             MessageId = "123",
-            SendingApplication = new SendingApplication
+            SendingApplication = new SendingApplicationType
             {
                 Manufacturer = "Abraxas",
                 Product = "Voting.Lib.Tests",
@@ -77,9 +96,13 @@ public class EchSerializerTest
             },
             TestDeliveryFlag = true,
             SenderId = "ABX",
-            MessageDate = MockedClock.UtcNowDate.ToString(DateFormat, CultureInfo.InvariantCulture),
+            MessageDate = MockedClock.UtcNowDate,
             MessageType = "1234",
         };
-        return VoterDelivery.Create(deliveryHeader, voterList);
+        return new VoterDelivery
+        {
+            DeliveryHeader = deliveryHeader,
+            VoterList = voterList,
+        };
     }
 }

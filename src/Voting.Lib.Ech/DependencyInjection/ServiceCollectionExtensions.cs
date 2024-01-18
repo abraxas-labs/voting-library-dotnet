@@ -22,5 +22,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton(config)
             .AddSingleton<IEchMessageIdProvider, DefaultEchMessageIdProvider>()
             .AddSingleton<DeliveryHeaderProvider>()
+            .AddSingleton<EchDeserializer>()
             .AddSingleton<EchSerializer>();
 }

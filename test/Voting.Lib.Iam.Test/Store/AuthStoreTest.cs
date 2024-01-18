@@ -13,58 +13,73 @@ namespace Voting.Lib.Iam.Test.Store;
 
 public class AuthStoreTest
 {
+    private readonly AuthStore _authStore;
+    private readonly MockLogger<AuthStore> _logger = new();
+
+    public AuthStoreTest()
+    {
+        _authStore = new AuthStore(_logger);
+    }
+
     [Fact]
     public void SetValuesShouldWork()
     {
-        var logger = new MockLogger<AuthStore>();
-        var authStore = new AuthStore(logger);
-        authStore.IsAuthenticated.Should().BeFalse();
-        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
-        authStore.Roles.Should().BeEquivalentTo("Role1", "Role2");
-        authStore.Tenant.Name.Should().Be("TenantName");
-        authStore.User.Firstname.Should().Be("firstName");
-        authStore.IsAuthenticated.Should().BeTrue();
+        _authStore.IsAuthenticated.Should().BeFalse();
+        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        _authStore.Roles.Should().BeEquivalentTo("Role1", "Role2");
+        _authStore.Tenant.Name.Should().Be("TenantName");
+        _authStore.User.Firstname.Should().Be("firstName");
+        _authStore.IsAuthenticated.Should().BeTrue();
+        _authStore.Permissions.Should().BeEmpty();
     }
 
     [Fact]
     public void UnauthenticatedShouldThrowOnValueAccess()
     {
-        var logger = new MockLogger<AuthStore>();
-        var authStore = new AuthStore(logger);
-        authStore.IsAuthenticated.Should().BeFalse();
-        Assert.Throws<NotAuthenticatedException>(() => authStore.Roles);
-        Assert.Throws<NotAuthenticatedException>(() => authStore.User);
-        Assert.Throws<NotAuthenticatedException>(() => authStore.Tenant);
+        _authStore.IsAuthenticated.Should().BeFalse();
+        Assert.Throws<NotAuthenticatedException>(() => _authStore.Roles);
+        Assert.Throws<NotAuthenticatedException>(() => _authStore.User);
+        Assert.Throws<NotAuthenticatedException>(() => _authStore.Tenant);
+        Assert.Throws<NotAuthenticatedException>(() => _authStore.Permissions);
     }
 
     [Fact]
     public void SetValuesTwiceShouldThrow()
     {
-        var logger = new MockLogger<AuthStore>();
-        var authStore = new AuthStore(logger);
-        authStore.IsAuthenticated.Should().BeFalse();
-        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
+        _authStore.IsAuthenticated.Should().BeFalse();
+        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" });
 
-        Assert.Throws<AlreadyAuthenticatedException>(() => authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" }));
+        Assert.Throws<AlreadyAuthenticatedException>(() => _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Name = "TenantName" }, new[] { "Role1", "Role2" }));
     }
 
     [Fact]
     public void StartLogScopeShouldWork()
     {
-        var logger = new MockLogger<AuthStore>();
-        var authStore = new AuthStore(logger);
         var roles = new[] { "Role1", "Role2" };
-        authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
-        using (authStore.StartLogScope())
+        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
+        using (_authStore.StartLogScope())
         {
-            logger.ActiveScopes.Should().HaveCount(1);
-            var loggerScope = logger.ActiveScopes.Cast<IReadOnlyDictionary<string, object>>().Single();
+            _logger.ActiveScopes.Should().HaveCount(1);
+            var loggerScope = _logger.ActiveScopes.Cast<IReadOnlyDictionary<string, object>>().Single();
             loggerScope.Should().HaveCount(2);
             loggerScope.Should().Contain("TenantId", "TenantId1");
             loggerScope.TryGetValue("Roles", out var scopeRoles).Should().BeTrue();
             scopeRoles.Should().BeEquivalentTo(roles);
         }
 
-        logger.ActiveScopes.Should().BeEmpty();
+        _logger.ActiveScopes.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ShouldSetPermissions()
+    {
+        _authStore.SetValues(
+            "mock-token",
+            new() { Firstname = "firstName", Lastname = "lastName" },
+            new() { Name = "TenantName" },
+            new[] { "Role1", "Role2" },
+            new[] { "p1", "p2", "p3", "p12", "p13" });
+        _authStore.Roles.Should().BeEquivalentTo("Role1", "Role2");
+        _authStore.Permissions.Should().BeEquivalentTo("p1", "p2", "p3", "p12", "p13");
     }
 }

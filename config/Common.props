@@ -21,7 +21,6 @@
         <ProtobufVersion>3.21.5</ProtobufVersion>
         <GrpcAspNetCoreVersion>2.48.0</GrpcAspNetCoreVersion>
         <VotingLibValidationProtoVersion>1.2.0</VotingLibValidationProtoVersion>
-        <EaiEchLibVersion>3.0.0</EaiEchLibVersion>
     </PropertyGroup>
 
     <ItemGroup>

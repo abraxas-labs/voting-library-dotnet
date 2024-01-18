@@ -3,9 +3,11 @@
 
 using System;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Iam.AuthenticationScheme;
+using Voting.Lib.Iam.Authorization;
 using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
@@ -152,17 +154,9 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The ServiceCollection.</param>
     /// <returns>The service collection instance.</returns>
     public static IServiceCollection AddSecureConnectAuthorization(this IServiceCollection services)
-        => services.AddAuthorization(
-            options =>
-            {
-                options.AddPolicy(
-                    SecureConnectDefaults.AuthenticationScheme,
-                    policy =>
-                    {
-                        policy.AddAuthenticationSchemes(SecureConnectDefaults.AuthenticationScheme);
-                        policy.RequireAuthenticatedUser();
-                    });
-            });
+        => services.AddAuthorization()
+            .AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
+            .AddTransient<IAuthorizationHandler, PermissionHandler>();
 
     /// <summary>
     /// Adds the secure connect authentication scheme.

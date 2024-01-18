@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Eai.Common.eCH.AttributeChecker;
 
 namespace Voting.Lib.Ech.Extensions;
 
@@ -41,9 +40,13 @@ public static class XmlExtensions
             .Where(x => x.Type == null || x.Type == type)
             .MinBy(x => x.Type == type);
 
+        var typeAttr = type
+            .GetCustomAttributes<XmlTypeAttribute>()
+            .FirstOrDefault();
+
         return elAttr == null
             ? GetElementName(importer, type)
-            : new XmlQualifiedName(elAttr.ElementName, elAttr.Namespace ?? importer.ImportTypeMapping(type).Namespace);
+            : new XmlQualifiedName(elAttr.ElementName, elAttr.Namespace ?? typeAttr?.Namespace ?? importer.ImportTypeMapping(type).Namespace);
     }
 
     /// <summary>
@@ -128,16 +131,9 @@ public static class XmlExtensions
         where T : class
     {
         // since there is no async serializer we need to read async first to then deserialize synchronous
-        try
-        {
-            var el = await XNode.ReadFromAsync(reader, cancellationToken);
-            using var nodeReader = el.CreateReader();
-            return serializer.Deserialize(nodeReader) as T
-                ?? throw new ValidationException("Could not read XML");
-        }
-        catch (InvalidOperationException e) when (e.InnerException is FieldValidationException ex)
-        {
-            throw new ValidationException("error reading eCH XML: " + ex.Message, ex);
-        }
+        var el = await XNode.ReadFromAsync(reader, cancellationToken);
+        using var nodeReader = el.CreateReader();
+        return serializer.Deserialize(nodeReader) as T
+            ?? throw new ValidationException("Could not read XML");
     }
 }

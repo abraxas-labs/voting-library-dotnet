@@ -19,6 +19,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Voting.Lib.Common.Cache;
 using Voting.Lib.Iam.AuthenticationScheme;
+using Voting.Lib.Iam.Authorization;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Store;
@@ -36,7 +37,8 @@ public class SecureConnectHandlerTest : IAsyncDisposable
     private readonly DefaultHttpContext _httpContext = new();
     private readonly Mock<IUserService> _userServiceMock;
     private readonly Mock<ITenantService> _tenantServiceMock;
-    private readonly AuthStore _authStore = new(NullLogger<AuthStore>.Instance);
+    private readonly AuthStore _authStore;
+    private IPermissionProvider? _permissionProviderMock;
 
     public SecureConnectHandlerTest()
     {
@@ -57,6 +59,8 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             .Setup(x => x.Get(SecureConnectDefaults.AuthenticationScheme))
             .Returns(_options);
 
+        _authStore = new AuthStore(NullLogger<AuthStore>.Instance);
+
         var clock = new MockedClock();
         _jwtBearerHandler = new MockedJwtBearerHandler(
             optionsMonitorMock.Object,
@@ -70,6 +74,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         _serviceProvider = new ServiceCollection()
             .AddSingleton(_userServiceMock.Object)
             .AddSingleton(_tenantServiceMock.Object)
+            .AddSingleton<IPermissionProvider>(_ => _permissionProviderMock!)
             .AddCache(new CacheOptions<User>())
             .AddCache(new CacheOptions<Tenant>())
             .AddCache(new CacheOptions<UserRoles>())
@@ -109,6 +114,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeTrue();
         ShouldHaveRoles();
+        ShouldHavePermissions();
     }
 
     [Fact]
@@ -119,6 +125,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeTrue();
         ShouldHaveRoles();
+        ShouldHavePermissions();
     }
 
     [Fact]
@@ -134,13 +141,40 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             .Setup(x => x.GetUser("User1", true))
             .Returns(Task.FromResult<User?>(new() { Loginid = "User1", Firstname = "user 1" }));
 
+        var permissionProviderMock = new Mock<IPermissionProvider>();
+        permissionProviderMock
+            .Setup(x => x.GetPermissionsForRoles(It.IsAny<string[]>()))
+            .Returns(new[] { "Permission1" });
+        _permissionProviderMock = permissionProviderMock.Object;
+
         await Init("subject-token", "Tenant1");
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeTrue();
         ShouldHaveRoles("Role1", "Role2");
+        ShouldHavePermissions("Permission1");
 
         _userServiceMock.Verify();
         _tenantServiceMock.Verify();
+    }
+
+    [Fact]
+    public async Task FetchRoleTokenWithoutPermissionProviderShouldSetRoles()
+    {
+        _options.FetchRoleToken = true;
+
+        _tenantServiceMock
+            .Setup(x => x.GetTenant("Tenant1", true))
+            .Returns(Task.FromResult<Tenant?>(new() { Id = "Tenant1", Name = "tenant 1" }));
+
+        _userServiceMock
+            .Setup(x => x.GetUser("User1", true))
+            .Returns(Task.FromResult<User?>(new() { Loginid = "User1", Firstname = "user 1" }));
+
+        await Init("subject-token", "Tenant1");
+        var result = await _secureConnectHandler.AuthenticateAsync();
+        result.Succeeded.Should().BeTrue();
+        ShouldHaveRoles("Role1", "Role2");
+        ShouldHavePermissions();
     }
 
     [Fact]
@@ -152,6 +186,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeFalse();
         ShouldHaveRoles();
+        ShouldHavePermissions();
         result.Failure!.Message.Should().Be("No roles present in role token");
     }
 
@@ -165,6 +200,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeTrue();
         ShouldHaveRoles();
+        ShouldHavePermissions();
     }
 
     [Fact]
@@ -201,6 +237,16 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         {
             _authStore.Roles.Should().BeEquivalentTo(roles);
         }
+    }
+
+    private void ShouldHavePermissions(params string[] permissions)
+    {
+        if (!_authStore.IsAuthenticated && permissions.Length == 0)
+        {
+            return;
+        }
+
+        _authStore.Permissions.Should().BeEquivalentTo(permissions);
     }
 
     private async Task Init(string? subjectToken = null, string? tenantId = null)
