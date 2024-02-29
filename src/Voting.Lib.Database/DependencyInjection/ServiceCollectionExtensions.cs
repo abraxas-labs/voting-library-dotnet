@@ -1,8 +1,10 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Voting.Lib.Database.Configuration;
+using Voting.Lib.Database.Interceptors;
 using Voting.Lib.Database.Migrations;
 using Voting.Lib.Database.Repositories;
 
@@ -25,6 +27,20 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddEnumerable(new ServiceDescriptor(typeof(IDatabaseMigrator), typeof(DatabaseMigrator<TContext>), ServiceLifetime.Singleton));
         return services.AddEfCoreRepositories();
+    }
+
+    /// <summary>
+    /// Adds monitoring for database queries which exceed a specified execution time threshold.
+    /// </summary>
+    /// <param name="services">The ServiceCollection to be modified.</param>
+    /// <param name="config">The data monitoring configuration.</param>
+    /// <returns>The ServiceCollection Instance.</returns>
+    public static IServiceCollection AddDataMonitoring(this IServiceCollection services, DataMonitoringConfig config)
+    {
+        services.AddSingleton(config);
+        services.AddSingleton<DatabaseQueryMonitoringInterceptor>();
+
+        return services;
     }
 
     /// <summary>

@@ -17,7 +17,6 @@ namespace Ech0007_6_0
     [System.Xml.Serialization.XmlTypeAttribute("swissAndFlMunicipalityType", Namespace="http://www.ech.ch/xmlns/eCH-0007/6")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlRootAttribute("swissAndFlMunicipalityType", Namespace="http://www.ech.ch/xmlns/eCH-0007/6")]
     public partial class SwissAndFlMunicipalityType
     {
         

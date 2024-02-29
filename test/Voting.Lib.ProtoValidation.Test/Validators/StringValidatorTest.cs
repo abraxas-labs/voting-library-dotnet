@@ -1,4 +1,4 @@
-﻿// (c) Copyright 2022 by Abraxas Informatik AG
+﻿// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System.Linq;
@@ -330,7 +330,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     }
 
     [Theory]
-    [InlineData("Hello\nWorld.\nHow is the 120 _!?+-@,.:'()/—–`´+* weather today")]
+    [InlineData("Hello\nWorld.\nHow is the 120 _!?+-@,.:'()/—–`´’+* weather today")]
     [InlineData("Hello\rWorld.")]
     [InlineData("«Hello&\"World;»")]
     public void ValidComplexMlTextShouldWork(string input)
@@ -359,7 +359,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     }
 
     [Theory]
-    [InlineData("Hello _!?+-@,.:'()/—–`´+* 120 World.")]
+    [InlineData("Hello _!?+-@,.:'()/—–`´’+* 120 World.")]
     [InlineData("«Hello&\"World;»")]
     public void ValidComplexSlTextShouldWork(string input)
     {

@@ -1,6 +1,7 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Voting.Lib.Iam.Authorization;
@@ -10,7 +11,7 @@ namespace Voting.Lib.Iam.Authorization;
 /// </summary>
 public class AuthorizePermissionAttribute : AuthorizeAttribute
 {
-    internal const string PolicyPrefix = "Permission.";
+    private const string PolicyPrefix = "Permission.";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AuthorizePermissionAttribute"/> class.
@@ -19,5 +20,16 @@ public class AuthorizePermissionAttribute : AuthorizeAttribute
     public AuthorizePermissionAttribute(string permission)
     {
         Policy = PolicyPrefix + permission;
+    }
+
+    internal static IAuthorizationRequirement? ExtractRequirementFromPolicyName(string policyName)
+    {
+        if (!policyName.StartsWith(PolicyPrefix, StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var permission = policyName[PolicyPrefix.Length..];
+        return new PermissionRequirement(permission);
     }
 }

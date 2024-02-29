@@ -1,4 +1,4 @@
-# ✨ Changelog (`v11.30.0`)
+# ✨ Changelog (`v12.2.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,148 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v11.30.0
-Previous version ---- v11.26.1
+This version -------- v12.2.0
+Previous version ---- v11.29.0
 Initial version ----- v7.7.37
-Total commits ------- 5
+Total commits ------- 13
 ```
+
+## [v12.2.0] - 2024-02-22
+
+### 🔄 Changed
+
+- add list votes end result union export
+
+## [v12.1.0] - 2024-02-16
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v11.34.0] - 2024-02-15
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v12.0.3] - 2024-02-15
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+## [v12.0.2] - 2024-02-14
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v11.33.2] - 2024-02-14
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v12.0.1] - 2024-02-14
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+## [v12.0.0] - 2024-02-12
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v11.33.1] - 2024-02-08
+
+### 🔄 Changed
+
+- move mock to lib and add tests
+
+## [v11.33.0] - 2024-02-02
+
+### 🆕 Added
+
+- support for database query monitoring
+
+## [v11.32.0] - 2024-01-31
+
+### 🔄 Changed
+
+- add AuthorizeAnyPermission to authorize against a list of permissions
+
+## [v11.31.0] - 2024-01-29
+
+### 🔄 Changed
+
+- add wp gemeinden sk stat export
+
+## [v11.30.1] - 2024-01-22
+
+### 🔄 Changed
+
+- integrate api client generator for dotnet as self-managed project dependency in voting libraries.
 
 ## [v11.30.0] - 2024-01-05
 
@@ -267,40 +404,7 @@ also store aggregate type in aggregate store mock
 
 ## [v11.1.1] - 2023-08-10
 
-### 🔄 Changed
-
-- add eCH-0157 extension for candidate additions.
-
-## [v11.1.0] - 2023-08-09
-
-### 🔄 Changed
-
-- deterministic build and include sha256 of binary into nuget package
-
-## [v11.0.0] - 2023-07-25
-
 BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
-
-## [v10.29.0] - 2023-07-12
-
-### 🔄 Changed
-
-- cron jobs
-
-## [v10.28.0] - 2023-07-11
-
-### 🔄 Changed
-
-- abort the request if the response has already started
-- !(VOTING-3367): add option to keep the writer open when writing eCH async enumerable data
-
-## [v10.27.1] - 2023-07-05
-
-### 🔄 Changed
-
-- use pkcs11 interop factory for automated target platform high level api discovery
-
-## [v10.27.0] - 2023-07-05
 
 ### 🆕 Added
 
@@ -406,6 +510,41 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v11.1.0] - 2023-08-09
+
+### 🔄 Changed
+
+- deterministic build and include sha256 of binary into nuget package
+
+## [v11.0.0] - 2023-07-25
+
+BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
+
+## [v10.29.0] - 2023-07-12
+
+### 🔄 Changed
+
+- cron jobs
+
+## [v10.28.0] - 2023-07-11
+
+### 🔄 Changed
+
+- abort the request if the response has already started
+- !(VOTING-3367): add option to keep the writer open when writing eCH async enumerable data
+
+## [v10.27.1] - 2023-07-05
+
+### 🔄 Changed
+
+- use pkcs11 interop factory for automated target platform high level api discovery
+
+## [v10.27.0] - 2023-07-05
+
+### 🆕 Added
+
+- extended malware scanner service for string content
 
 ## [v10.26.1] - 2023-07-03
 

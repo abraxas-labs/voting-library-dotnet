@@ -4,8 +4,8 @@ set -Eeuo pipefail
 
 echo "you may need to update the swagger files before running this script"
 echo "you can download them here:"
-echo "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/identity/-/raw/master/identityAPI/identity.swagger.json"
-echo "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/permission/-/raw/master/permissionAPI/permission.swagger.json"
+Write-Host "<secure-connect-apps>/identity/-/raw/master/identityAPI/identity.swagger.json" -ForegroundColor Magenta
+Write-Host "<secure-connect-apps>/permission/-/raw/master/permissionAPI/permission.swagger.json" -ForegroundColor Magenta
 
 dotnet tool restore > /dev/null
 

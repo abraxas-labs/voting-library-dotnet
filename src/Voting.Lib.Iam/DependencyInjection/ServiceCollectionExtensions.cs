@@ -1,4 +1,4 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System;
@@ -156,7 +156,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSecureConnectAuthorization(this IServiceCollection services)
         => services.AddAuthorization()
             .AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
-            .AddTransient<IAuthorizationHandler, PermissionHandler>();
+            .AddTransient<IAuthorizationHandler, PermissionHandler>()
+            .AddTransient<IAuthorizationHandler, AnyPermissionHandler>();
 
     /// <summary>
     /// Adds the secure connect authentication scheme.

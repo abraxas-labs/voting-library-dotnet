@@ -1,4 +1,4 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System.Linq;
@@ -62,9 +62,18 @@ public static class AuthExtensions
     /// </summary>
     /// <param name="auth">The auth provider.</param>
     /// <param name="permission">The permission to look for.</param>
-    /// <returns>True if the user has this role in the auth store.</returns>
+    /// <returns>True if the user has this permission in the auth store.</returns>
     public static bool HasPermission(this IAuth auth, string permission)
         => auth.Permissions.Contains(permission);
+
+    /// <summary>
+    /// Checks whether a user has any of the given permissions.
+    /// </summary>
+    /// <param name="auth">The auth provider.</param>
+    /// <param name="permissions">The permissions to look for.</param>
+    /// <returns>True if the user has any of the given permissions in the auth store.</returns>
+    public static bool HasAnyPermission(this IAuth auth, params string[] permissions)
+        => auth.Permissions.Intersect(permissions).Any();
 
     /// <summary>
     /// Checks whether a user has a given permission. Throws otherwise.

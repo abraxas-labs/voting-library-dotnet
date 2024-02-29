@@ -1,4 +1,4 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System;
@@ -28,6 +28,7 @@ public class PermissionHandlerTest : IAsyncDisposable
             .AddLogging()
             .AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
             .AddTransient<IAuthorizationHandler, PermissionHandler>()
+            .AddTransient<IAuthorizationHandler, AnyPermissionHandler>()
             .AddSingleton<IAuthStore>(_authStore)
             .AddSingleton<IAuth>(_authStore)
             .BuildServiceProvider(true);
@@ -44,7 +45,7 @@ public class PermissionHandlerTest : IAsyncDisposable
     {
         var authorizationService = _serviceProvider.GetRequiredService<IAuthorizationService>();
         _authStore.SetValues("token", "user-id", "tenant-id", new[] { "my-role" }, new[] { "my-permission" });
-        var result = await authorizationService.AuthorizeAsync(new ClaimsPrincipal(), AuthorizePermissionAttribute.PolicyPrefix + "my-permission");
+        var result = await authorizationService.AuthorizeAsync(new ClaimsPrincipal(), "Permission.my-permission");
         result.Succeeded.Should().BeTrue();
     }
 
@@ -53,7 +54,7 @@ public class PermissionHandlerTest : IAsyncDisposable
     {
         var authorizationService = _serviceProvider.GetRequiredService<IAuthorizationService>();
         _authStore.SetValues("token", "user-id", "tenant-id", new[] { "my-role" });
-        var result = await authorizationService.AuthorizeAsync(new ClaimsPrincipal(), AuthorizePermissionAttribute.PolicyPrefix + "my-permission");
+        var result = await authorizationService.AuthorizeAsync(new ClaimsPrincipal(), "Permission.my-permission");
         result.Succeeded.Should().BeFalse();
     }
 }

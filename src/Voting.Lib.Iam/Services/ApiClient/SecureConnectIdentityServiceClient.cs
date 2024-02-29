@@ -1,9 +1,9 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using Abraxas.Foundation.ApiClient.Base.DotNet.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Voting.Lib.ApiClientBase.DotNet.Converters;
 
 namespace Voting.Lib.Iam.Services.ApiClient.Identity;
 
@@ -12,7 +12,6 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity;
 /// </summary>
 public partial class SecureConnectIdentityServiceClient
 {
-    // settings from https://gitlab.abraxas-tools.ch/iks/apps/iks-internes-kontrollsystem/iks-service/-/blob/f227aceffdfadf6d245557ea1207615b77304524/src/SecureConnect.ApiClients/SecureConnect.ApiClient.DotNet/Extensions/ServiceClient.cs
     partial void UpdateJsonSerializerSettings(JsonSerializerSettings settings)
     {
         settings.Converters.Add(new JsonDateTimeOffsetConverter());

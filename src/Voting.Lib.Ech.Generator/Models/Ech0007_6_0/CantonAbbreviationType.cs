@@ -15,7 +15,6 @@ namespace Ech0007_6_0
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.1.963.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("cantonAbbreviationType", Namespace="http://www.ech.ch/xmlns/eCH-0007/6")]
-    [System.Xml.Serialization.XmlRootAttribute("cantonAbbreviationType", Namespace="http://www.ech.ch/xmlns/eCH-0007/6")]
     public enum CantonAbbreviationType
     {
         

@@ -1,4 +1,4 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System.Collections.Generic;
@@ -105,6 +105,17 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WPGemeindenSkStat = new TemplateModel
+    {
+        Key = "WP_Gemeinden_SK_STAT",
+        Filename = "WP_Gemeinden_SK_STAT",
+        Description = "WP_Gemeinden_SK_STAT",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel WPGemeindenBfs = new TemplateModel
     {
         Key = "WP_Gemeinden_BFS",
@@ -182,6 +193,116 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WPWahlEinzel = new TemplateModel
+    {
+        Key = "WP_Wahl_Einzel",
+        Filename = "WP_Wahl_{0}",
+        Description = "WP_Wahl_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPGemeindenEinzel = new TemplateModel
+    {
+        Key = "WP_Gemeinden_Einzel",
+        Filename = "WP_Gemeinden_{0}",
+        Description = "WP_Gemeinden_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPGemeindenSkStatEinzel = new TemplateModel
+    {
+        Key = "WP_Gemeinden_SK_STAT_Einzel",
+        Filename = "WP_Gemeinden_SK_STAT_{0}",
+        Description = "WP_Gemeinden_SK_STAT_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPGemeindenBfsEinzel = new TemplateModel
+    {
+        Key = "WP_Gemeinden_BFS_Einzel",
+        Filename = "WP_Gemeinden_BFS_{0}",
+        Description = "WP_Gemeinden_BFS_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPStaticGemeindenEinzel = new TemplateModel
+    {
+        Key = "WPStatic_Gemeinden_Einzel",
+        Filename = "WPStatic_Gemeinden_{0}",
+        Description = "WPStatic_Gemeinden_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPKandidatenEinzel = new TemplateModel
+    {
+        Key = "WP_Kandidaten_Einzel",
+        Filename = "WP_Kandidaten_{0}",
+        Description = "WP_Kandidaten_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPStaticKandidatenEinzel = new TemplateModel
+    {
+        Key = "WPStatic_Kandidaten_Einzel",
+        Filename = "WPStatic_Kandidaten_{0}",
+        Description = "WPStatic_Kandidaten_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPKandidatenGdeEinzel = new TemplateModel
+    {
+        Key = "WP_KandidatenGde_Einzel",
+        Filename = "WP_KandidatenGde_{0}",
+        Description = "WP_KandidatenGde_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPListenEinzel = new TemplateModel
+    {
+        Key = "WP_Listen_Einzel",
+        Filename = "WP_Listen_{0}",
+        Description = "WP_Listen_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    public static readonly TemplateModel WPListenGdeEinzel = new TemplateModel
+    {
+        Key = "WP_ListenGde_Einzel",
+        Filename = "WP_ListenGde_{0}",
+        Description = "WP_ListenGde_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel SGStaticGeschaefte = new TemplateModel
     {
         Key = "SGStatic_Geschäfte",
@@ -248,6 +369,7 @@ public static class AusmittlungWabstiCTemplates
         WMKandidatenGde,
         WPWahl,
         WPGemeinden,
+        WPGemeindenSkStat,
         WPGemeindenBfs,
         WPStaticGemeinden,
         WPKandidaten,
@@ -255,6 +377,16 @@ public static class AusmittlungWabstiCTemplates
         WPKandidatenGde,
         WPListen,
         WPListenGde,
+        WPWahlEinzel,
+        WPGemeindenEinzel,
+        WPGemeindenSkStatEinzel,
+        WPGemeindenBfsEinzel,
+        WPStaticGemeindenEinzel,
+        WPKandidatenEinzel,
+        WPStaticKandidatenEinzel,
+        WPKandidatenGdeEinzel,
+        WPListenEinzel,
+        WPListenGdeEinzel,
         SGStaticGeschaefte,
         SGGeschaefte,
         SGGemeinden,

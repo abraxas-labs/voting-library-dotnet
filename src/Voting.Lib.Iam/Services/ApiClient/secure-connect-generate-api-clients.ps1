@@ -25,8 +25,8 @@ Set-Location $PSScriptRoot
 
 Write-Host "you may need to update the swagger files before running this script"
 Write-Host "you can download them here:"
-Write-Host "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/identity/-/raw/master/identityAPI/identity.swagger.json" -ForegroundColor Magenta
-Write-Host "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/permission/-/raw/master/permissionAPI/permission.swagger.json" -ForegroundColor Magenta
+Write-Host "<secure-connect-apps>/identity/-/raw/master/identityAPI/identity.swagger.json" -ForegroundColor Magenta
+Write-Host "<secure-connect-apps>/permission/-/raw/master/permissionAPI/permission.swagger.json" -ForegroundColor Magenta
 
 Write-Host "Restoring tools..." -ForegroundColor Green
 

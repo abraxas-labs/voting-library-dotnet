@@ -1,7 +1,6 @@
-// (c) Copyright 2022 by Abraxas Informatik AG
+// (c) Copyright 2024 by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Voting.Lib.Iam.AuthenticationScheme;
@@ -13,15 +12,15 @@ internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
     /// <inheritdoc />
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
-        if (!policyName.StartsWith(AuthorizePermissionAttribute.PolicyPrefix, StringComparison.OrdinalIgnoreCase))
+        var requirement = ExtractAuthRequirement(policyName);
+        if (requirement == null)
         {
             return Task.FromResult<AuthorizationPolicy?>(null);
         }
 
         // Implemented according to https://learn.microsoft.com/en-us/aspnet/core/security/authorization/iauthorizationpolicyprovider
-        var permission = policyName[AuthorizePermissionAttribute.PolicyPrefix.Length..];
         var policy = new AuthorizationPolicyBuilder(SecureConnectDefaults.AuthenticationScheme);
-        policy.AddRequirements(new PermissionRequirement(permission));
+        policy.AddRequirements(requirement);
         return Task.FromResult(policy.Build())!;
     }
 
@@ -41,5 +40,11 @@ internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
             .RequireAuthenticatedUser()
             .Build();
         return Task.FromResult(fallbackPolicy)!;
+    }
+
+    private IAuthorizationRequirement? ExtractAuthRequirement(string policyName)
+    {
+        return AuthorizePermissionAttribute.ExtractRequirementFromPolicyName(policyName)
+            ?? AuthorizeAnyPermissionAttribute.ExtractRequirementFromPolicyName(policyName);
     }
 }

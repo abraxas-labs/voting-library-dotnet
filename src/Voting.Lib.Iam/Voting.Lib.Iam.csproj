@@ -3,10 +3,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MsAspNetCoreVersion)" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="$(MsExtensionsVersion)" />
-        <PackageReference Include="Abraxas.Foundation.ApiClient.Base.DotNet" Version="3.4.1" />
     </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.ApiClientBase.DotNet\Voting.Lib.ApiClientBase.DotNet.csproj" />
     <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
   </ItemGroup>
 

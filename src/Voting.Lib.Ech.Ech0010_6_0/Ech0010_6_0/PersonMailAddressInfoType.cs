@@ -17,7 +17,6 @@ namespace Ech0010_6_0
     [System.Xml.Serialization.XmlTypeAttribute("personMailAddressInfoType", Namespace="http://www.ech.ch/xmlns/eCH-0010/6")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlRootAttribute("personMailAddressInfoType", Namespace="http://www.ech.ch/xmlns/eCH-0010/6")]
     public partial class PersonMailAddressInfoType
     {
         
