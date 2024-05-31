@@ -193,6 +193,17 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WPListenGdeSkStat = new TemplateModel
+    {
+        Key = "WP_ListenGde_SK_STAT",
+        Filename = "WP_ListenGde_SK_STAT",
+        Description = "WP_ListenGde_SK_STAT",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel WPWahlEinzel = new TemplateModel
     {
         Key = "WP_Wahl_Einzel",
@@ -303,6 +314,17 @@ public static class AusmittlungWabstiCTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    public static readonly TemplateModel WPListenGdeSkStatEinzel = new TemplateModel
+    {
+        Key = "WP_ListenGde_SK_STAT_Einzel",
+        Filename = "WP_ListenGde_SK_STAT_{0}",
+        Description = "WP_ListenGde_SK_STAT_Einzel",
+        Format = ExportFileFormat.Csv,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     public static readonly TemplateModel SGStaticGeschaefte = new TemplateModel
     {
         Key = "SGStatic_Geschäfte",
@@ -377,6 +399,7 @@ public static class AusmittlungWabstiCTemplates
         WPKandidatenGde,
         WPListen,
         WPListenGde,
+        WPListenGdeSkStat,
         WPWahlEinzel,
         WPGemeindenEinzel,
         WPGemeindenSkStatEinzel,
@@ -387,6 +410,7 @@ public static class AusmittlungWabstiCTemplates
         WPKandidatenGdeEinzel,
         WPListenEinzel,
         WPListenGdeEinzel,
+        WPListenGdeSkStatEinzel,
         SGStaticGeschaefte,
         SGGeschaefte,
         SGGemeinden,

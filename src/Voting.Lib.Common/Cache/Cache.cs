@@ -46,12 +46,12 @@ public class Cache<T> : ICache<T>
         {
             ApplyCacheOptions(cacheEntry);
             return factory();
-        });
+        })!;
     }
 
     private void ApplyCacheOptions(ICacheEntry cacheEntry)
     {
-        cacheEntry.Size = _cacheOptions.CalculateSize((string)cacheEntry.Key, (T)cacheEntry.Value);
+        cacheEntry.Size = _cacheOptions.CalculateSize((string)cacheEntry.Key, (T)cacheEntry.Value!);
         cacheEntry.SlidingExpiration = _cacheOptions.SlidingExpiration;
         cacheEntry.AbsoluteExpirationRelativeToNow = _cacheOptions.AbsoluteExpirationRelativeToNow;
     }

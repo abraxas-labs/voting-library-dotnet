@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.Iam.Exceptions;
 
@@ -16,16 +15,6 @@ public class NotAuthenticatedException : Exception
     /// Initializes a new instance of the <see cref="NotAuthenticatedException"/> class.
     /// </summary>
     public NotAuthenticatedException()
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotAuthenticatedException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected NotAuthenticatedException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
     {
     }
 }

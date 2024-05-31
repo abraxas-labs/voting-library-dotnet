@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fennel" Version="0.3.0" />
-    <PackageReference Include="prometheus-net" Version="6.0.0" />
+    <PackageReference Include="prometheus-net" Version="8.2.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MsExtensionsVersion)" />
   </ItemGroup>
 

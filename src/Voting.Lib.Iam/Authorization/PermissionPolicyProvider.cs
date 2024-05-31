@@ -3,19 +3,28 @@
 
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Voting.Lib.Iam.AuthenticationScheme;
 
 namespace Voting.Lib.Iam.Authorization;
 
 internal class PermissionPolicyProvider : IAuthorizationPolicyProvider
 {
+    private readonly DefaultAuthorizationPolicyProvider _defaultPolicyProvider;
+
+    public PermissionPolicyProvider(
+        IOptions<AuthorizationOptions> options)
+    {
+        _defaultPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
+    }
+
     /// <inheritdoc />
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         var requirement = ExtractAuthRequirement(policyName);
         if (requirement == null)
         {
-            return Task.FromResult<AuthorizationPolicy?>(null);
+            return _defaultPolicyProvider.GetPolicyAsync(policyName);
         }
 
         // Implemented according to https://learn.microsoft.com/en-us/aspnet/core/security/authorization/iauthorizationpolicyprovider

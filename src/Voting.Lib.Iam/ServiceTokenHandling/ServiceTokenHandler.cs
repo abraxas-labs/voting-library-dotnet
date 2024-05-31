@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Common;
 using Voting.Lib.Iam.AuthenticationScheme;
@@ -21,7 +20,7 @@ internal class ServiceTokenHandler : IServiceTokenHandler, IAsyncDisposable
 {
     private readonly ILogger<ServiceTokenHandler> _logger;
     private readonly SecureConnectServiceAccountOptions _options;
-    private readonly ISystemClock _clock;
+    private readonly TimeProvider _timeProvider;
     private readonly IHttpClientFactory _httpClientFactory;
 
     private readonly AsyncLock _lock = new();
@@ -31,12 +30,12 @@ internal class ServiceTokenHandler : IServiceTokenHandler, IAsyncDisposable
     public ServiceTokenHandler(
         ILogger<ServiceTokenHandler> logger,
         SecureConnectServiceAccountOptions options,
-        ISystemClock clock,
+        TimeProvider timeProvider,
         IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _options = options;
-        _clock = clock;
+        _timeProvider = timeProvider;
         _httpClientFactory = httpClientFactory;
     }
 
@@ -64,7 +63,7 @@ internal class ServiceTokenHandler : IServiceTokenHandler, IAsyncDisposable
         var config = await _options.ConfigurationManager.GetConfigurationAsync(default).ConfigureAwait(false);
 
         _logger.LogInformation(SecurityLogging.SecurityEventId, "Requesting new service token");
-        using var httpClient = _httpClientFactory.CreateClient(_options.ServiceTokenClientName);
+        using var httpClient = _httpClientFactory.CreateClient(_options.ServiceTokenClientName!);
         using var response = await httpClient.PostAsJsonAsync(config.TokenEndpoint, CreateServiceTokenRequestModel())
             .ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
@@ -82,7 +81,7 @@ internal class ServiceTokenHandler : IServiceTokenHandler, IAsyncDisposable
 
         _serviceToken = tokenResponse.AccessToken;
 
-        var expiry = _clock.UtcNow.AddSeconds(tokenResponse.ExpiresIn);
+        var expiry = _timeProvider.GetUtcNow().AddSeconds(tokenResponse.ExpiresIn);
         _serviceTokenValidTo = expiry.Subtract(_options.RefreshBeforeExpiration);
 
         _logger.LogInformation(SecurityLogging.SecurityEventId, "Got new service token, valid until {Expiry} but we will refresh anytime after {ValidTo}", expiry, _serviceTokenValidTo);
@@ -94,7 +93,7 @@ internal class ServiceTokenHandler : IServiceTokenHandler, IAsyncDisposable
 
     [MemberNotNullWhen(true, nameof(_serviceToken))]
     private bool HasValidToken()
-        => _serviceToken != null && _serviceTokenValidTo > _clock.UtcNow;
+        => _serviceToken != null && _serviceTokenValidTo > _timeProvider.GetUtcNow();
 
     /// <summary>
     /// Creates the <see cref="ServiceTokenRequestModel"/>,

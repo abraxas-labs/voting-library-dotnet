@@ -163,7 +163,7 @@ public class MultipartRequestHelper
             throw new ValidationException("encountered request section without content disposition");
         }
 
-        var sectionName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
+        var sectionName = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value!;
         if (!HasFileContentDisposition(contentDisposition))
         {
             return null;

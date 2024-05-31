@@ -23,7 +23,7 @@ internal class TenantService : ITenantService
         try
         {
             var tenant = await _client
-                .GetTenantByIdAsync(tenantId, includeDeleted)
+                .PermissionService_GetTenantByIdAsync(tenantId, includeDeleted)
                 .ConfigureAwait(false);
             return new Tenant
             {

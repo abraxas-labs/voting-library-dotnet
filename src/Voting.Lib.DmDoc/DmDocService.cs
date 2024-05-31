@@ -201,11 +201,11 @@ public class DmDocService : IDmDocService
 
     /// <inheritdoc />
     public Task<Stream> FinishAsPdf<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default)
-        => WithTemporaryDraft(templateId, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
+        => WithFinalDraft(templateId, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
 
     /// <inheritdoc />
     public Task<Stream> FinishAsPdf<T>(string templateName, T templateData, string? bulkRoot = null, CancellationToken ct = default)
-        => WithTemporaryDraft(templateName, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
+        => WithFinalDraft(templateName, templateData, bulkRoot, d => FinishDraftAsPdf(d.Id, ct), ct);
 
     /// <inheritdoc />
     public Task<Draft> StartAsyncPdfGeneration<T>(
@@ -279,7 +279,7 @@ public class DmDocService : IDmDocService
         return (response.BrickId, response.Id);
     }
 
-    private Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
+    private Task<TResp> WithFinalDraft<TDraftData, TResp>(
         int templateId,
         TDraftData templateData,
         string? bulkRoot,
@@ -287,7 +287,29 @@ public class DmDocService : IDmDocService
         CancellationToken ct)
     {
         var draftRequest = new CreateDraftRequest { TemplateId = templateId };
-        return WithTemporaryDraft(draftRequest, templateData, bulkRoot, action, ct);
+        return WithDraft(draftRequest, templateData, bulkRoot, action, ct);
+    }
+
+    private Task<TResp> WithFinalDraft<TDraftData, TResp>(
+        string templateName,
+        TDraftData templateData,
+        string? bulkRoot,
+        Func<Draft, Task<TResp>> action,
+        CancellationToken ct)
+    {
+        var draftRequest = new CreateDraftRequest { TemplateName = templateName };
+        return WithDraft(draftRequest, templateData, bulkRoot, action, ct);
+    }
+
+    private Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
+       int templateId,
+       TDraftData templateData,
+       string? bulkRoot,
+       Func<Draft, Task<TResp>> action,
+       CancellationToken ct)
+    {
+        var draftRequest = new CreateDraftRequest { TemplateId = templateId, AsyncJobPriority = _config.AsyncJobPriority };
+        return WithDraft(draftRequest, templateData, bulkRoot, action, ct);
     }
 
     private Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
@@ -297,11 +319,11 @@ public class DmDocService : IDmDocService
         Func<Draft, Task<TResp>> action,
         CancellationToken ct)
     {
-        var draftRequest = new CreateDraftRequest { TemplateName = templateName };
-        return WithTemporaryDraft(draftRequest, templateData, bulkRoot, action, ct);
+        var draftRequest = new CreateDraftRequest { TemplateName = templateName, AsyncJobPriority = _config.AsyncJobPriority };
+        return WithDraft(draftRequest, templateData, bulkRoot, action, ct);
     }
 
-    private async Task<TResp> WithTemporaryDraft<TDraftData, TResp>(
+    private async Task<TResp> WithDraft<TDraftData, TResp>(
         CreateDraftRequest draftRequest,
         TDraftData templateData,
         string? bulkRoot,

@@ -59,18 +59,18 @@ public class MockLogger : ILogger, IDisposable
     public string Category { get; }
 
     /// <inheritdoc cref="ILogger.BeginScope{TState}"/>
-    public IDisposable BeginScope<TState>(TState state)
+    IDisposable? ILogger.BeginScope<TState>(TState state)
     {
         ActiveScopes.Add(state);
         return new Disposable(() => ActiveScopes.Remove(state));
     }
 
     /// <inheritdoc cref="ILogger.IsEnabled"/>
-    public bool IsEnabled(LogLevel logLevel)
+    bool ILogger.IsEnabled(LogLevel logLevel)
         => true;
 
     /// <inheritdoc cref="ILogger.Log{TState}"/>
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         Messages.Add(new(logLevel, eventId, state, exception, formatter(state, exception)));
     }

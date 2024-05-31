@@ -98,4 +98,32 @@ public static class EnumerableExtensions
 
         return new EnumerableDiff<T>(added, updated, existingById.Values);
     }
+
+    /// <summary>
+    /// Returns whether two enumerables of decimals are approximately equals.
+    /// </summary>
+    /// <param name="a">The first enumerable.</param>
+    /// <param name="b">The second enumerable.</param>
+    /// <param name="precision">Floating point precision of the enumerable elements.</param>
+    /// <returns>Approximate equality of the two enumerables.</returns>
+    public static bool SequenceApproxEqual(this IEnumerable<decimal> a, IEnumerable<decimal> b, int precision = 10)
+    {
+        var aArray = a.ToArray();
+        var bArray = b.ToArray();
+
+        if (aArray.Length != bArray.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < aArray.Length; i++)
+        {
+            if (!aArray[i].ApproxEquals(bArray[i], precision))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -19,7 +19,7 @@ internal class SecureConnectPostConfigureOptions : JwtBearerPostConfigureOptions
     }
 
     /// <inheritdoc />
-    public void PostConfigure(string name, SecureConnectOptions options)
+    public void PostConfigure(string? name, SecureConnectOptions options)
     {
         if (options.Backchannel != null)
         {

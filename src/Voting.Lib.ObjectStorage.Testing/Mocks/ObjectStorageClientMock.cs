@@ -63,12 +63,11 @@ public class ObjectStorageClientMock : IObjectStorageClient
     }
 
     /// <inheritdoc />
-    public Task Fetch(string bucketName, string objectName, Action<Stream> callback)
+    public async Task Fetch(string bucketName, string objectName, Action<Stream> callback)
     {
         var data = Get(bucketName, objectName);
-        using var stream = new MemoryStream(data);
+        await using var stream = new MemoryStream(data);
         callback(stream);
-        return Task.CompletedTask;
     }
 
     /// <inheritdoc />

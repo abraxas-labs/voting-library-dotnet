@@ -3,7 +3,6 @@
 
 using System;
 using Google.Protobuf.WellKnownTypes;
-using Microsoft.AspNetCore.Authentication;
 using Voting.Lib.Common;
 
 namespace Voting.Lib.Testing.Mocks;
@@ -11,7 +10,7 @@ namespace Voting.Lib.Testing.Mocks;
 /// <summary>
 /// Provides a fixed timestamp clock implementation.
 /// </summary>
-public class MockedClock : ISystemClock, IClock
+public class MockedClock : TimeProvider, IClock
 {
     /// <summary>
     /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC.
@@ -32,11 +31,6 @@ public class MockedClock : ISystemClock, IClock
     /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC.
     /// </summary>
     public static Timestamp UtcNowTimestamp { get; } = UtcNowDate.ToTimestamp();
-
-    /// <summary>
-    /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC or an overwritten value.
-    /// </summary>
-    DateTimeOffset ISystemClock.UtcNow => UtcNow;
 
     /// <summary>
     /// Gets or sets a fixed timestamp of 2020-01-10 13:12:10.200 UTC or an overwritten value.
@@ -73,4 +67,10 @@ public class MockedClock : ISystemClock, IClock
     /// <returns>The timestamp.</returns>
     public static Timestamp GetTimestampDate(int dayDelta = 0)
         => GetDate(dayDelta).Date.ToTimestamp();
+
+    /// <summary>
+    /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC or an overwritten value.
+    /// </summary>
+    /// <returns>The fixed timestamp.</returns>
+    public override DateTimeOffset GetUtcNow() => UtcNow;
 }

@@ -144,7 +144,7 @@ public class EchSerializer
         CancellationToken ct = default)
         where TItem : class
     {
-        using var ms = RecyclableMemoryStreamManager.GetStream();
+        await using var ms = RecyclableMemoryStreamManager.GetStream();
         WriteXml(ms, o, xmlAttributeOverrides, true);
         ms.Seek(0, SeekOrigin.Begin);
         await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, leaveOpen, xmlAttributeOverrides, ct);

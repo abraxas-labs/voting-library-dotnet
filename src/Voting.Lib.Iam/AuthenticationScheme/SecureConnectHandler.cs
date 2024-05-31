@@ -42,29 +42,25 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
     /// <param name="options">The SecureConnect options.</param>
     /// <param name="logger">The logger.</param>
     /// <param name="encoder">The URL encoder.</param>
-    /// <param name="clock">The system clock.</param>
     /// <param name="roleTokenHandler">The SecureConnect role token handler.</param>
     /// <param name="serviceProvider">The service provider.</param>
     public SecureConnectHandler(
         IOptionsMonitor<SecureConnectOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock,
         IRoleTokenHandler roleTokenHandler,
         IServiceProvider serviceProvider)
         : base(
             options,
             logger,
-            encoder,
-            clock)
+            encoder)
     {
         RoleTokenHandler = roleTokenHandler;
         ServiceProvider = serviceProvider;
         JwtBearerHandler = new JwtBearerHandler(
             options,
             logger,
-            encoder,
-            clock);
+            encoder);
 
         UserService = serviceProvider.GetRequiredService<IUserService>();
         TenantService = serviceProvider.GetRequiredService<ITenantService>();
@@ -77,15 +73,13 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         IOptionsMonitor<SecureConnectOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock,
         IRoleTokenHandler roleTokenHandler,
         JwtBearerHandler bearerHandler,
         IServiceProvider serviceProvider)
         : base(
             options,
             logger,
-            encoder,
-            clock)
+            encoder)
     {
         RoleTokenHandler = roleTokenHandler;
         ServiceProvider = serviceProvider;

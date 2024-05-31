@@ -23,7 +23,6 @@ using Voting.Lib.Iam.Authorization;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Store;
-using Voting.Lib.Testing.Mocks;
 using Xunit;
 
 namespace Voting.Lib.Iam.Test.AuthenticationScheme;
@@ -61,12 +60,10 @@ public class SecureConnectHandlerTest : IAsyncDisposable
 
         _authStore = new AuthStore(NullLogger<AuthStore>.Instance);
 
-        var clock = new MockedClock();
         _jwtBearerHandler = new MockedJwtBearerHandler(
             optionsMonitorMock.Object,
             NullLoggerFactory.Instance,
-            UrlEncoder.Default,
-            clock);
+            UrlEncoder.Default);
 
         _userServiceMock = new Mock<IUserService>();
         _tenantServiceMock = new Mock<ITenantService>();
@@ -78,8 +75,8 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             .AddCache(new CacheOptions<User>())
             .AddCache(new CacheOptions<Tenant>())
             .AddCache(new CacheOptions<UserRoles>())
-            .AddSingleton<IAuthStore>(_ => _authStore)
-            .AddSingleton<IAuth>(_ => _authStore)
+            .AddSingleton<IAuthStore>(_ => _authStore!)
+            .AddSingleton<IAuth>(_ => _authStore!)
             .BuildServiceProvider(true);
 
         var roleTokenHandlerMock = new Mock<IRoleTokenHandler>();
@@ -94,7 +91,6 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             optionsMonitorMock.Object,
             NullLoggerFactory.Instance,
             UrlEncoder.Default,
-            clock,
             roleTokenHandlerMock.Object,
             _jwtBearerHandler,
             _serviceProvider);
@@ -266,8 +262,8 @@ public class SecureConnectHandlerTest : IAsyncDisposable
 
     private class MockedJwtBearerHandler : JwtBearerHandler
     {
-        public MockedJwtBearerHandler(IOptionsMonitor<JwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
-            : base(options, logger, encoder, clock)
+        public MockedJwtBearerHandler(IOptionsMonitor<JwtBearerOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+            : base(options, logger, encoder)
         {
         }
 

@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -66,7 +65,8 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection instance.</returns>
     public static IServiceCollection AddMockedClock(this IServiceCollection services)
-        => services.RemoveAll<ISystemClock>()
-            .AddMock<ISystemClock, MockedClock>()
+        => services
+            .RemoveAll<TimeProvider>()
+            .AddMock<TimeProvider, MockedClock>()
             .AddMock<IClock, MockedClock>();
 }

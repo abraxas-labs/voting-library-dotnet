@@ -12,20 +12,6 @@ namespace Voting.Lib.VotingExports.Repository.Ausmittlung;
 public static class AusmittlungPdfProportionalElectionTemplates
 {
     /// <summary>
-    /// Gets the voter turnout protocol export template.
-    /// </summary>
-    public static readonly TemplateModel VoterTurnoutProtocol = new TemplateModel
-    {
-        Key = "proportional_election_voter_turnout_protocol",
-        Filename = "Wahlbeteiligung",
-        Description = "Wahlbeteiligung über die gesamte Geschäftsebene",
-        Format = ExportFileFormat.Pdf,
-        EntityType = EntityType.ProportionalElection,
-        ResultType = ResultType.PoliticalBusinessUnionResult,
-        GeneratedBy = VotingApp.VotingAusmittlung,
-    };
-
-    /// <summary>
     /// Gets the list votes counting circle protocol export template.
     /// </summary>
     public static readonly TemplateModel ListVotesCountingCircleProtocol = new TemplateModel
@@ -134,6 +120,20 @@ public static class AusmittlungPdfProportionalElectionTemplates
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the list votes end result inside of a proportional election union export template.
+    /// </summary>
+    public static readonly TemplateModel ListVotesPoliticalBusinessUnionEndResults = new TemplateModel
+    {
+        Key = "proportional_election_list_votes_political_business_union_end_results",
+        Filename = "Proporz_FormularC_Listenergebnisse_{0}_{1}",
+        Description = "C - Listenergebnisse",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
@@ -249,9 +249,92 @@ public static class AusmittlungPdfProportionalElectionTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    /// <summary>
+    /// Gets the end result double proportional export template.
+    /// </summary>
+    public static readonly TemplateModel EndResultDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_end_result_double_proportional",
+        Filename = "DPT3_DopP_Sitzverteilung",
+        Description = "DPT3 - Ergebnis der DopP-Sitzverteilung, 1-Wahlkreis",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the union end result quorum union list double proportional pukelsheim export template.
+    /// </summary>
+    public static readonly TemplateModel UnionEndResultQuorumUnionListDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_union_end_result_quorum_union_list_double_proportional",
+        Filename = "Stimmenquorum der Listengruppen",
+        Description = "Stimmenquorum der Listengruppen",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the union end result super apportionment double proportional export template.
+    /// </summary>
+    public static readonly TemplateModel UnionEndResultSuperApportionmentDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_union_end_result_super_apportionment_double_proportional",
+        Filename = "Oberzuteilung der Sitze an die Listengruppen",
+        Description = "Oberzuteilung der Sitze an die Listengruppen",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the union end result sub apportionment double proportional export template.
+    /// </summary>
+    public static readonly TemplateModel UnionEndResultSubApportionmentDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_union_end_result_sub_apportionment_double_proportional",
+        Filename = "Unterzuteilung der Sitze an die Listen",
+        Description = "Unterzuteilung der Sitze an die Listen",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the union end result number of mandates double proportional export template.
+    /// </summary>
+    public static readonly TemplateModel UnionEndResultNumberOfMandatesDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_union_end_result_number_of_mandates_double_proportional",
+        Filename = "Anzahl Sitze pro Liste und Wahlkreis",
+        Description = "Anzahl Sitze pro Liste und Wahlkreis",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the union end result calculation double proportional export template.
+    /// </summary>
+    public static readonly TemplateModel UnionEndResultCalculationDoubleProportional = new TemplateModel
+    {
+        Key = "proportional_election_union_end_result_calculation_double_proportional",
+        Filename = "Gesamtergebnis der Sitzeverteilung",
+        Description = "Gesamtergebnis der Sitzeverteilung",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.ProportionalElection,
+        ResultType = ResultType.PoliticalBusinessUnionResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
-        VoterTurnoutProtocol,
         ListsCountingCircleProtocol,
         ListVotesCountingCircleProtocol,
         ListVotesCountingCircleEVotingProtocol,
@@ -260,6 +343,7 @@ public static class AusmittlungPdfProportionalElectionTemplates
         ListCandidateEmptyVotesCountingCircleEVotingProtocol,
         ListCandidateVoteSourcesCountingCircleProtocol,
         ListVotesEndResults,
+        ListVotesPoliticalBusinessUnionEndResults,
         ListCandidateVotesEndResults,
         ListCandidateEndResults,
         ListCandidateEndResultsEVoting,
@@ -268,5 +352,11 @@ public static class AusmittlungPdfProportionalElectionTemplates
         EndResultListUnions,
         EndResultListUnionsEVoting,
         ResultBundleReview,
+        EndResultDoubleProportional,
+        UnionEndResultQuorumUnionListDoubleProportional,
+        UnionEndResultSuperApportionmentDoubleProportional,
+        UnionEndResultSubApportionmentDoubleProportional,
+        UnionEndResultNumberOfMandatesDoubleProportional,
+        UnionEndResultCalculationDoubleProportional,
     };
 }

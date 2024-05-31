@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Voting.Lib.Common;
@@ -82,14 +83,14 @@ internal class RoleTokenHandler : IRoleTokenHandler
             return Array.Empty<string>();
         }
 
-        var roleTokenPrincipal = await ValidateToken(roleTokenResponse.AccessToken, true, subjectToken).ConfigureAwait(false);
-        if (roleTokenPrincipal == null)
+        var roleTokenIdentity = await ValidateToken(roleTokenResponse.AccessToken, true, subjectToken).ConfigureAwait(false);
+        if (roleTokenIdentity == null)
         {
             // already logged.
             return Array.Empty<string>();
         }
 
-        var roles = roleTokenPrincipal.Claims.FirstOrDefault(c => c.Type == Options.RoleClaimName)?.Value;
+        var roles = roleTokenIdentity.Claims.FirstOrDefault(c => c.Type == Options.RoleClaimName)?.Value;
         if (roles == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "No roles in role token found.");
@@ -111,7 +112,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
             .ToList();
     }
 
-    private async Task<ClaimsPrincipal?> ValidateToken(string token, bool refreshOnKeyNotFound, string subjectToken)
+    private async Task<ClaimsIdentity?> ValidateToken(string token, bool refreshOnKeyNotFound, string subjectToken)
     {
         try
         {
@@ -123,28 +124,35 @@ internal class RoleTokenHandler : IRoleTokenHandler
             validationParameters.ValidIssuers = validationParameters.ValidIssuers?.Concat(issuers) ?? issuers;
             validationParameters.IssuerSigningKeys = validationParameters.IssuerSigningKeys?.Concat(config.SigningKeys) ?? config.SigningKeys;
 
-            var validator = Options.SecurityTokenValidators.FirstOrDefault(v => v.CanReadToken(token));
-            var roleTokenPrincipal = validator?.ValidateToken(token, validationParameters, out var validatedToken)
-                ?? throw new SecurityTokenValidationException("Could not find a token validator which can read the provided role token");
+            TokenHandler tokenHandler = Options.TokenHandlers.FirstOrDefault() ?? throw new SecurityTokenValidationException("Could not find a token validator from the provided token handlers.");
+            var tokenValidationResult = await tokenHandler.ValidateTokenAsync(token, validationParameters);
+
+            if (!tokenValidationResult.IsValid)
+            {
+                if (tokenValidationResult.Exception is SecurityTokenSignatureKeyNotFoundException &&
+                    refreshOnKeyNotFound && Options.RefreshOnIssuerKeyNotFound &&
+                    Options.ConfigurationManager != null)
+                {
+                    _logger.LogError(SecurityLogging.SecurityEventId, "Role token key not found, retrying with refreshed keys.");
+                    Options.ConfigurationManager.RequestRefresh();
+                    return await ValidateToken(token, false, subjectToken);
+                }
+
+                throw new SecurityTokenValidationException("Role token validation failed.", tokenValidationResult.Exception);
+            }
 
             var subject = ExtractSubject(subjectToken);
 
-            if (subject?.Equals((validatedToken as JwtSecurityToken)?.Subject) != true)
+            if (subject?.Equals((tokenValidationResult.SecurityToken as JsonWebToken)?.Subject) != true)
             {
-                throw new SecurityTokenValidationException("Subject of role token is not valid");
+                throw new SecurityTokenValidationException("Subject of role token is not valid.");
             }
 
-            return roleTokenPrincipal;
-        }
-        catch (SecurityTokenSignatureKeyNotFoundException) when (refreshOnKeyNotFound && Options.RefreshOnIssuerKeyNotFound && Options.ConfigurationManager != null)
-        {
-            _logger.LogError(SecurityLogging.SecurityEventId, "Role token key not found, retrying with refreshed keys");
-            Options.ConfigurationManager.RequestRefresh();
-            return await ValidateToken(token, false, subjectToken);
+            return tokenValidationResult.ClaimsIdentity;
         }
         catch (Exception e)
         {
-            _logger.LogError(SecurityLogging.SecurityEventId, e, "Role token validation failed");
+            _logger.LogError(SecurityLogging.SecurityEventId, e, "Role token validation failed.");
             return null;
         }
     }

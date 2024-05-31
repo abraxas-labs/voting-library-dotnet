@@ -11,4 +11,5 @@
   <ItemGroup>
     <Protobuf Include="TestMessages/*.proto" GrpcServices="None" AdditionalImportDirs="$(PkgVoting_Lib_Validation_Proto)/content/proto" />
   </ItemGroup>
+  
 </Project>

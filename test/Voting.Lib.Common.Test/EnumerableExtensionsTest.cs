@@ -67,6 +67,19 @@ public class EnumerableExtensionsTest
         diff.Modified.Should().BeEquivalentTo(new[] { new Data { Value = 2, Value2 = 10 } });
     }
 
+    [Fact]
+    public void TestApproxEquals()
+    {
+        new[] { 1.0M, 2.0M }.SequenceApproxEqual(new[] { 1.01M, 2.0M }, 2)
+            .Should().BeFalse();
+
+        new[] { 1.0M, 2.0M }.SequenceApproxEqual(new[] { 1.0M, 2.009M }, 2)
+            .Should().BeTrue();
+
+        new[] { 1.0M }.SequenceApproxEqual(new[] { 1.0M, 2.0M }, 2)
+            .Should().BeFalse();
+    }
+
     public class Data
     {
         public int Value { get; set; }

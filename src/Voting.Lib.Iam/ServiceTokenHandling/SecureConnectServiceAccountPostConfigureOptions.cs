@@ -21,7 +21,7 @@ internal class SecureConnectServiceAccountPostConfigureOptions : IPostConfigureO
         _httpClientFactory = httpClientFactory;
     }
 
-    public void PostConfigure(string name, SecureConnectServiceAccountOptions options)
+    public void PostConfigure(string? name, SecureConnectServiceAccountOptions options)
     {
         EnsureFieldNotWhiteSpace(options.UserName);
         EnsureFieldNotWhiteSpace(options.Password);

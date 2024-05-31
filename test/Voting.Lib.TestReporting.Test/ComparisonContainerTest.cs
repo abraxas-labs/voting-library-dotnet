@@ -105,7 +105,7 @@ public class ComparisonContainerTest
         // Act
         await comparisonContainer
             .CompareListAsync(comparerContext, listLeft, listRight, item => item, CompareResultAsync)
-            .ConfigureAwait(false);
+;
 
         // Assert
         comparisonContainer.Ok.Should().BeFalse();

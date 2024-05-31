@@ -7,5 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.Messaging.Testing\Voting.Lib.Messaging.Testing.csproj" />
   </ItemGroup>
+  
 
 </Project>

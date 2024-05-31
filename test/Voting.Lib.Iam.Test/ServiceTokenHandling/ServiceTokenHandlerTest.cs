@@ -38,7 +38,7 @@ public class ServiceTokenHandlerTest
 
         var httpClientFactoryMock = new Mock<IHttpClientFactory>();
         httpClientFactoryMock.Setup(x => x.CreateClient(SecureConnectDefaults.BackchannelHttpClientName)).Returns(httpMessageHandler.ToHttpClient);
-        httpClientFactoryMock.Setup(x => x.CreateClient(options.ServiceTokenClientName)).Returns(httpMessageHandler.ToHttpClient);
+        httpClientFactoryMock.Setup(x => x.CreateClient(options.ServiceTokenClientName!)).Returns(httpMessageHandler.ToHttpClient);
 
         var postConfigureOptions = new SecureConnectServiceAccountPostConfigureOptions(httpClientFactoryMock.Object);
         postConfigureOptions.PostConfigure("test", options);

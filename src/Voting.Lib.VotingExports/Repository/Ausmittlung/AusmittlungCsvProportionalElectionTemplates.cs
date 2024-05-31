@@ -17,7 +17,7 @@ public static class AusmittlungCsvProportionalElectionTemplates
     public static readonly TemplateModel CandidateCountingCircleResultsWithVoteSources = new TemplateModel
     {
         Key = "proportional_election_candidate_results_with_vote_sources",
-        Filename = "Kandidatenstimmen Gesamttotal je Liste - unveränderte und veränderte Wahlzettel",
+        Filename = "Kandidatenstimmen Gesamttotal je Liste - unveränderte und veränderte Wahlzettel {0}",
         Description = "Kandidatenstimmen, Gesamttotal je Liste - unveränderte / veränderte Wahlzettel",
         Format = ExportFileFormat.Csv,
         EntityType = EntityType.ProportionalElection,

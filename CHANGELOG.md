@@ -1,4 +1,4 @@
-# ✨ Changelog (`v12.2.0`)
+# ✨ Changelog (`v12.9.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,166 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v12.2.0
-Previous version ---- v11.29.0
+This version -------- v12.9.1
+Previous version ---- v11.34.0
 Initial version ----- v7.7.37
-Total commits ------- 13
+Total commits ------- 25
 ```
+
+## [v12.9.1] - 2024-05-28
+
+### 🔄 Changed
+
+- split ech-0252 election to majority and proportional election export
+
+## [v12.9.0] - 2024-05-16
+
+### 🔄 Changed
+
+- priority execution of preview printjobs
+
+## [v12.8.3] - 2024-05-15
+
+### 🔄 Changed
+
+- allow equal sign for complex fields
+
+## [v12.8.2] - 2024-05-13
+
+### 🔄 Changed
+
+- allow left single quotation mark for complex input fields
+
+## [v12.8.1] - 2024-05-08
+
+### 🔄 Changed
+
+- use different file name for eCH-0252 vote and election exports
+
+## [v12.8.0] - 2024-05-07
+
+### 🔄 Changed
+
+- add eCH-0252 for elections
+
+## [v12.7.1] - 2024-05-06
+
+### 🔄 Changed
+
+- rename protocol export name
+
+## [v12.7.0] - 2024-04-25
+
+### 🔄 Changed
+
+- double proportional election protocol
+
+## [v12.6.3] - 2024-04-22
+
+### 🔄 Changed
+
+- deserialize whole category tree with children
+
+## [v12.6.2] - 2024-04-16
+
+### 🔄 Changed
+
+- remove temporary tenant for 2fa transaction confirmation authorization
+- updated VOTING IAM API client
+
+## [v12.6.1] - 2024-04-04
+
+### 🔄 Changed
+
+- add parameter to proportional election candidate results with vote sources template filename
+
+## [v12.6.0] - 2024-03-27
+
+### 🔄 Changed
+
+- add eCH-0252 export
+
+## [v12.5.0] - 2024-03-25
+
+### 🔄 Changed
+
+- decimal extensions
+
+## [v12.4.0] - 2024-03-20
+
+### 🔄 Changed
+
+- add double proportional export templates
+
+## [v12.3.0] - 2024-03-12
+
+### 🔄 Changed
+
+- add wp listen sk stat export
+
+## [v12.2.2] - 2024-03-12
+
+### 🔄 Changed
+
+- add percent sign for complex single- and multiline string validation
+
+### 🔒 Security
+
+- remove deprecated dependency Microsoft.Extensions.PlatformAbstractions
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v11.34.1] - 2024-03-12
+
+### 🔒 Security
+
+- remove deprecated dependency Microsoft.Extensions.PlatformAbstractions
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+## [v12.2.1] - 2024-03-01
+
+### 🔒 Security
+
+- remove deprecated dependency Microsoft.Extensions.PlatformAbstractions
 
 ## [v12.2.0] - 2024-02-22
 
@@ -282,6 +437,155 @@ Total commits ------- 13
 
 - add roles cache to minimize calls to iam
 
+### 🆕 Added
+
+- config option to disable malware scanning
+
+### 🔄 Changed
+
+- skip malware scanning request if it is disabled by config
+
+### 🆕 Added
+
+- add http probes health check for 3rd party apis
+
+### 🔄 Changed
+
+- extend cert pinning config with http probe health check option
+
+### 🔄 Changed
+
+- enhance logging for cert pinning
+
+also store aggregate type in aggregate store mock
+
+### 🔄 Changed
+
+- allow generic context type for list comparison
+
+### 🆕 Added
+
+- add user secret support to configuration builder
+
+### 🆕 Added
+
+- add iam app handler to pass the configured app header with every request
+
+### 🆕 Added
+
+- add grpc path prefix delegation handler
+
+### 🆕 Added
+
+- add junit test reporting services
+
+BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
+
+### 🆕 Added
+
+- extended malware scanner service for string content
+
+### 🆕 Added
+
+- malware scanner service
+
+### 🆕 Added
+
+- add service name to service user mock data
+
+### 🆕 Added
+
+- Added ECDSA signature
+- Added AES-MAC encryption
+
+### 🆕 Added
+
+- Added bulk create signature
+- Added more supported types in ByteConverter
+
+### 🆕 Added
+
+- add date only today value
+
+BREAKING CHANGE: added bulk root parameter
+
+BREAKING CHANGE: export template models domain of influence types is now a readonly set
+
+### 🆕 Added
+
+- add overload for single file result creation to be independent of IFile
+
+BREAKING CHANGE: changed DmDoc API because of better streaming support
+
+### 🆕 Added
+
+- add headers to grpc request log output
+
+### 🆕 Added
+
+- add grpc request logger tooling to record load testing playbooks
+
+### 🔄 Changed
+
+- introduce project wide variable for grpc packages to align package versions
+
+### 🆕 Added
+
+- add log messages for debugging
+- add configure await to signal intention for continuation
+
+### 🔄 Changed
+
+- adapt correlation id header to changed name for logging
+
+### 🆕 Added
+
+- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+- powershell client generator script
+
+### 🔄 Changed
+
+- exclude parameters for successful generation
+
+### 🆕 Added
+
+- CORS configuration support
+
+these are for example eventstore internal events which are not interesting to voting at all
+
+use the overload without any position, since the position is unsigned and always exclusive
+
+BREAKING CHANGE: activity protocol by event store
+
+BREAKING CHANGE: persistent subscription apis removed
+
+BREAKING CHANGE: event signature
+
+BREAKING CHANGE: removed user store dependency and used generated swagger clients
+
+Replaces the userstore dependency with swagger generated clients
+
+Eventstore should use the default http client builder to ensure certificate pinning
+This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
+
+BREAKING CHANGE: VOTING-638 net6.0 update
+
+note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
+
+BREAKING CHANGE: dotnet 5
+
+also improve waiting for event store connection
+
+also fixed aggregate repo
+
 ## [v11.16.0] - 2023-10-09
 
 ### 🔄 Changed
@@ -404,112 +708,9 @@ also store aggregate type in aggregate store mock
 
 ## [v11.1.1] - 2023-08-10
 
-BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
-
-### 🆕 Added
-
-- extended malware scanner service for string content
-
-### 🆕 Added
-
-- malware scanner service
-
-### 🆕 Added
-
-- add service name to service user mock data
-
-### 🆕 Added
-
-- Added ECDSA signature
-- Added AES-MAC encryption
-
-### 🆕 Added
-
-- Added bulk create signature
-- Added more supported types in ByteConverter
-
-### 🆕 Added
-
-- add date only today value
-
-BREAKING CHANGE: added bulk root parameter
-
-BREAKING CHANGE: export template models domain of influence types is now a readonly set
-
-### 🆕 Added
-
-- add overload for single file result creation to be independent of IFile
-
-BREAKING CHANGE: changed DmDoc API because of better streaming support
-
-### 🆕 Added
-
-- add headers to grpc request log output
-
-### 🆕 Added
-
-- add grpc request logger tooling to record load testing playbooks
-
 ### 🔄 Changed
 
-- introduce project wide variable for grpc packages to align package versions
-
-### 🆕 Added
-
-- add log messages for debugging
-- add configure await to signal intention for continuation
-
-### 🔄 Changed
-
-- adapt correlation id header to changed name for logging
-
-### 🆕 Added
-
-- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-- powershell client generator script
-
-### 🔄 Changed
-
-- exclude parameters for successful generation
-
-### 🆕 Added
-
-- CORS configuration support
-
-these are for example eventstore internal events which are not interesting to voting at all
-
-use the overload without any position, since the position is unsigned and always exclusive
-
-BREAKING CHANGE: activity protocol by event store
-
-BREAKING CHANGE: persistent subscription apis removed
-
-BREAKING CHANGE: event signature
-
-BREAKING CHANGE: removed user store dependency and used generated swagger clients
-
-Replaces the userstore dependency with swagger generated clients
-
-Eventstore should use the default http client builder to ensure certificate pinning
-This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
-
-BREAKING CHANGE: VOTING-638 net6.0 update
-
-note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
-
-BREAKING CHANGE: dotnet 5
-
-also improve waiting for event store connection
-
-also fixed aggregate repo
+- add eCH-0157 extension for candidate additions.
 
 ## [v11.1.0] - 2023-08-09
 

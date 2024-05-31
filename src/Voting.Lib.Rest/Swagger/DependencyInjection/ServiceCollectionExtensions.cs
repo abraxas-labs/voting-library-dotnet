@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSwaggerGenerator(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<SwaggerConfig>(configuration.GetSection(SwaggerConfigSection));
-        var config = configuration.GetSection(SwaggerConfigSection).Get<SwaggerConfig>();
+        var config = configuration.GetSection(SwaggerConfigSection).Get<SwaggerConfig>()!;
 
         return AddSwaggerGenerator(services, config);
     }

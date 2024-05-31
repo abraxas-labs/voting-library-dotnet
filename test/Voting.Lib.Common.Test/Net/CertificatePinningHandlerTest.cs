@@ -45,7 +45,7 @@ public class CertificatePinningHandlerTest : IDisposable
         var configBuilder = new ConfigurationBuilder();
         configBuilder.AddEnvironmentVariables();
         var cfg = configBuilder.Build();
-        var certificateCfg = cfg.Get<CertificatePinningConfig>();
+        var certificateCfg = cfg.Get<CertificatePinningConfig>()!;
         certificateCfg.Pins.Should().HaveCount(1);
 
         var pin = certificateCfg.Pins[0];

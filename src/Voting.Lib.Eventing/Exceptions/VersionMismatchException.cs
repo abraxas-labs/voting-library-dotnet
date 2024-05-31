@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 using EventStore.Client;
 
 namespace Voting.Lib.Eventing.Exceptions;
@@ -18,16 +17,6 @@ public class VersionMismatchException : Exception
     {
         ExpectedStreamRevision = expectedStreamRevision;
         ActualStreamRevision = actualStreamRevision;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VersionMismatchException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected VersionMismatchException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
-    {
     }
 
     /// <summary>

@@ -67,4 +67,9 @@ public class DmDocConfig
     /// Gets or sets the scheduler job config for the DmDoc draft cleanup.
     /// </summary>
     public JobConfig DraftCleanupScheduler { get; set; } = new() { Interval = TimeSpan.FromMinutes(5) };
+
+    /// <summary>
+    /// Gets or sets the priority level of high priority printjobs.
+    /// </summary>
+    public int AsyncJobPriority { get; set; } = 1;
 }

@@ -6,4 +6,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.Scheduler\Voting.Lib.Scheduler.csproj" />
   </ItemGroup>
+
 </Project>

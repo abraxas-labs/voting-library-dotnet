@@ -29,7 +29,7 @@ public class HttpProbesHealthCheckTest
     [InlineData("https", "example.host.ch", "", "https://example.host.ch/")]
     [InlineData("http", "example.host.ch", "healthz", "http://example.host.ch/healthz")]
     [InlineData("https", "example.host.ch:1111", "/healthz", "https://example.host.ch:1111/healthz")]
-    public void RequestUri_WhenConfigIsValid_ReturnsAsExpected(string scheme, string host, string path, string expectedUri)
+    public void RequestUri_WhenConfigIsValid_ReturnsAsExpected(string scheme, string host, string? path, string expectedUri)
     {
         var httpProbeConfig = new HttpProbeConfig
         {
@@ -47,12 +47,12 @@ public class HttpProbesHealthCheckTest
     [InlineData("https", "", "/healthz")]
     [InlineData(null, "example.host.ch", "/")]
     [InlineData("", "example.host.ch", "/")]
-    public void RequestUri_WhenConfigIsInvalid_ReturnsNull(string scheme, string host, string path)
+    public void RequestUri_WhenConfigIsInvalid_ReturnsNull(string? scheme, string? host, string? path)
     {
         var httpProbeConfig = new HttpProbeConfig
         {
-            Scheme = scheme,
-            Host = host,
+            Scheme = scheme!,
+            Host = host!,
             Path = path,
         };
 
@@ -116,8 +116,8 @@ public class HttpProbesHealthCheckTest
         configBuilder.AddEnvironmentVariables();
 
         var cfg = configBuilder.Build();
-        var httpHealthCheckCfg = cfg.Get<HttpProbesHealthCheckConfig>();
-        var certificateCfg = cfg.Get<CertificatePinningConfig>();
+        var httpHealthCheckCfg = cfg.Get<HttpProbesHealthCheckConfig>()!;
+        var certificateCfg = cfg.Get<CertificatePinningConfig>()!;
         var services = new ServiceCollection();
 
         // Act
@@ -150,7 +150,7 @@ public class HttpProbesHealthCheckTest
         var context = new HealthCheckContext();
 
         // Act
-        var result = await healthCheck.CheckHealthAsync(context).ConfigureAwait(false);
+        var result = await healthCheck.CheckHealthAsync(context);
 
         // Assert
         result.Status.Should().Be(HealthStatus.Healthy);
@@ -179,7 +179,7 @@ public class HttpProbesHealthCheckTest
         var context = new HealthCheckContext();
 
         // Act
-        var result = await healthCheck.CheckHealthAsync(context).ConfigureAwait(false);
+        var result = await healthCheck.CheckHealthAsync(context);
 
         // Assert
         result.Status.Should().Be(expectedHealthStatus);

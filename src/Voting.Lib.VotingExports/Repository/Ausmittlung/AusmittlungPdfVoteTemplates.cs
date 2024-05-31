@@ -112,7 +112,7 @@ public static class AusmittlungPdfVoteTemplates
     public static readonly TemplateModel EVotingCountingCircleResultProtocol = new TemplateModel
     {
         Key = "vote_couting_circle_result_details_e_voting",
-        Filename = "Abstimmungsprotokoll_E-Voting_{0}",
+        Filename = "Abstimmungsprotokoll_inkl_E-Voting_Details_{0}",
         Description = "Protokoll inkl. Details E-Voting",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,

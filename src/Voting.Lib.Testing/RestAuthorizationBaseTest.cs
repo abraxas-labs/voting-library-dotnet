@@ -39,7 +39,7 @@ public abstract class RestAuthorizationBaseTest<TFactory, TStartup> : RestApiBas
     [Fact]
     public Task Unauthorized()
         => AssertStatus(
-            async () => await AuthorizationTestCall(CreateHttpClient(false)).ConfigureAwait(false),
+            async () => await AuthorizationTestCall(CreateHttpClient(false)),
             HttpStatusCode.Unauthorized);
 
     /// <summary>
@@ -53,8 +53,8 @@ public abstract class RestAuthorizationBaseTest<TFactory, TStartup> : RestApiBas
         {
             await AssertStatus(
                 async () => await AuthorizationTestCall(
-                    CreateHttpClient(role == NoRole ? Array.Empty<string>() : new[] { role })).ConfigureAwait(false),
-                HttpStatusCode.Forbidden).ConfigureAwait(false);
+                    CreateHttpClient(role == NoRole ? Array.Empty<string>() : new[] { role })),
+                HttpStatusCode.Forbidden);
         }
     }
 

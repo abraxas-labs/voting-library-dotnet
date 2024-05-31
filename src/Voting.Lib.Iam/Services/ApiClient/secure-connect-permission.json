@@ -1,10 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Permission Service",
+    "title": "Permission Service of SECURE Connect 2",
     "version": "1.0",
     "contact": {
-      "url": "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/permission"
+      "name": "Cloud Platform Services",
+      "url": "https://confluence.abraxas-tools.ch/confluence/display/IAM"
     }
   },
   "schemes": [
@@ -21,13 +22,20 @@
   "paths": {
     "/app-packages": {
       "post": {
-        "summary": "---------\nAPPPACKAGES\n---------",
-        "operationId": "CreateAppPackage",
+        "summary": "Create an app-package",
+        "description": "Method validates the input and creates an app-package.\nThis method can only be used by users with high privileged roles.\n***\n\n**tenant** and **app** (and optional **delegation**): The combination of IDs is unique across the entire system\n**lifecycle**: Input will be ignored, app-package is always created with 'ACTIVE' lifecycle\n***\n\nNote: Only the ids for app, tenant and delegation are required in the body, not the whole objects with all properties.",
+        "operationId": "PermissionService_CreateAppPackage",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -42,19 +50,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       }
     },
     "/app-packages/{id}": {
       "delete": {
-        "operationId": "DeleteAppPackage",
+        "summary": "Delete an app-package",
+        "description": "Method deletes an app-package **AND all authorizations** which belong to the apk (app/tenant combination).\nThis method can only be used by users with high privileged roles.",
+        "operationId": "PermissionService_DeleteAppPackage",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -67,16 +83,24 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       },
       "put": {
-        "operationId": "UpdateAppPackage",
+        "summary": "Update an app-package",
+        "description": "The method validates the input and ensures uniqueness by app/tenant/delegation(once the ids for app, tenant and delegation are set on an app-package, they can't be changed).\nThis method can only be used by users with high privileged roles.\n***\n\n**lifecycle**: Input will be ignored, app-package is always in 'ACTIVE' lifecycle",
+        "operationId": "PermissionService_UpdateAppPackage",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -98,19 +122,59 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
+        ]
+      }
+    },
+    "/application/{id}/authorizations": {
+      "get": {
+        "summary": "Returns authorizations by app (no full-load)",
+        "description": "Method returns all authorizations for the specified app.\n\n**No full-load**\nThe *application* and *tenant* objects are not getting full-loaded, just the ids will be returned.",
+        "operationId": "PermissionService_GetAppAuthorizations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Authorizations"
         ]
       }
     },
     "/applications": {
       "get": {
-        "operationId": "GetApplications",
+        "summary": "Returns all apps",
+        "operationId": "PermissionService_GetApplications",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -118,21 +182,28 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       },
       "post": {
-        "operationId": "CreateApplication",
+        "summary": "Create an app",
+        "description": "Method validates the input and creates an application.\nThis method can only be used by users with high privileged roles.\n***\n\n**shortcut**: Field has to be unique accross the system\n**lifecycle** (base app-object): Input will be ignored, app is always created with 'ACTIVE' lifecycle\n**appExt.openMode**: The open-mode must exists with the id (open-mode is not getting created in this call)\n**appExt.redirect_uris**: Can also be managed via separate endpoints",
+        "operationId": "PermissionService_CreateApplication",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -147,18 +218,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/applications/name/{filter}": {
       "get": {
-        "operationId": "GetApplicationByName",
+        "summary": "Returns single app by name",
+        "description": "Method returns an app or a 404 if it doesn't exist.\n\nThe app *name* is **NOT unique** across the entire system. Method returns an error *multipleAppsFound* if multiple apps with the same name exists.\nHowever, it is generally allowed to have several apps with the same name.",
+        "operationId": "PermissionService_GetApplicationByName",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -173,23 +252,30 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/applications/shortcut/{filter}": {
       "get": {
-        "operationId": "GetApplicationByShortcut",
+        "summary": "Returns single app by shortcut",
+        "description": "Method returns an app or a 404 if it doesn't exist.\nThe app *shortcut* is unique across the entire system.",
+        "operationId": "PermissionService_GetApplicationByShortcut",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -204,23 +290,29 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/applications/{app_id}/redirectURIs": {
       "post": {
-        "operationId": "AddAppRedirectURIs",
+        "summary": "Add a redirect-uri to an app",
+        "operationId": "PermissionService_AddAppRedirectURIs",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiURLs"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -242,18 +334,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Application - Redirect URIs"
         ]
       }
     },
     "/applications/{app_id}/redirectURIs/{uri}": {
       "delete": {
-        "operationId": "DeleteAppRedirectURI",
+        "summary": "Delete a specific redirect-uri from an app",
+        "operationId": "PermissionService_DeleteAppRedirectURI",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -273,19 +372,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Application - Redirect URIs"
         ]
       }
     },
     "/applications/{idTwo}/tenants/{idOne}/app-packages": {
       "get": {
-        "operationId": "GetAppPackagesByTenantAndApp2",
+        "summary": "Returns app-packages by tenant and app",
+        "description": "Method returns all app-packages for speficied app and tenant.\n\n**idOne**: ID (PK) of the tenant\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetAppPackagesByTenantAndApp2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackages"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -305,51 +412,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       }
     },
     "/applications/{idTwo}/tenants/{idOne}/options": {
       "get": {
-        "summary": "---------\nOptions\n---------",
-        "operationId": "GetOptionsByTenantAndApp2",
+        "summary": "Returns 'options' from app-packages by tenant and app",
+        "description": "Method returns all options (as labels) from all app-packages for the given tenant and app. Options in AppPackages for which the given tenant is the delegation, are not returned.\nAn option is a label on an app-package with the key 'option'.\n\n**idOne**: ID (PK) of the tenant\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetOptionsByTenantAndApp2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "idTwo",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           },
-          {
-            "name": "idOne",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/applications/{idTwo}/users/{idOne}/tenants": {
-      "get": {
-        "operationId": "GetTenantsByUserAndApplication",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Tenants"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -370,18 +452,65 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
+        ]
+      }
+    },
+    "/applications/{idTwo}/users/{idOne}/tenants": {
+      "get": {
+        "summary": "Returns tenants by user and app",
+        "description": "Method returns all tenants for which the specified user has an authorization for the specified app.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetTenantsByUserAndApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Tenants"
         ]
       }
     },
     "/applications/{id}": {
       "get": {
-        "operationId": "GetApplicationById",
+        "summary": "Returns single app by ID (PK)",
+        "operationId": "PermissionService_GetApplicationById",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -397,21 +526,28 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       },
       "delete": {
-        "operationId": "DeleteApplication",
+        "summary": "Delete an app",
+        "description": "Method deletes the app and app-extension. If **soft-delete** is activated, the app will first be marked as deleted for a few days (depending on the config).\nThis method can only be used by users with high privileged roles.",
+        "operationId": "PermissionService_DeleteApplication",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -425,16 +561,24 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       },
       "put": {
-        "operationId": "UpdateApplication",
+        "summary": "Update an app",
+        "description": "The method validates the input and ensures application/ext uniqueness by app-shortcut and existing IDs (once an app-extension-id is set on an app, it can't be changed).\nThis method can only be used by users with high privileged roles.\n***\n\n**lifecycle** (base app-object): Input will be ignored, app is always in 'ACTIVE' lifecycle (unless it is deleted via the explicit endpoint)\n**appExt.redirect_uris**: Can also be managed via separate endpoints",
+        "operationId": "PermissionService_UpdateApplication",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -456,19 +600,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/applications/{id}/app-packages": {
       "get": {
-        "operationId": "GetAppPackagesByApp",
+        "summary": "Returns app-packages by app",
+        "operationId": "PermissionService_GetAppPackagesByApp",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackages"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -481,19 +632,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       }
     },
     "/applications/{id}/labels": {
       "get": {
-        "operationId": "GetApplicationLabels",
+        "summary": "Returns labels from an app by ID (PK)",
+        "operationId": "PermissionService_GetApplicationLabels",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -506,43 +664,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/applications/{id}/redirectURIs": {
       "get": {
-        "operationId": "GetAppRedirectURIs",
+        "summary": "Returns redirect-uris from an app",
+        "operationId": "PermissionService_GetAppRedirectURIs",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiURLs"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/applications/{id}/tenants": {
-      "get": {
-        "operationId": "GetTenantsByApplication",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          },
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Tenants"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -556,18 +696,59 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Application - Redirect URIs"
+        ]
+      }
+    },
+    "/applications/{id}/tenants": {
+      "get": {
+        "summary": "Returns tenants by app",
+        "description": "Method returns all tenants which have an app-package for the specified app.",
+        "operationId": "PermissionService_GetTenantsByApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Tenants"
         ]
       }
     },
     "/apps/{idOne}/tenants/{idTwo}/users": {
       "get": {
-        "operationId": "GetUsersByAppAndTenant",
+        "summary": "Returns users by app and tenant",
+        "description": "Method returns users for specified app and tenant.\n\n**idOne**: ID (PK) of the app\n**idTwo**: ID (PK) of the tenant\n\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByAppAndTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Users"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -588,18 +769,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/apps/{idOne}/tenants/{idTwo}/users/appdelegations": {
       "get": {
-        "operationId": "GetUsersByTenantAndAppdelegation2",
+        "summary": "Returns users by tenant and app (including delegation, with optional filter, returns display-users only)",
+        "description": "Method returns users by app and tenant, including implicit authorizations from delegation.\n\n**Display-user only**\nMethod returns just a subset of the user (called display-user), instead of the full object.\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByTenantAndAppdelegation2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1DisplayUsers"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -659,8 +848,7 @@
             "name": "userFilter.includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "userFilter.lastModified",
@@ -708,21 +896,35 @@
               "format": "uint64"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.externalid",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/apps/{idTwo}/users/{idOne}/authorizations": {
       "get": {
-        "operationId": "GetAuthorizationsByUserAndApplication",
+        "summary": "Returns authorizations by user and app",
+        "description": "Method returns authorizations for specified user and app.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndApplication",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -743,18 +945,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/apps/{id}/users": {
       "get": {
-        "operationId": "GetUsersByApp",
+        "summary": "Returns users by app",
+        "description": "Method returns users which have an authorization for the specified app.\n\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.",
+        "operationId": "PermissionService_GetUsersByApp",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Users"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -768,18 +978,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/authorizedusers": {
       "post": {
-        "operationId": "SearchAuthorizedUsers",
+        "summary": "Returns authorized users based on filters",
+        "description": "Method returns users which have an authorization with specified filter.\n\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_SearchAuthorizedUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Users"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -794,35 +1012,48 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/healthz": {
       "get": {
-        "operationId": "Healthz",
+        "operationId": "PermissionService_Healthz",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "tags": [
-          "PermissionService"
+          "Health and Readiness"
         ]
       }
     },
     "/openmodes": {
       "get": {
-        "operationId": "GetOpenModes",
+        "summary": "Returns all available open-modes",
+        "operationId": "PermissionService_GetOpenModes",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OpenModes"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -830,21 +1061,27 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Open Modes"
         ]
       },
       "post": {
-        "operationId": "CreateOpenMode",
+        "summary": "Creates an open-mode",
+        "operationId": "PermissionService_CreateOpenMode",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OpenMode"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -859,18 +1096,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Open Modes"
+        ],
+        "deprecated": true
       }
     },
     "/openmodes/{id}": {
       "get": {
-        "operationId": "GetOpenModeById",
+        "summary": "Returns open-mode by ID (PK)",
+        "operationId": "PermissionService_GetOpenModeById",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OpenMode"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -886,21 +1131,27 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Open Modes"
         ]
       },
       "delete": {
-        "operationId": "DeleteOpenMode",
+        "summary": "Delete an open-mode",
+        "operationId": "PermissionService_DeleteOpenMode",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -914,16 +1165,24 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Open Modes"
+        ],
+        "deprecated": true
       },
       "put": {
-        "operationId": "UpdateOpenMode",
+        "summary": "Update an open-mode",
+        "operationId": "PermissionService_UpdateOpenMode",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1OpenMode"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -945,35 +1204,50 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Open Modes"
+        ],
+        "deprecated": true
       }
     },
     "/ready": {
       "get": {
-        "operationId": "Ready",
+        "operationId": "PermissionService_Ready",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "tags": [
-          "PermissionService"
+          "Health and Readiness"
         ]
       }
     },
     "/tenant/{idTwo}/users/{idOne}/applications": {
       "get": {
-        "operationId": "GetApplicationsByUserAndTenant",
+        "summary": "Returns apps by user and tenant",
+        "description": "Method returns all applications for which the specified user has an authorization for the specified tenant.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetApplicationsByUserAndTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -993,18 +1267,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/tenant/{idTwo}/users/{idOne}/authorizations": {
       "get": {
-        "operationId": "GetAuthorizationsByUserAndTenant",
+        "summary": "Returns authorizations by user and tenant",
+        "description": "Method returns authorizations for specified user and tenant.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1025,18 +1307,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/tenant/{idTwo}/users/{idOne}/authorizations/delegation": {
       "get": {
-        "operationId": "GetAuthorizationsByUserAndTenantAndDelegation",
+        "summary": "Returns authorizations for user and tenant (with delegation)",
+        "description": "Method returns authorizations for specified user and tenant (including implicit ones from delegation).\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndTenantAndDelegation",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1057,19 +1347,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/tenants": {
       "get": {
-        "summary": "Filterpossibilities (Lifecycles, MappingID, Origin)\nLifecycleFilter: lifecycles=ACTIVE\u0026lifecycles=INACTIVE\u0026lifecycles=DELETED \nMappingID Key: mappingId.key=ERP_VRSG\nOrigin: origin=SecureConnect\nLastModified: lastModified=2018-09-19T14:30:44.356968635Z",
-        "operationId": "GetTenants",
+        "summary": "Returns tenants (with optional filters)",
+        "operationId": "PermissionService_GetTenants",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1078,8 +1374,7 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "origin",
@@ -1149,16 +1444,24 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       },
       "post": {
-        "operationId": "CreateTenant",
+        "summary": "Create a tenant",
+        "description": "Method validates the input and creates a tenant.\nThis method can only be used by users with high privileged roles.\n***\n\n**TenantId** (not PK) and **name**: Fields have to be unique accross the system\n**lifecycle** (base tenant-object): Input will be ignored, tenant is always created with 'ACTIVE' lifecycle\n**tenantExt.origin**: If no value is provided, method adds 'SecureConnect' as default\n***\n\nMethod will add some default App-Packages to the tenant in a background-task (AdminPanel, myAccount, SECURE Access).",
+        "operationId": "PermissionService_CreateTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenant"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1173,18 +1476,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       }
     },
     "/tenants/labelsfilter": {
       "post": {
-        "operationId": "GetTenantsByLabels",
+        "summary": "Returns tenants by label-filter",
+        "operationId": "PermissionService_GetTenantsByLabels",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1199,18 +1509,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       }
     },
     "/tenants/tenantid/{tenantId}": {
       "get": {
-        "operationId": "GetTenantByTenantId",
+        "summary": "Returns single tenant by TenantId (not PK)",
+        "operationId": "PermissionService_GetTenantByTenantId",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenant"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1225,53 +1542,29 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       }
     },
     "/tenants/{idOne}/addresses/{idTwo}": {
       "get": {
-        "operationId": "GetTenantAddress",
+        "summary": "Returns single address assigned to a tenant",
+        "operationId": "PermissionService_GetTenantAddress",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiAddress"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "idOne",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           },
-          {
-            "name": "idTwo",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      },
-      "delete": {
-        "operationId": "DeleteTenantAddress",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "properties": {}
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1292,19 +1585,66 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
+      },
+      "delete": {
+        "summary": "Delete address from tenant",
+        "operationId": "PermissionService_DeleteTenantAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{idOne}/applications/{idTwo}/app-packages": {
       "get": {
-        "operationId": "GetAppPackagesByTenantAndApp",
+        "summary": "Returns app-packages by tenant and app",
+        "description": "Method returns all app-packages for speficied app and tenant.\n\n**idOne**: ID (PK) of the tenant\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetAppPackagesByTenantAndApp",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackages"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1324,20 +1664,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       }
     },
     "/tenants/{idOne}/applications/{idTwo}/options": {
       "get": {
-        "summary": "---------\nOptions\n---------",
-        "operationId": "GetOptionsByTenantAndApp",
+        "summary": "Returns 'options' from app-packages by tenant and app",
+        "description": "Method returns all options (as labels) from all app-packages for the given tenant and app. Options in AppPackages for which the given tenant is the delegation, are not returned.\nAn option is a label on an app-package with the key 'option'.\n\n**idOne**: ID (PK) of the tenant\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetOptionsByTenantAndApp",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1357,19 +1704,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
         ]
       }
     },
     "/tenants/{idOne}/delegations/{idTwo}/possibleApps": {
       "get": {
-        "operationId": "GetPossibleAppsByDelegation",
+        "summary": "Returns possible apps for tenant and delegation",
+        "description": "Method returns all apps for which the given tenant has no app-package yet , including app-packages with tenant-delegation set (idTwo).",
+        "operationId": "PermissionService_GetPossibleAppsByDelegation",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1389,48 +1744,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints"
         ]
       }
     },
     "/tenants/{idOne}/emails/{idTwo}": {
       "get": {
-        "operationId": "GetTenantEmail",
+        "summary": "Returns single e-mail assigned to a tenant",
+        "operationId": "PermissionService_GetTenantEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/commonapiEmail"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "idOne",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           },
-          {
-            "name": "idTwo",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      },
-      "delete": {
-        "operationId": "DeleteTenantEmail",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "properties": {}
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1451,19 +1783,65 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
+      },
+      "delete": {
+        "summary": "Delete e-mail from tenant",
+        "operationId": "PermissionService_DeleteTenantEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{idOne}/phones/{idTwo}": {
       "get": {
-        "operationId": "GetTenantPhone",
+        "summary": "Returns single phone assigned to a tenant",
+        "operationId": "PermissionService_GetTenantPhone",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/commonapiPhoneNumber"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1483,17 +1861,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       },
       "delete": {
-        "operationId": "DeleteTenantPhone",
+        "summary": "Delete phone from tenant",
+        "operationId": "PermissionService_DeleteTenantPhone",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "properties": {}
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1513,18 +1899,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{idTwo}/apps/{idOne}/users": {
       "get": {
-        "operationId": "GetUsersByAppAndTenant2",
+        "summary": "Returns users by app and tenant",
+        "description": "Method returns users for specified app and tenant.\n\n**idOne**: ID (PK) of the app\n**idTwo**: ID (PK) of the tenant\n\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByAppAndTenant2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Users"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1545,18 +1940,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/tenants/{idTwo}/apps/{idOne}/users/appdelegations": {
       "get": {
-        "operationId": "GetUsersByTenantAndAppdelegation",
+        "summary": "Returns users by tenant and app (including delegation, with optional filter, returns display-users only)",
+        "description": "Method returns users by app and tenant, including implicit authorizations from delegation.\n\n**Display-user only**\nMethod returns just a subset of the user (called display-user), instead of the full object.\n**Define app with header**\nAs an alternative to the query parameter, a header 'x-vrsg-app' can be set with the app shortcut.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByTenantAndAppdelegation",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1DisplayUsers"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1616,8 +2019,7 @@
             "name": "userFilter.includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "userFilter.lastModified",
@@ -1665,21 +2067,35 @@
               "format": "uint64"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.externalid",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/tenants/{idTwo}/users/{idOne}/possibleApps": {
       "get": {
-        "operationId": "GetPossibleAppsByUserAndTenant2",
+        "summary": "Returns possible apps for user by tenant",
+        "description": "Method returns all tenant-apps (defined by AppPackages) for which the user isn't authorized yet",
+        "operationId": "PermissionService_GetPossibleAppsByUserAndTenant2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1700,18 +2116,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints"
         ]
       }
     },
     "/tenants/{id}": {
       "get": {
-        "operationId": "GetTenantById",
+        "summary": "Returns single tenant by ID (PK)",
+        "operationId": "PermissionService_GetTenantById",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenant"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1727,21 +2150,28 @@
             "name": "includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       },
       "delete": {
-        "operationId": "DeleteTenant",
+        "summary": "Delete a tenant",
+        "description": "Method deletes the tenant and tenant-extension. If **soft-delete** is activated, the tenant will first be marked as deleted for a few days (depending on the config).\nThis method can only be used by users with high privileged roles.",
+        "operationId": "PermissionService_DeleteTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1755,16 +2185,24 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       },
       "put": {
-        "operationId": "UpdateTenant",
+        "summary": "Update a tenant",
+        "description": "The method validates the input and ensures tenant/ext uniqueness by tenantid/name and existing IDs (once a tenant-extension-id is set on a tenant, it can't be changed).\nThis method can only be used by users with high privileged roles.\n***\n\n**lifecycle** (base tenant-object): Input will be ignored, tenant is always in 'ACTIVE' lifecycle (unless it is deleted via the explicit endpoint)",
+        "operationId": "PermissionService_UpdateTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenant"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1786,19 +2224,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       }
     },
     "/tenants/{id}/addresses": {
       "get": {
-        "operationId": "GetTenantAddresses",
+        "summary": "Returns addresses assigned to a tenant",
+        "operationId": "PermissionService_GetTenantAddresses",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiAddresses"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1811,43 +2256,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{id}/app-packages": {
       "get": {
-        "operationId": "GetAppPackagesByTenant",
+        "summary": "Returns app-packages by tenant",
+        "operationId": "PermissionService_GetAppPackagesByTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1AppPackages"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/tenants/{id}/applications": {
-      "get": {
-        "operationId": "GetApplicationsByTenant",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          },
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Applications"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1861,19 +2289,59 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "App-Packages"
+        ]
+      }
+    },
+    "/tenants/{id}/applications": {
+      "get": {
+        "summary": "Returns apps by tenant",
+        "description": "Method returns all applications for which the specified tenant has an app-package.",
+        "operationId": "PermissionService_GetApplicationsByTenant",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Applications"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Applications"
         ]
       }
     },
     "/tenants/{id}/emails": {
       "get": {
-        "operationId": "GetTenantEmails",
+        "summary": "Returns e-mails assigned to a tenant",
+        "operationId": "PermissionService_GetTenantEmails",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiEmails"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1886,19 +2354,27 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{id}/labels": {
       "get": {
-        "operationId": "GetTenantLabels",
+        "summary": "Returns labels from a tenant by ID (PK)",
+        "operationId": "PermissionService_GetTenantLabels",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1911,19 +2387,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
         ]
       }
     },
     "/tenants/{id}/phones": {
       "get": {
-        "operationId": "GetTenantPhones",
+        "summary": "Returns phones assigned to a tenant",
+        "operationId": "PermissionService_GetTenantPhones",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiPhoneNumbers"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1936,19 +2419,28 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{id}/possibleApps": {
       "get": {
-        "operationId": "GetPossibleAppsByTenant",
+        "summary": "Returns possible apps for tenant",
+        "description": "Method returns all apps for which the given tenant has no app-package yet",
+        "operationId": "PermissionService_GetPossibleAppsByTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -1961,18 +2453,25 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints"
         ]
       }
     },
     "/tenants/{tenantId}/addresses": {
       "post": {
-        "operationId": "AddTenantAddress",
+        "summary": "Add address to tenant",
+        "operationId": "PermissionService_AddTenantAddress",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiAddress"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -1994,18 +2493,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{tenantId}/emails": {
       "post": {
-        "operationId": "AddTenantEmail",
+        "summary": "Add e-mail to tenant",
+        "operationId": "PermissionService_AddTenantEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/commonapiEmail"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2027,18 +2534,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{tenantId}/phones": {
       "post": {
-        "operationId": "AddTenantPhone",
+        "summary": "Add phone to tenant",
+        "operationId": "PermissionService_AddTenantPhone",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/commonapiPhoneNumber"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2060,19 +2575,28 @@
           }
         ],
         "tags": [
-          "PermissionService"
-        ]
+          "Tenant - Contact Extension (Emails/Phones/Addresses)"
+        ],
+        "deprecated": true
       }
     },
     "/tenants/{tenantId}/users": {
       "get": {
-        "operationId": "GetUsersByTenant",
+        "summary": "Returns users by tenant (with optional filters)",
+        "description": "Method returns users which have an authorization for the specified tenant.\n\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Users"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -2124,8 +2648,7 @@
             "name": "userFilter.includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "userFilter.lastModified",
@@ -2173,22 +2696,36 @@
               "format": "uint64"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.externalid",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
         ]
       }
     },
     "/tenants/{tenantId}/users/delegations": {
       "get": {
-        "operationId": "GetUsersByTenantAndDelegation",
+        "summary": "Returns users by tenand (including delegation, with optional filter, returns display-users only)",
+        "description": "Method returns users tenant, including implicit authorizations from delegation.\n\n**Display-user only**\nMethod returns just a subset of the user (called display-user), instead of the full object.\n**Define tenant with header**\nAs an alternative to the query parameter, a header 'x-vrsg-tenant' can be set with the id of the tenant.",
+        "operationId": "PermissionService_GetUsersByTenantAndDelegation",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1DisplayUsers"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -2240,8 +2777,7 @@
             "name": "userFilter.includeDeleted",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "userFilter.lastModified",
@@ -2289,53 +2825,83 @@
               "format": "uint64"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "name": "userFilter.externalid",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "PermissionService"
+          "Users"
+        ]
+      }
+    },
+    "/users/belongsto/tenants": {
+      "get": {
+        "summary": "Returns users which belongs to tenants (no user-values, ids only)",
+        "description": "Method loads all authorizations for given 'tenantIds' and filters out all 'loginids' which do not have an authorization yet.",
+        "operationId": "PermissionService_GetUsersBelongsToTenants",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginIds"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "tenantIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Users"
         ]
       }
     },
     "/users/{idOne}/applications/{idTwo}/tenants": {
       "get": {
-        "operationId": "GetTenantsByUserAndApplication2",
+        "summary": "Returns tenants by user and app",
+        "description": "Method returns all tenants for which the specified user has an authorization for the specified app.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetTenantsByUserAndApplication2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenants"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "idOne",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
           },
-          {
-            "name": "idTwo",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/users/{idOne}/apps/{idTwo}/authorizations": {
-      "get": {
-        "operationId": "GetAuthorizationsByUserAndApplication2",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Authorizations"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2356,18 +2922,66 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Tenants"
+        ]
+      }
+    },
+    "/users/{idOne}/apps/{idTwo}/authorizations": {
+      "get": {
+        "summary": "Returns authorizations by user and app",
+        "description": "Method returns authorizations for specified user and app.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the app",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndApplication2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idOne",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "idTwo",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Authorizations"
         ]
       }
     },
     "/users/{idOne}/authorizations/{idTwo}": {
       "delete": {
-        "operationId": "DeleteAuthorization",
+        "summary": "Delete an authorization",
+        "description": "Method deletes the authorization. If **soft-delete** is activated, the authorization will first be marked as deleted for a few days (depending on the config).\nThis method can only be used by users with high privileged roles.\n\n**idOne**: LoginId of the user (will be ignored, just idTwo is relevant)\n**idTwo**: ID (PK) of the authorization",
+        "operationId": "PermissionService_DeleteAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2394,18 +3008,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{idOne}/tenants/{idTwo}/applications": {
       "get": {
-        "operationId": "GetApplicationsByUserAndTenant2",
+        "summary": "Returns apps by user and tenant",
+        "description": "Method returns all applications for which the specified user has an authorization for the specified tenant.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetApplicationsByUserAndTenant2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2426,18 +3048,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
         ]
       }
     },
     "/users/{idOne}/tenants/{idTwo}/authorizations": {
       "get": {
-        "operationId": "GetAuthorizationsByUserAndTenant2",
+        "summary": "Returns authorizations by user and tenant",
+        "description": "Method returns authorizations for specified user and tenant.\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndTenant2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2458,18 +3088,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{idOne}/tenants/{idTwo}/authorizations/delegation": {
       "get": {
-        "operationId": "GetAuthorizationsByUserAndTenantAndDelegation2",
+        "summary": "Returns authorizations for user and tenant (with delegation)",
+        "description": "Method returns authorizations for specified user and tenant (including implicit ones from delegation).\n\n**idOne**: LoginId of the user\n**idTwo**: ID (PK) of the tenant",
+        "operationId": "PermissionService_GetAuthorizationsByUserAndTenantAndDelegation2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2490,18 +3128,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{idOne}/tenants/{idTwo}/possibleApps": {
       "get": {
-        "operationId": "GetPossibleAppsByUserAndTenant",
+        "summary": "Returns possible apps for user by tenant",
+        "description": "Method returns all tenant-apps (defined by AppPackages) for which the user isn't authorized yet",
+        "operationId": "PermissionService_GetPossibleAppsByUserAndTenant",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2522,43 +3168,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints"
         ]
       }
     },
     "/users/{id}/applications": {
       "get": {
-        "operationId": "GetApplicationsByUser",
+        "summary": "Returns apps by user",
+        "description": "Method returns all applications for which the specified user has an authorization.\n\n**id**: LoginId of the user",
+        "operationId": "PermissionService_GetApplicationsByUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/users/{id}/authorizations": {
-      "get": {
-        "operationId": "GetUserAuthorizations",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          },
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Authorizations"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2572,41 +3201,56 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Applications"
+        ]
+      }
+    },
+    "/users/{id}/authorizations": {
+      "get": {
+        "summary": "Returns authorizations by user",
+        "operationId": "PermissionService_GetUserAuthorizations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Authorizations"
         ]
       },
       "delete": {
-        "operationId": "DeleteAuthorizationsByLoginID",
+        "summary": "Delete authorizations by user",
+        "description": "Method deletes all authorizations from the specified user. If **soft-delete** is activated, the authorizations will first be marked as deleted for a few days (depending on the config).\nThis method can only be used by users with high privileged roles.\n\n**id**: LoginId of the user\n",
+        "operationId": "PermissionService_DeleteAuthorizationsByLoginID",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiReturnMessage"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/users/{id}/authorizations/true": {
-      "get": {
-        "operationId": "GetUserAuthorizationsWithDelegations",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          },
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Authorizations"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2620,20 +3264,60 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
+        ]
+      }
+    },
+    "/users/{id}/authorizations/true": {
+      "get": {
+        "summary": "Returns authorizations by user (including delegations)",
+        "description": "In addition of just returning the explicit authorizations of the user, this endpoint returns also the **implicit authorizations** which are generated by the delegations configured on app-packages. It is not possible to distinguish based on the return which authorization is explicit and which is implicit (from delegation).\n\nThere is no query-parameter. The endpoint has to be called with '/true' ('/false' is not possible).",
+        "operationId": "PermissionService_GetUserAuthorizationsWithDelegations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Authorizations"
         ]
       }
     },
     "/users/{id}/history": {
       "get": {
-        "summary": "---------\nHistory\n---------",
-        "operationId": "GetUserHistory",
+        "summary": "Returns full user history",
+        "description": "Method loads changes from the user-object, login-object and authorization-object of the specified user.",
+        "operationId": "PermissionService_GetUserHistory",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v3ChangeObjects"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "parameters": [
@@ -2646,43 +3330,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "History"
         ]
       }
     },
     "/users/{id}/possibleApps": {
       "get": {
-        "operationId": "GetPossibleAppsByUser",
+        "summary": "Returns possible apps for user",
+        "description": "Method returns all apps for which the user isn't authorized yet.",
+        "operationId": "PermissionService_GetPossibleAppsByUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
             }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uint64"
-          }
-        ],
-        "tags": [
-          "PermissionService"
-        ]
-      }
-    },
-    "/users/{id}/tenants": {
-      "get": {
-        "operationId": "GetTenantsByUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
+          },
+          "default": {
+            "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/v1Tenants"
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2696,18 +3363,59 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints"
+        ]
+      }
+    },
+    "/users/{id}/tenants": {
+      "get": {
+        "summary": "Return tenants by user",
+        "description": "Method returns all tenants for which the specified user has an authorization.\n\n**id**: LoginId of the user",
+        "operationId": "PermissionService_GetTenantsByUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "Tenants"
         ]
       }
     },
     "/users/{loginId}/authorizations": {
       "post": {
-        "operationId": "CreateAuthorization",
+        "summary": "Create an authorization",
+        "description": "Method validates the input and creates an authorization.\nThis method can only be used by users with high privileged roles.\n***\n\n**tenant** and **app**: The combination of app and tenant in authorization is unique across the entire system\n**lifecycle**: Input will be ignored, authorization is always created with 'ACTIVE' lifecycle\n***\n\n- An authorization can only be added, if the tenant has a corresponding app-package for the app\n- Only the ids for app and tenant are required in the body, not the whole objects with all properties.",
+        "operationId": "PermissionService_CreateAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2735,18 +3443,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{loginId}/authorizations/{id}": {
       "put": {
-        "operationId": "UpdateAuthorization",
+        "summary": "Update an authorization",
+        "description": "Method validates the input and updates the authorization.\nThis method can only be used by users with high privileged roles.\n***\n\n**tenant** and **app**: The combination of app and tenant in authorization is unique across the entire system\n**lifecycle**: Input will be ignored, authorization is always in 'ACTIVE' lifecycle (unless it is deleted via the explicit endpoint)\n***\n\n- An authorization is only valid, if the tenant has a corresponding app-package for the app\n- Only the ids for app and tenant are required in the body, not the whole objects with all properties.",
+        "operationId": "PermissionService_UpdateAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/abraxaspermissionapiv1Authorization"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2775,18 +3491,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{loginid}/authorizations/allowed": {
       "get": {
-        "operationId": "GetAllowedUserAuthorizations",
+        "summary": "Returns authorizations by user (only allowed)",
+        "description": "Special roles in the admin panel application can be used to restrict which permissions a user is allowed to see and manage.\nThis method just returns these authorizations (where the caller is allowed to see with delegations).\n",
+        "operationId": "PermissionService_GetAllowedUserAuthorizations",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Authorizations"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2800,18 +3524,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "Authorizations"
         ]
       }
     },
     "/users/{loginid}/authorizations/possibleapplications": {
       "get": {
-        "operationId": "GetPossibleApplicationsForAuthorization",
+        "summary": "Returns possible apps for new authorizations",
+        "description": "Method returns the possible apps for new authorization for the specified user.\nAlread set authorizations will be filtered out from the result.\n\n**Adminpanel only?**\nEndpoint has been implemented specifically for the 'Adminpanel' app to make it easier to manage permissions.\n\n**Super-Tenant relevant**\nThe endpoint behaves differently when it is called in the context of a super-tenant (defined by config).\n\n**Tenantid is required for none-service-Users**\nIf the caller is not a service-user, the tenant-id is required and has to be != 0.",
+        "operationId": "PermissionService_GetPossibleApplicationsForAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Applications"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2832,18 +3564,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints (adminpanel only)"
         ]
       }
     },
     "/users/{loginid}/authorizations/possibleroles": {
       "get": {
-        "operationId": "GetPossibleRolesForAuthorization",
+        "summary": "Returns possible roles for new authorizations for specified app",
+        "description": "Method returns the possible roles for new authorization for the specified user and app.\nAlread set roles will be filtered out from the result.\n\n**Adminpanel only?**\nEndpoint has been implemented specifically for the 'Adminpanel' app to make it easier to manage permissions.\n\n**Tenantid is required for none-service-Users**\nIf the caller is not a service-user, the tenant-id is required and has to be != 0.",
+        "operationId": "PermissionService_GetPossibleRolesForAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2871,18 +3611,26 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints (adminpanel only)"
         ]
       }
     },
     "/users/{loginid}/authorizations/possibletenants": {
       "get": {
-        "operationId": "GetPossibleTenantsForAuthorization",
+        "summary": "Returns possible tenants for new authorizations",
+        "description": "Method returns the possible tenants for new authorization for the specified user.\n\n**Adminpanel only?**\nEndpoint has been implemented specifically for the 'Adminpanel' app to make it easier to manage permissions.\n\n**Super-Tenant relevant**\nThe endpoint behaves differently when it is called in the context of a super-tenant (defined by config).",
+        "operationId": "PermissionService_GetPossibleTenantsForAuthorization",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/v1Tenants"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -2902,23 +3650,29 @@
           }
         ],
         "tags": [
-          "PermissionService"
+          "'Get-Possible' Endpoints (adminpanel only)"
         ]
       }
     },
     "/validate": {
       "get": {
-        "operationId": "Validate",
+        "operationId": "PermissionService_Validate",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/apiLabels"
             }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
           }
         },
         "tags": [
-          "PermissionService"
+          "Health and Readiness"
         ]
       }
     }
@@ -2973,8 +3727,7 @@
           "type": "string"
         },
         "primary": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "region": {
           "type": "string"
@@ -3110,8 +3863,7 @@
           "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
         },
         "primary": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "labels": {
           "type": "array",
@@ -3120,8 +3872,7 @@
           }
         },
         "verified": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "type": {
           "type": "string"
@@ -3135,8 +3886,7 @@
           "type": "string"
         },
         "primary": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "labels": {
           "type": "array",
@@ -3145,8 +3895,7 @@
           }
         },
         "verified": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "type": {
           "type": "string"
@@ -3165,8 +3914,7 @@
           "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
         },
         "primary": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "labels": {
           "type": "array",
@@ -3175,8 +3923,7 @@
           }
         },
         "verified": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "loginId": {
           "type": "string",
@@ -3232,8 +3979,7 @@
           "type": "string"
         },
         "primary": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "labels": {
           "type": "array",
@@ -3242,8 +3988,7 @@
           }
         },
         "verified": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "loginId": {
           "type": "string",
@@ -3274,6 +4019,42 @@
         },
         "type": {
           "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string",
+          "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com. As of May 2023, there are no widely used type server\nimplementations and no plans to implement one.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "description": "Must be a valid serialized protocol buffer of the above specified type."
+        }
+      },
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n    // or ...\n    if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n      foo = any.unpack(Foo.getDefaultInstance());\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
         }
       }
     },
@@ -3409,6 +4190,15 @@
           "items": {
             "type": "string"
           }
+        },
+        "clientType": {
+          "$ref": "#/definitions/v1ClientType"
+        },
+        "grouptitle": {
+          "type": "string"
+        },
+        "iconsubname": {
+          "type": "string"
         }
       }
     },
@@ -3462,6 +4252,16 @@
           }
         }
       }
+    },
+    "v1ClientType": {
+      "type": "string",
+      "enum": [
+        "UNSPECIFIED",
+        "PUBLIC",
+        "CONFIDENTIAL"
+      ],
+      "default": "UNSPECIFIED",
+      "description": " - UNSPECIFIED: Clients which don't have a clientType specified (yet).\r\nThese are apps created before this feature was available\r\nor which are created by clients using an old api definition.\n - PUBLIC: Public clients are clients which cannot keep a secret private (eg. SPA's or native mobile applications).\n - CONFIDENTIAL: Confidential clients are clients which can keep a secret private (eg. server rendered web applications)."
     },
     "v1DisplayUser": {
       "type": "object",
@@ -3541,6 +4341,18 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/commonapiLabel"
+          }
+        }
+      }
+    },
+    "v1LoginIds": {
+      "type": "object",
+      "properties": {
+        "loginIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
           }
         }
       }
@@ -3689,6 +4501,12 @@
           "items": {
             "$ref": "#/definitions/v1MappingID"
           }
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "businessPartnerNr": {
+          "type": "string"
         }
       }
     },
@@ -3812,8 +4630,7 @@
           "type": "string"
         },
         "includeDeleted": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "lastModified": {
           "type": "string",
@@ -3837,6 +4654,9 @@
             "type": "string",
             "format": "uint64"
           }
+        },
+        "externalid": {
+          "type": "string"
         }
       }
     },
@@ -3896,5 +4716,9 @@
         }
       }
     }
+  },
+  "externalDocs": {
+    "description": "Internal API Getting-Started Documentation (Confluence)",
+    "url": "https://confluence.abraxas-tools.ch/confluence/pages/viewpage.action?pageId=176725339"
   }
 }

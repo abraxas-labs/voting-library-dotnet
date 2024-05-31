@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.Database.Testing.NQueryDetector;
 
@@ -18,16 +17,6 @@ public class QueryRunTooManyTimesException : Exception
         Query = query;
         MaxCount = maxCount;
         ActualCount = actualCount;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="QueryRunTooManyTimesException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected QueryRunTooManyTimesException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
-    {
     }
 
     /// <summary>

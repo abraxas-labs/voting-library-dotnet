@@ -229,7 +229,7 @@ public static class SnapperExtensions
     {
         var path = GetSnapshotFilePath(childTestCaseName, memberName, filePath, snapshotExt);
 
-#if DEBUG_UPDATE_SNAPSHOTS
+#if DEBUGUPDATESNAPSHOTS
         updateSnapshot ??= true;
 #else
         updateSnapshot ??= false;

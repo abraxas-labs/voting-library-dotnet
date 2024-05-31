@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.Cryptography.Exceptions;
 
@@ -28,16 +27,6 @@ public class CryptographyException : Exception
     /// <param name="innerException">The inner exception.</param>
     public CryptographyException(string message, Exception innerException)
         : base(message, innerException)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CryptographyException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected CryptographyException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
     {
     }
 }

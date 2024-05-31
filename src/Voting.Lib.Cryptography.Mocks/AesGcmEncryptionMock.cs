@@ -40,7 +40,7 @@ public static class AesGcmEncryptionMock
             throw new ArgumentNullException(nameof(plainText));
         }
 
-        using var aes = new AesGcm(Key);
+        using var aes = new AesGcm(Key, TagSize);
 
         // Prepare cryptographic parameters
         var cipherTextRent = ByteArrayPool.Rent(plainText.Length);
@@ -74,7 +74,7 @@ public static class AesGcmEncryptionMock
             throw new ArgumentNullException(nameof(cipherText));
         }
 
-        using var aes = new AesGcm(Key);
+        using var aes = new AesGcm(Key, TagSize);
         var tag = cipherText[..TagSize];
         var cipher = cipherText[TagSize..^NonceSize];
         var nonce = cipherText[^NonceSize..];

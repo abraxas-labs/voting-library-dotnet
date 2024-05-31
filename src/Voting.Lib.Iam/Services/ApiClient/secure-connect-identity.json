@@ -1,10 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Identity Service",
+    "title": "Identity Service of SECURE Connect 2",
     "version": "1.0",
     "contact": {
-      "url": "https://gitlab.abraxas-tools.ch/secure/apps/secure-connect/identity"
+      "name": "Cloud Platform Services",
+      "url": "https://confluence.abraxas-tools.ch/confluence/display/IAM"
     }
   },
   "schemes": [
@@ -21,6 +22,7 @@
   "paths": {
     "/2fa/providers": {
       "get": {
+        "summary": "Returns available 2fa providers",
         "operationId": "IdentityService_GetSecondFactorProviders",
         "responses": {
           "200": {
@@ -37,12 +39,136 @@
           }
         },
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
+      }
+    },
+    "/contactUsers": {
+      "get": {
+        "summary": "Returns full-users with contacts (with optional filters)",
+        "description": "Method returns *FullUser* models containing all values of the user. In addition, the method adds all contact-values to each user.\n\n*Important:** this endpoint is not performant and is deprecated. It may no longer be used.It was implemented for explicit use cases and not for general usage.",
+        "operationId": "IdentityService_GetUsersWithContact",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UsersWithContact"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "firstname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lastname",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "servicename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "includeDeleted",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "lastModified",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "lifecycles",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "STATELESS",
+                "ARCHIVED",
+                "DELETED",
+                "ACTIVE",
+                "INACTIVE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "loginids",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "externalid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Users - get / search / filter"
+        ],
+        "deprecated": true
       }
     },
     "/contacts": {
       "get": {
+        "summary": "Returns contacts (with optional filters)",
         "operationId": "IdentityService_GetContacts",
         "responses": {
           "200": {
@@ -108,15 +234,29 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "loginIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       }
     },
     "/fullusers": {
       "get": {
+        "summary": "Returns full-users (with optional filters)",
+        "description": "Method returns *FullUser* models containing all values of the user.",
         "operationId": "IdentityService_GetFullUserList",
         "responses": {
           "200": {
@@ -231,13 +371,12 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/healthz": {
       "get": {
-        "summary": "---------\nProbes\n---------",
         "operationId": "IdentityService_Healthz",
         "responses": {
           "200": {
@@ -254,42 +393,14 @@
           }
         },
         "tags": [
-          "IdentityService"
+          "Health and Readiness"
         ]
       }
     },
     "/logins": {
-      "post": {
-        "operationId": "IdentityService_CreateLogin",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Login"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1Login"
-            }
-          }
-        ],
-        "tags": [
-          "IdentityService"
-        ]
-      },
       "put": {
+        "summary": "Updates a login (without user)",
+        "description": "Method validates all fields and updates the existing login",
         "operationId": "IdentityService_UpdateLogin",
         "responses": {
           "200": {
@@ -316,12 +427,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Login"
         ]
       }
     },
     "/logins/externalid/{id}": {
       "get": {
+        "summary": "Returns login by external-id",
         "operationId": "IdentityService_GetLoginByExternalIdpId",
         "responses": {
           "200": {
@@ -352,21 +464,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Login"
         ]
       }
     },
     "/logins/me/2fa": {
       "delete": {
-        "summary": "DeleteSecondFactor delets the second factor for the specified provider or\nfor all providers if no provider is specified",
+        "summary": "Delete 2fa for authenticated user (me)",
+        "description": "Method deletes the 2FA from the **authenticated user** and the provided provider or for all providers if no provider is specified.\n\n***\n\n**Verify existing 2FA first**\nFor individual 2FA providers, the existing 2FA must be verified before deletion.\n\n**Prevent account downgrade**\nIn specific SECURE Connect environments, the deletion of last 2FA is forbidden (preventing account downgrade).\nIn this case, the method returns an error *secondFactorDowngradeNotAllowed* while trying to delete the last 2FA.",
         "operationId": "IdentityService_DeleteSecondFactorMe2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -401,14 +512,21 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "designName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       },
       "post": {
-        "summary": "CreateSecondFactorMe creates a second factor for the provided provider\nthe provider maybe requires verification\nif it's the first added 2fa a recovery code will be returned",
+        "summary": "Initiates a 2FA for authenticated user (me)",
+        "description": "Method initiates a second factor for the **authenticated user** and the provided provider.\n***\n\n**Verification**\nTo create a verified 2FA (*verified=true*), the authenticated user needs some special permissions (roles).\nOtherwise all providers require verification with the */verify* endpoints.\n\n**Recovery Code**\nIf it's the first added 2fa and it is added as verified, a *recovery_code* will be generated and returned.",
         "operationId": "IdentityService_CreateSecondFactorMe",
         "responses": {
           "200": {
@@ -435,13 +553,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/me/2fa/request": {
       "post": {
-        "summary": "RequestSecondFactor requests a new 2fa-auth (sends sms, etc.)\nif a provider is specified the provider specified is the preverence,\nif the provider is not found or not configured the first configured provider will be used\nthe used provider can be found in the response",
+        "summary": "Requests a 2fa for authenticated user (me)",
+        "description": "If a provider is specified, this provider is the preverence,if the provider is not found or not configured the first configured provider with the highest priority will be used.\nThe used provider can be found in the response.",
         "operationId": "IdentityService_RequestSecondFactor",
         "responses": {
           "200": {
@@ -468,13 +587,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/me/2fa/status": {
       "get": {
-        "summary": "SecondFactorStatus returns the status of the second factor",
+        "summary": "2FA status of authenticated user (me)",
+        "description": "Method returns the 2fa status of the **authenticated user** (*loginid* request-parameter is not required and will be ignored).",
         "operationId": "IdentityService_SecondFactorStatusMe",
         "responses": {
           "200": {
@@ -518,13 +638,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/me/2fa/verify": {
       "post": {
-        "summary": "VerifySecondFactor verifies the second factor\nif it's the first verification of a second 2fa of a user the provider field is required\nif the provider is recovery_code and the code is correct, all 2fa's of the current user\nget deleted",
+        "summary": "Verify a 2fa-request for authenticated user (me)",
+        "description": "If a provider is specified, this provider is the preverence, if the provider is not found or not configured the first configured provider with the highest priority will be used for verification.\n\n*Recovery Code*\nIf the provider is *recovery_code* and the code is correct, all 2fa's of the user get deleted.",
         "operationId": "IdentityService_VerifySecondFactor",
         "responses": {
           "200": {
@@ -551,21 +672,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/me/2fa/{provider}": {
       "delete": {
-        "summary": "DeleteSecondFactor delets the second factor for the specified provider or\nfor all providers if no provider is specified",
+        "summary": "Delete 2fa for authenticated user (me)",
+        "description": "Method deletes the 2FA from the **authenticated user** and the provided provider or for all providers if no provider is specified.\n\n***\n\n**Verify existing 2FA first**\nFor individual 2FA providers, the existing 2FA must be verified before deletion.\n\n**Prevent account downgrade**\nIn specific SECURE Connect environments, the deletion of last 2FA is forbidden (preventing account downgrade).\nIn this case, the method returns an error *secondFactorDowngradeNotAllowed* while trying to delete the last 2FA.",
         "operationId": "IdentityService_DeleteSecondFactorMe",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -600,23 +720,29 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "designName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/resetpw": {
       "post": {
+        "summary": "Reset password",
+        "description": "Method to reset the password (only possible with a valid reset-code)",
         "operationId": "IdentityService_ResetPassword",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -637,21 +763,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Password"
         ]
       }
     },
     "/logins/resetpw/request": {
       "post": {
-        "summary": "this api returns always OK unless a technical error occurred\n(wether the user is found or not => OK is returned)",
+        "summary": "Request password reset (over email)",
+        "description": "Method sends a password-reset link over e-mail.\nMethod returns always OK unless a technical error occurred (wether the user is found or not =\u003e OK is returned)",
         "operationId": "IdentityService_RequestPasswordReset",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -672,12 +797,81 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Password"
+        ]
+      }
+    },
+    "/logins/resetpw/request2fa": {
+      "post": {
+        "summary": "Request password reset (over 2fa)",
+        "description": "Method sends a nevis-push-message to verify/start the password-reset flow.\nMethod returns always OK unless a technical error occurred (wether the user is found or not =\u003e OK is returned)",
+        "operationId": "IdentityService_RequestPasswordReset2fa",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RequestPasswordReset2faResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RequestPasswordReset2faRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Password"
+        ]
+      }
+    },
+    "/logins/resetpw/verify2fa": {
+      "post": {
+        "summary": "Verify password reset (over 2fa)",
+        "description": "Method verifies if the 2fa-message for pw-reset was successfull.",
+        "operationId": "IdentityService_VerifyPasswordReset2fa",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyPasswordReset2faResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyPasswordReset2faRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Password"
         ]
       }
     },
     "/logins/username/{username}": {
       "get": {
+        "summary": "Returns a login by username",
         "operationId": "IdentityService_GetLoginByUsername",
         "responses": {
           "200": {
@@ -708,12 +902,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Login"
         ]
       }
     },
     "/logins/{id}": {
       "get": {
+        "summary": "Returns login by loginid",
         "operationId": "IdentityService_GetLoginById",
         "responses": {
           "200": {
@@ -739,12 +934,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Login"
         ]
       }
     },
     "/logins/{id}/history": {
       "get": {
+        "summary": "Get history entries for login (by LoginId)",
+        "description": "Method loads the history-entries for the login.",
         "operationId": "IdentityService_GetLoginHistory",
         "responses": {
           "200": {
@@ -770,20 +967,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "History"
         ]
       }
     },
     "/logins/{loginid}/2fa": {
       "delete": {
+        "summary": "Delete 2fa for user",
+        "description": "Method deletes the 2FA the provided user and provider or for all providers if no provider is specified.\n\n***\n\n**Verify existing 2FA first**\nFor individual 2FA providers, the existing 2FA must be verified before deletion.\n\n**Prevent account downgrade**\nIn specific SECURE Connect environments, the deletion of last 2FA is forbidden (preventing account downgrade).\nIn this case, the method returns an error *secondFactorDowngradeNotAllowed* while trying to delete the last 2FA.",
         "operationId": "IdentityService_DeleteSecondFactor2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -818,14 +1015,21 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "designName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       },
       "post": {
-        "summary": "CreateSecondFactor creates a second factor for the provided provider and loginid\nthe provider maybe requires verification\nif it's the first added 2fa a recovery code will be returned",
+        "summary": "Initiates a 2FA for a user",
+        "description": "Method initiates a second factor for the provided user and provider.\n***\n\n**Verification**\nTo create a verified 2FA (*verified=true*), the authenticated user needs some special permissions (roles).\nOtherwise all providers require verification with the */verify* endpoints.\n\n**Recovery Code**\nIf it's the first added 2fa and it is added as verified, a *recovery_code* will be generated and returned.",
         "operationId": "IdentityService_CreateSecondFactor",
         "responses": {
           "200": {
@@ -859,12 +1063,53 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
+        ]
+      },
+      "put": {
+        "summary": "Updates or creates the 2FA (sms only / special-role required)",
+        "description": "Method sets the SMS-2FA as verified without verifying the information with the end user.\n**Only works for provider SMS and authenticated user needs a special permission (role).**",
+        "operationId": "IdentityService_UpdateOrCreateSecondFactor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateSecondFactorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "loginid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateSecondFactorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Second Factor"
         ]
       }
     },
     "/logins/{loginid}/2fa/request": {
       "post": {
+        "summary": "Requests a 2fa for a user",
+        "description": "If a provider is specified, this provider is the preverence,if the provider is not found or not configured the first configured provider with the highest priority will be used.\nThe used provider can be found in the response.",
         "operationId": "IdentityService_RequestSecondFactorByLoginId",
         "responses": {
           "200": {
@@ -895,21 +1140,16 @@
             "schema": {
               "$ref": "#/definitions/v1SecondFactorProviderItem"
             }
-          },
-          {
-            "name": "x-vrsg-tenant",
-            "in": "header",
-            "required": true,
-            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/{loginid}/2fa/status": {
       "get": {
+        "summary": "2FA status of user",
         "operationId": "IdentityService_SecondFactorStatus",
         "responses": {
           "200": {
@@ -953,12 +1193,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/{loginid}/2fa/verify": {
       "post": {
+        "summary": "Verify a 2fa-request for a user",
+        "description": "If a provider is specified, this provider is the preverence, if the provider is not found or not configured the first configured provider with the highest priority will be used for verification.\n\n*Recovery Code*\nIf the provider is *recovery_code* and the code is correct, all 2fa's of the user get deleted.",
         "operationId": "IdentityService_VerifySecondFactorByLoginId",
         "responses": {
           "200": {
@@ -989,29 +1231,23 @@
             "schema": {
               "$ref": "#/definitions/v1VerifySecondFactorRequest"
             }
-          },
-          {
-            "name": "x-vrsg-tenant",
-            "in": "header",
-            "required": true,
-            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/logins/{loginid}/2fa/{provider}": {
       "delete": {
+        "summary": "Delete 2fa for user",
+        "description": "Method deletes the 2FA the provided user and provider or for all providers if no provider is specified.\n\n***\n\n**Verify existing 2FA first**\nFor individual 2FA providers, the existing 2FA must be verified before deletion.\n\n**Prevent account downgrade**\nIn specific SECURE Connect environments, the deletion of last 2FA is forbidden (preventing account downgrade).\nIn this case, the method returns an error *secondFactorDowngradeNotAllowed* while trying to delete the last 2FA.",
         "operationId": "IdentityService_DeleteSecondFactor",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -1046,15 +1282,23 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "designName",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
-          "IdentityService"
+          "Second Factor"
         ]
       }
     },
     "/magiclink": {
       "get": {
+        "summary": "Get user by magic-link",
+        "description": "Get user by values from the magic-link.\nThe method has various security mechanisms to check the link, validity and origin.",
         "operationId": "IdentityService_GetMagicLinkUser",
         "responses": {
           "200": {
@@ -1085,10 +1329,12 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Magic Link"
         ]
       },
       "post": {
+        "summary": "Creates a magic-link",
+        "description": "Method creates a magic link with which the recipient can log in directly without entering a user name or similar.\nOnly users with high level of access (special roles) are allowed to use this endpoint.",
         "operationId": "IdentityService_CreateMagicLink",
         "responses": {
           "200": {
@@ -1115,13 +1361,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Magic Link"
         ]
       }
     },
     "/me/changepw": {
       "post": {
-        "summary": "---------\nLogin\n---------",
+        "summary": "Change password of authenticated user (me)",
+        "description": "Authenticated user is only allowed to change his own password over this endpoint.\nMethod validates old and new password against the currently valid rules.",
         "operationId": "IdentityService_ChangeMyPassword",
         "responses": {
           "200": {
@@ -1148,12 +1395,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Password"
         ]
       }
     },
     "/overwritepw": {
       "post": {
+        "summary": "Overwrite password",
+        "description": "Method overwrites the password of the user **without validating the old/existing one**.\nThis method can only be used by users with high privilege roles.",
         "operationId": "IdentityService_OverwritePassword",
         "responses": {
           "200": {
@@ -1180,7 +1429,7 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Password"
         ]
       }
     },
@@ -1202,12 +1451,14 @@
           }
         },
         "tags": [
-          "IdentityService"
+          "Health and Readiness"
         ]
       }
     },
     "/userlogin": {
       "post": {
+        "summary": "Create a user with login",
+        "description": "Method validates the input and creates a user and a login.\nIf no passwords is set, the method creates the login with a random-password.\nThis method can only be used by users with high privileged roles.\n",
         "operationId": "IdentityService_CreateUserWithLogin",
         "responses": {
           "200": {
@@ -1240,12 +1491,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User and Login"
         ]
       }
     },
     "/userlogin/init": {
       "post": {
+        "summary": "Initialize user with login (over email)",
+        "description": "Method validates the input and initializes a user and a login.\nA random password is set and an init-email is sent with a password-reset link.\nThis method can only be used by users with high privileged roles.\n",
         "operationId": "IdentityService_InitUserLoginWithEmail",
         "responses": {
           "200": {
@@ -1278,13 +1531,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User and Login"
         ]
       }
     },
     "/users": {
       "get": {
-        "summary": "---------\nUsers\n---------",
+        "summary": "Returns display-users (with optional filters)",
+        "description": "Method returns *DisplayUser* models with a minimum set of values.",
         "operationId": "IdentityService_GetUserList",
         "responses": {
           "200": {
@@ -1399,10 +1653,12 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       },
       "post": {
+        "summary": "Creates a user (without login)",
+        "description": "Method validates all fields and creates a new user (**but no login**).\nThis method can only be used by users with high privileged roles.\n***\n\n**Existing Login Required**\nThe *loginid* must be a valid id from an existing login, otherwise the user is not valid.\nThis endpoint creates a user and references it to the existing login.",
         "operationId": "IdentityService_CreateUser",
         "responses": {
           "200": {
@@ -1429,12 +1685,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User"
         ]
       }
     },
     "/users/display/{id}": {
       "get": {
+        "summary": "Returns display-user by LoginId (Login-PK)",
         "operationId": "IdentityService_GetDisplayUserByLoginId",
         "responses": {
           "200": {
@@ -1466,12 +1723,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/users/emails/verify": {
       "post": {
+        "summary": "Verify email",
+        "description": "The method verifies the code and sets the email to officially verified.",
         "operationId": "IdentityService_VerifyUserEmail",
         "responses": {
           "200": {
@@ -1498,12 +1757,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User E-Mails"
         ]
       }
     },
     "/users/externalid/{id}": {
       "get": {
+        "summary": "Returns full-user by External-Id",
         "operationId": "IdentityService_GetUserByExternalIdpId",
         "responses": {
           "200": {
@@ -1534,12 +1794,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/users/loginid/{id}": {
       "get": {
+        "summary": "Returns full-user by LoginId (Login-PK)",
         "operationId": "IdentityService_GetUserByLoginId",
         "responses": {
           "200": {
@@ -1571,12 +1832,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/users/userPw": {
       "post": {
+        "summary": "Returns full-user by Username and Password",
+        "description": "Method gets the user by username and compares/validates the given password.",
         "operationId": "IdentityService_GetUserByUsernamePassword",
         "responses": {
           "200": {
@@ -1603,12 +1866,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/users/username/{username}": {
       "get": {
+        "summary": "Returns full-user by Username",
         "operationId": "IdentityService_GetUserByUsername",
         "responses": {
           "200": {
@@ -1639,12 +1903,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       }
     },
     "/users/{idOne}/contacts/{idTwo}": {
       "get": {
+        "summary": "Get specific contact from specific user (by loginid)",
         "operationId": "IdentityService_GetUserContact",
         "responses": {
           "200": {
@@ -1677,18 +1942,18 @@
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       },
       "delete": {
+        "summary": "Deletes a contact",
         "operationId": "IdentityService_DeleteUserContact",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -1715,12 +1980,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       }
     },
     "/users/{id}": {
       "get": {
+        "summary": "Returns full-user by Id (User-PK)",
         "operationId": "IdentityService_GetUserById",
         "responses": {
           "200": {
@@ -1752,10 +2019,12 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "Users - get / search / filter"
         ]
       },
       "delete": {
+        "summary": "Deletes a user (with login)",
+        "description": "Method deletes the user and the corresponding login.\nThis method can only be used by users with high privileged roles.\n",
         "operationId": "IdentityService_DeleteUser",
         "responses": {
           "200": {
@@ -1781,12 +2050,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User and Login"
         ]
       }
     },
     "/users/{id}/history": {
       "get": {
+        "summary": "Get history entries for user (by LoginId)",
+        "description": "Method loads the history-entries for the user (**by loginid**).",
         "operationId": "IdentityService_GetUserHistory",
         "responses": {
           "200": {
@@ -1812,12 +2083,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "History"
         ]
       }
     },
     "/users/{id}/labels": {
       "get": {
+        "summary": "Returns the labels of a user by LoginId",
+        "description": "Method gets the user by his *LoginId* and returns just the labels.\nThe parameter *includeDeleted* controls whether users marked as deleted are included (not regarding labels).",
         "operationId": "IdentityService_GetUserLabels",
         "responses": {
           "200": {
@@ -1849,12 +2122,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Labels"
         ]
       }
     },
     "/users/{loginId}/contacts": {
       "post": {
+        "summary": "Adds a contact to the user (by loginid)",
         "operationId": "IdentityService_AddUserContact",
         "responses": {
           "200": {
@@ -1888,12 +2162,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       }
     },
     "/users/{loginId}/contacts/{id}": {
       "put": {
+        "summary": "Updates a given contact",
         "operationId": "IdentityService_UpdateUserContact",
         "responses": {
           "200": {
@@ -1934,12 +2210,15 @@
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       }
     },
     "/users/{login_id}/emails": {
       "post": {
+        "summary": "Adds an email to user",
+        "description": "Method accepts only valid e-mail values (format).\n***\n\n**Primary**\nOnly one email can be set as primary. This cannot be set in the add-method (*primary=true* will be ignored). A new email will always be added as none-primary (except it is added as *verified=true*). The specific endpoint */primary* must be used for this.\n\n**Verification**\nTo add a verified email (*verified=true*), the authenticated user needs some special permissions (roles).\nOtherwise the method sends an email with a code for verification with the */verify* endpoint.\n\n**Max E-Mails**\nIn specific SECURE Connect environments, the number of total emails is limited.\nIn this case and the limit is reached, the method returns an error *userMaxEmailsReached*.",
         "operationId": "IdentityService_AddUserEmail",
         "responses": {
           "200": {
@@ -1973,12 +2252,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User E-Mails"
         ]
       }
     },
     "/users/{login_id}/emails/primary": {
       "post": {
+        "summary": "Set email as primary",
+        "description": "If another than the specified email is already marked as primary, it will no longer be primary after a successful call (primary email has changed).\nOnly a verified email can be marked as primary.\nIf the specified email is already marked as primary, the method returns an error *errorEmailAlreadyPrimary*.\nThe parameters *verified* and *type* are getting ignored for this call.",
         "operationId": "IdentityService_SetPrimaryUserEmail",
         "responses": {
           "200": {
@@ -2012,20 +2293,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User E-Mails"
         ]
       }
     },
     "/users/{login_id}/emails/resendverification": {
       "post": {
+        "summary": "Resend email verification",
+        "description": "If the given email is not verified yet, the method re-sends a code over email.\nThe parameters *verified* and *type* are getting ignored for this call.",
         "operationId": "IdentityService_ResendUserEmailVerification",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -2053,20 +2334,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User E-Mails"
         ]
       }
     },
     "/users/{login_id}/emails/{email}": {
       "delete": {
+        "summary": "Delete an email from a user",
+        "description": "The parameters *verified* and *type* are getting ignored for this call.\n***\n\n**Primary**\nEmails marked as primary cannot be deleted. Method will return an error *cannotDeletePrimaryEmail*.",
         "operationId": "IdentityService_DeleteUserEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -2086,7 +2367,6 @@
           },
           {
             "name": "email",
-            "description": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)",
             "in": "path",
             "required": true,
             "type": "string"
@@ -2105,12 +2385,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User E-Mails"
         ]
       }
     },
     "/users/{login_id}/phones": {
       "post": {
+        "summary": "Adds a phone-number to user",
+        "description": "Method normalizes the phone-number and adds it to the user.\n***\n\n**Primary**\nOnly one phone-number can be set as primary. This cannot be set in the add-method (*primary=true* will be ignored). A new phone will always be added as none-primary. The specific endpoint */primary* must be used for this.\n\n**Verification**\nTo add a verified phone (*verified=true*), the authenticated user needs some special permissions (roles).\nOtherwise the method sends an SMS (or voice-call if SMS fails) for verification with the */verify* endpoint.\n\n**Max Phone Numbers**\nIn specific SECURE Connect environments, the number of total phone-numbers is limited.\nIn this case and the limit is reached, the method returns an error *userMaxPhonenumbersReached*.",
         "operationId": "IdentityService_AddUserPhoneNumber",
         "responses": {
           "200": {
@@ -2144,12 +2426,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Phones"
         ]
       }
     },
     "/users/{login_id}/phones/primary": {
       "post": {
+        "summary": "Set phone-number as primary",
+        "description": "The number to set as primary will be normalized before comparing.\nIf a number was already marked as primary, it will no longer be primary after a successful call.\nThe parameters *verified* and *type* are getting ignored for this call.",
         "operationId": "IdentityService_SetPrimaryUserPhoneNumber",
         "responses": {
           "200": {
@@ -2183,20 +2467,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Phones"
         ]
       }
     },
     "/users/{login_id}/phones/resendverification": {
       "post": {
+        "summary": "Resend phone-number verification",
+        "description": "If the given phone-number is not verified yet, the method re-sends an SMS (or a voice-call if SMS fails).\nThe parameters *verified* and *type* are getting ignored for this call.",
         "operationId": "IdentityService_ResendUserPhoneNumberVerification",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -2224,12 +2508,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Phones"
         ]
       }
     },
     "/users/{login_id}/phones/verify": {
       "post": {
+        "summary": "Verify phone-number",
+        "description": "The method verifies whether the code for the specified number is correct and sets the number to officially verified.",
         "operationId": "IdentityService_VerifyUserPhoneNumber",
         "responses": {
           "200": {
@@ -2263,20 +2549,20 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Phones"
         ]
       }
     },
     "/users/{login_id}/phones/{phonenumber}": {
       "delete": {
+        "summary": "Delete a phone-number from a user",
+        "description": "The number to delete will be normalized before comparing.\nThe parameters *verified* and *type* are getting ignored for this call.\n***\n\n**Primary**\nPhone numbers marked as primary cannot be deleted. Method will return an error *cannotDeletePrimayPhone*.",
         "operationId": "IdentityService_DeleteUserPhoneNumber",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {
-
-              }
+              "properties": {}
             }
           },
           "default": {
@@ -2314,12 +2600,14 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Phones"
         ]
       }
     },
     "/users/{loginid}": {
       "put": {
+        "summary": "Updates an existing user (without login)",
+        "description": "Method validates all fields and updates the existing user\n***\n\n**Existing Login Required**\nThe *loginid* must be a valid id from an existing login, otherwise the user is not valid.\n\n**E-Mails, Phones and Login-Properties**\nEmails, phones and login-properties are getting ignored and cannot be updated with this method.\nThere are separate and specific endpoints to manipulate those values.\n\n**Resource-Owner-Tenant update**\nTo update the resource-owner-tenant, the user must have special roles.",
         "operationId": "IdentityService_UpdateUser",
         "responses": {
           "200": {
@@ -2353,12 +2641,13 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User"
         ]
       }
     },
     "/users/{loginid}/contacts": {
       "get": {
+        "summary": "Returns contacts from user (by loginid)",
         "operationId": "IdentityService_GetUserContacts",
         "responses": {
           "200": {
@@ -2424,15 +2713,29 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "loginIds",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
-          "IdentityService"
-        ]
+          "Contacts"
+        ],
+        "deprecated": true
       }
     },
     "/users/{loginid}/labels": {
       "put": {
+        "summary": "Adds or removes user-labels",
+        "description": "Although the entire user model can be sent in the body, only the following properties are absolutely necessary: *loginid*, *labels*. The rest are not relevant for this call.",
         "operationId": "IdentityService_UpdateUserLabels",
         "responses": {
           "200": {
@@ -2466,7 +2769,7 @@
           }
         ],
         "tags": [
-          "IdentityService"
+          "User Labels"
         ]
       }
     },
@@ -2488,7 +2791,7 @@
           }
         },
         "tags": [
-          "IdentityService"
+          "Health and Readiness"
         ]
       }
     }
@@ -2659,8 +2962,7 @@
       "type": "object",
       "properties": {
         "email": {
-          "type": "string",
-          "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
+          "type": "string"
         },
         "primary": {
           "type": "boolean"
@@ -2700,7 +3002,10 @@
         "type": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "phonenumber"
+      ]
     },
     "apiv1Type": {
       "type": "string",
@@ -2844,7 +3149,7 @@
           "description": "Must be a valid serialized protocol buffer of the above specified type."
         }
       },
-      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(&foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := &pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := &pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
+      "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\nExample 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\nExample 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
     "runtimeError": {
       "type": "object",
@@ -2918,6 +3223,9 @@
         },
         "verified": {
           "type": "boolean"
+        },
+        "designName": {
+          "type": "string"
         }
       }
     },
@@ -2989,7 +3297,10 @@
         "code": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "code"
+      ]
     },
     "v1Gender": {
       "type": "string",
@@ -3060,7 +3371,11 @@
         "magic_link_url": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "client_id",
+        "type"
+      ]
     },
     "v1MagicLinkResponse": {
       "type": "object",
@@ -3112,6 +3427,37 @@
         },
         "vrsg_crm_partner_id": {
           "type": "string"
+        }
+      }
+    },
+    "v1NevisRequestResponse": {
+      "type": "object",
+      "properties": {
+        "nevis_action_token_jtis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "qr": {
+          "type": "string"
+        },
+        "mobileRegistrationLink": {
+          "type": "string"
+        },
+        "visualLinkingContent": {
+          "type": "string"
+        }
+      }
+    },
+    "v1NevisVerification": {
+      "type": "object",
+      "properties": {
+        "nevis_action_token_jtis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -3169,6 +3515,28 @@
         "code": {
           "type": "string"
         }
+      },
+      "required": [
+        "phonenumber, code"
+      ]
+    },
+    "v1RequestPasswordReset2faRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "v1RequestPasswordReset2faResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "nevis_response": {
+          "$ref": "#/definitions/v1NevisRequestResponse"
+        }
       }
     },
     "v1RequestSecondFactorResponse": {
@@ -3185,6 +3553,12 @@
         },
         "code": {
           "type": "string"
+        },
+        "correlation_code": {
+          "type": "string"
+        },
+        "nevis": {
+          "$ref": "#/definitions/v1NevisRequestResponse"
         }
       }
     },
@@ -3216,6 +3590,9 @@
         },
         "passwordLess": {
           "type": "boolean"
+        },
+        "designName": {
+          "type": "string"
         }
       }
     },
@@ -3356,6 +3733,20 @@
         }
       }
     },
+    "v1UserContact": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        },
+        "contact": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiv1Contact"
+          }
+        }
+      }
+    },
     "v1UserEmail": {
       "type": "object",
       "properties": {
@@ -3364,8 +3755,7 @@
           "format": "uint64"
         },
         "email": {
-          "type": "string",
-          "title": "regexp gemaess https://stackoverflow.com/a/14075810 (RFC 5321/5322)"
+          "type": "string"
         },
         "verified": {
           "type": "boolean"
@@ -3402,7 +3792,10 @@
         "type": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "phonenumber"
+      ]
     },
     "v1Userlogin": {
       "type": "object",
@@ -3427,7 +3820,10 @@
         "email": {
           "type": "string"
         }
-      }
+      },
+      "required": [
+        "user"
+      ]
     },
     "v1Username": {
       "type": "object",
@@ -3451,15 +3847,50 @@
         }
       }
     },
+    "v1UsersWithContact": {
+      "type": "object",
+      "properties": {
+        "userContact": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1UserContact"
+          }
+        }
+      }
+    },
+    "v1VerifyPasswordReset2faRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "jti": {
+          "type": "string"
+        }
+      }
+    },
+    "v1VerifyPasswordReset2faResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
     "v1VerifySecondFactorRequest": {
       "type": "object",
       "properties": {
         "provider": {
-          "$ref": "#/definitions/v1SecondFactorProvider",
-          "title": "optional provider"
+          "$ref": "#/definitions/v1SecondFactorProvider"
         },
         "code": {
           "type": "string"
+        },
+        "nevis": {
+          "$ref": "#/definitions/v1NevisVerification"
         },
         "loginid": {
           "type": "string",
@@ -3471,8 +3902,7 @@
       "type": "object",
       "properties": {
         "recovery_code": {
-          "type": "string",
-          "title": "only when verifing for the first time"
+          "type": "string"
         }
       }
     },
@@ -3521,5 +3951,9 @@
         }
       }
     }
+  },
+  "externalDocs": {
+    "description": "Internal API Getting-Started Documentation (Confluence)",
+    "url": "https://confluence.abraxas-tools.ch/confluence/pages/viewpage.action?pageId=176725339"
   }
 }

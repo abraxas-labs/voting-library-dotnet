@@ -7,7 +7,7 @@
     <PackageReference Include="Google.Protobuf" Version="$(ProtobufVersion)" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(MsAspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(MsExtensionsVersion)" />
-    <PackageReference Include="Scrutor" Version="4.2.0" />
+    <PackageReference Include="Scrutor" Version="4.2.2" />
   </ItemGroup>
 
   <ItemGroup>

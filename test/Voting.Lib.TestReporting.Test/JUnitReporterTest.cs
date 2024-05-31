@@ -26,7 +26,7 @@ public class JUnitReporterTest
         var jUnitReporter = new JUnitReporter(loggerMock.Object);
 
         // Act
-        await jUnitReporter.WriteJUnitReport(comparisonContainer, ReportFilePath).ConfigureAwait(false);
+        await jUnitReporter.WriteJUnitReport(comparisonContainer, ReportFilePath);
 
         // Assert
         File.Exists(ReportFilePath).Should().BeTrue();
@@ -45,11 +45,11 @@ public class JUnitReporterTest
         var jUnitReporter = new JUnitReporter(loggerMock.Object);
 
         // Act
-        await jUnitReporter.WriteJUnitReport(comparisonContainer, ReportFilePath).ConfigureAwait(false);
+        await jUnitReporter.WriteJUnitReport(comparisonContainer, ReportFilePath);
 
         // Assert
         File.Exists(ReportFilePath).Should().BeTrue();
-        (await File.ReadAllTextAsync(ReportFilePath).ConfigureAwait(false))
+        (await File.ReadAllTextAsync(ReportFilePath))
             .Should().Contain("value comparison mismatch");
 
         // Clean up

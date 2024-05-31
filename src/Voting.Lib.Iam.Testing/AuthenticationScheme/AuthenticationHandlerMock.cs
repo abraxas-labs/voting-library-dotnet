@@ -29,17 +29,15 @@ public class AuthenticationHandlerMock : SecureConnectHandler
     /// <param name="options">The SecureConnect options.</param>
     /// <param name="logger">The logger.</param>
     /// <param name="encoder">The URL encoder.</param>
-    /// <param name="clock">The system clock.</param>
     /// <param name="roleTokenHandler">The role token handler.</param>
     /// <param name="serviceProvider">The service provider.</param>
     public AuthenticationHandlerMock(
         IOptionsMonitor<SecureConnectOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock,
         IRoleTokenHandler roleTokenHandler,
         IServiceProvider serviceProvider)
-        : base(options, logger, encoder, clock, roleTokenHandler, serviceProvider)
+        : base(options, logger, encoder, roleTokenHandler, serviceProvider)
     {
     }
 
@@ -68,7 +66,7 @@ public class AuthenticationHandlerMock : SecureConnectHandler
         identity.AddClaim(
             new Claim(
                 ClaimTypes.NameIdentifier,
-                userId));
+                userId!));
 
         var hasTenantId = Request.Headers.TryGetValue(SecureConnectTestDefaults.TenantHeader, out var tenantId);
         if (!hasTenantId && !string.IsNullOrEmpty(Options.DefaultTenantId))
@@ -80,12 +78,12 @@ public class AuthenticationHandlerMock : SecureConnectHandler
         List<string>? roles = null;
         if (hasTenantId && Request.Headers.TryGetValue(SecureConnectTestDefaults.RolesHeader, out var rolesHeader))
         {
-            roles = rolesHeader.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-            identity.AddClaims(rolesHeader.Select(role => new Claim(ClaimTypes.Role, role)));
+            roles = rolesHeader.Where(x => !string.IsNullOrWhiteSpace(x)).ToList()!;
+            identity.AddClaims(rolesHeader.Select(role => new Claim(ClaimTypes.Role, role!)));
         }
 
-        var user = await UserService.GetUser(userId, true) ?? new() { Loginid = userId };
-        var tenant = await TenantService.GetTenant(tenantId, true) ?? new() { Id = tenantId };
+        var user = await UserService.GetUser(userId!, true) ?? new() { Loginid = userId! };
+        var tenant = await TenantService.GetTenant(tenantId!, true) ?? new() { Id = tenantId! };
 
         // the usage of the AuthStore and IPermissionProvider is optional
         var permissions = ServiceProvider.GetService<IPermissionProvider>()?.GetPermissionsForRoles(roles ?? Enumerable.Empty<string>());

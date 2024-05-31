@@ -66,7 +66,7 @@ internal sealed class AuthStore : IAuth, IAuthStore
     // Method calls receive the same log scope as the parent. If child methods change the log scope, that won't be visible in the parent.
     // If we define a log scope in the AuthenticationSchemeHandler, it won't affect the executed code in the gRPC/REST methods,
     // since the "async context" (where the log scope information is stored) has been cleared.
-    public IDisposable StartLogScope()
+    public IDisposable? StartLogScope()
     {
         return _logger.BeginScope(new Dictionary<string, object>
         {

@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.Iam.Exceptions;
 
@@ -25,16 +24,6 @@ public class ForbiddenException : Exception
     /// <param name="message">The exception message.</param>
     public ForbiddenException(string message)
         : base(message)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ForbiddenException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected ForbiddenException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
     {
     }
 }

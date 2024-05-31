@@ -137,7 +137,7 @@ public interface IDmDocService
     Task<Stream> PreviewDraftAsPdf(int draftId, CancellationToken ct = default);
 
     /// <summary>
-    /// Preview a template with data as PDF.
+    /// Preview a template with data as PDF in prioritized print job queue.
     /// </summary>
     /// <param name="templateId">The template ID.</param>
     /// <param name="templateData">The template data.</param>
@@ -148,7 +148,7 @@ public interface IDmDocService
     Task<Stream> PreviewAsPdf<T>(int templateId, T templateData, string? bulkRoot = null, CancellationToken ct = default);
 
     /// <summary>
-    /// Preview a template with data as PDF.
+    /// Preview a template with data as PDF in prioritized print job queue.
     /// </summary>
     /// <param name="templateName">The template name.</param>
     /// <param name="templateData">The template data.</param>

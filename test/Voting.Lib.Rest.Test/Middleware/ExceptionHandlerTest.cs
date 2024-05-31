@@ -29,7 +29,7 @@ public class ExceptionHandlerTest
     {
         return AssertExceptionResponse<TestExceptionHandler>(
             client => client.GetAsync("/exception"),
-            "{'title':'Exception','status':424}",
+            "{'Title':'Exception','Status':424}",
             HttpStatusCode.FailedDependency);
     }
 
@@ -38,7 +38,7 @@ public class ExceptionHandlerTest
     {
         return AssertExceptionResponse<TestExceptionHandler>(
             client => client.GetAsync("/exposed-exception"),
-            "{'title':'ExposedTestException','status':409}",
+            "{'Title':'ExposedTestException','Status':409}",
             HttpStatusCode.Conflict);
     }
 
@@ -47,7 +47,7 @@ public class ExceptionHandlerTest
     {
         return AssertExceptionResponse<TestExceptionHandler>(
             client => client.GetAsync("/exposed-exception-message"),
-            "{'title':'Exception','status':404,'detail':'exposed test message'}",
+            "{'Title':'Exception','Status':404,'Detail':'exposed test message'}",
             HttpStatusCode.NotFound);
     }
 
@@ -56,7 +56,7 @@ public class ExceptionHandlerTest
     {
         return AssertExceptionResponse<TestDetailedExceptionHandler>(
             client => client.GetAsync("/exception"),
-            "{'title':'TestException','status':424,'detail':'test message'}",
+            "{'Title':'TestException','Status':424,'Detail':'test message'}",
             HttpStatusCode.FailedDependency);
     }
 
@@ -65,7 +65,7 @@ public class ExceptionHandlerTest
     {
         return AssertExceptionResponse<DefaultExceptionHandler>(
             client => client.GetAsync("/exception"),
-            "{'title':'Exception','status':500}",
+            "{'Title':'Exception','Status':500}",
             HttpStatusCode.InternalServerError);
     }
 

@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.Cryptography.Exceptions;
 
@@ -28,16 +27,6 @@ public class Pkcs11Exception : Exception
     /// <param name="innerException">The inner exception.</param>
     public Pkcs11Exception(string message, Exception innerException)
         : base(message, innerException)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Pkcs11Exception"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected Pkcs11Exception(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
     {
     }
 }

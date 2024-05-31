@@ -17,7 +17,7 @@ public class Ahvn13Test
     [InlineData("856.1234.5678.98", false, null)]
     [InlineData("", false, null)]
     [InlineData(null, false, null)]
-    public void StringTryParseShouldWork(string input, bool expectedResult, long? numberRepresentation)
+    public void StringTryParseShouldWork(string? input, bool expectedResult, long? numberRepresentation)
     {
         var result = Ahvn13.TryParse(input, out var parsed);
         result.Should().Be(expectedResult);

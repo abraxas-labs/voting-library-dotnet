@@ -39,7 +39,7 @@ public abstract class GrpcAuthorizationBaseTest<TFactory, TStartup> : GrpcApiBas
     [Fact]
     public Task Unauthenticated()
         => AssertStatus(
-            async () => await AuthorizationTestCall(CreateGrpcChannel(false)).ConfigureAwait(false),
+            async () => await AuthorizationTestCall(CreateGrpcChannel(false)),
             StatusCode.Unauthenticated);
 
     /// <summary>
@@ -53,10 +53,10 @@ public abstract class GrpcAuthorizationBaseTest<TFactory, TStartup> : GrpcApiBas
         {
             await AssertStatus(
                 async () => await AuthorizationTestCall(
-                    CreateGrpcChannel(role == NoRole ? Array.Empty<string>() : new[] { role })).ConfigureAwait(false),
+                    CreateGrpcChannel(role == NoRole ? Array.Empty<string>() : new[] { role })),
                 StatusCode.PermissionDenied,
                 null,
-                $"Permission denied failed for role {role}").ConfigureAwait(false);
+                $"Permission denied failed for role {role}");
         }
     }
 

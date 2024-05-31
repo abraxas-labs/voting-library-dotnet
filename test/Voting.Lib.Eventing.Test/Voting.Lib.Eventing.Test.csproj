@@ -10,4 +10,5 @@
   <ItemGroup>
     <Protobuf Include="Events/*.proto" GrpcServices="None" />
   </ItemGroup>
+
 </Project>

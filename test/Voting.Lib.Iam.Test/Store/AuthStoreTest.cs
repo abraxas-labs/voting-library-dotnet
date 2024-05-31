@@ -11,7 +11,9 @@ using Xunit;
 
 namespace Voting.Lib.Iam.Test.Store;
 
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
 public class AuthStoreTest
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
 {
     private readonly AuthStore _authStore;
     private readonly MockLogger<AuthStore> _logger = new();

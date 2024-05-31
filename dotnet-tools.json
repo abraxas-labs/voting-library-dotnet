@@ -9,13 +9,13 @@
       ]
     },
     "dotnet-reportgenerator-globaltool": {
-      "version": "4.8.13",
+      "version": "5.2.0",
       "commands": [
         "reportgenerator"
       ]
     },
     "abraxas.feature.apiclient.generator": {
-      "version": "3.4.0",
+      "version": "3.5.0",
       "commands": [
         "Abraxas.Feature.ApiClient.Generator"
       ]

@@ -2,7 +2,6 @@
 // For license information see LICENSE file
 
 using System;
-using System.Runtime.Serialization;
 
 namespace Voting.Lib.DocPipe.Exceptions;
 
@@ -37,16 +36,6 @@ public class DocPipeException : Exception
     /// <param name="innerException">The inner exception.</param>
     public DocPipeException(string? message, Exception? innerException)
         : base(message, innerException)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DocPipeException"/> class.
-    /// </summary>
-    /// <param name="info">The serialization info.</param>
-    /// <param name="streamingContext">The streaming context.</param>
-    protected DocPipeException(SerializationInfo info, StreamingContext streamingContext)
-        : base(info, streamingContext)
     {
     }
 }

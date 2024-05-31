@@ -57,4 +57,30 @@ public class DmDocJsonSerializerTest
         };
         deserialized.Should().BeEquivalentTo(expected);
     }
+
+    [Fact]
+    public void DeserializeOfCategoryShouldWork()
+    {
+        var jsonString = "{\"id\": 36,\"text\": \"Voting Stimmunterlagen\",\"name_translations\": {\"de\": \"Voting Stimmunterlagen\"},\"intern_name\": \"category_cd258c39b71221247ad22bdfd7e015ef\",\"access\": false,\"children\": [{\"id\": 136,\"text\": \"Gemeinde Untervaz\",\"name_translations\": {\"de\": \"Gemeinde Untervaz\"},\"intern_name\": \"tenantId_438697771298499458\",\"access\": true,\"children\": []}]}";
+
+        var deserialized = DmDocJsonSerializer.Deserialize<Category>(jsonString);
+
+        var expected = new Category
+        {
+            InternName = "category_cd258c39b71221247ad22bdfd7e015ef",
+            Text = "Voting Stimmunterlagen",
+            Access = false,
+            Children = new List<Category>
+            {
+                new Category
+                {
+                    InternName = "tenantId_438697771298499458",
+                    Text = "Gemeinde Untervaz",
+                    Access = true,
+                    Children = new List<Category>(),
+                },
+            },
+        };
+        deserialized.Should().BeEquivalentTo(expected);
+    }
 }

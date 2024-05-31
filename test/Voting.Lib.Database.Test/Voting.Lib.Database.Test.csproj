@@ -6,4 +6,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.Database\Voting.Lib.Database.csproj" />
   </ItemGroup>
+
 </Project>

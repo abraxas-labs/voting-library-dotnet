@@ -66,4 +66,11 @@ internal class CreateDraftRequest
     /// Parameter will be sent as 'fail_async_job_on_callback_failure'.
     /// </summary>
     public bool FailAsyncJobOnCallbackFailure { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating the priority level of the printjob. Highest priorty is 1 default value is 10'000.
+    /// This parameter is only used prioritized print jobs.
+    /// Parameter will be sent as 'async_job_priority'.
+    /// </summary>
+    public int? AsyncJobPriority { get; set; }
 }

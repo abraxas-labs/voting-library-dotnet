@@ -132,7 +132,7 @@ public class BucketObjectStorageClientTest : MinioSampleDataFixture
     {
         var objectName = "my-sample";
         var content = "my-sample-content";
-        using var contentMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+        await using var contentMemoryStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
         await BucketClient.Store(objectName, contentMemoryStream);
 
         var fetchedContent = await BucketClient.FetchAsBase64(objectName);

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -19,7 +20,7 @@ namespace Voting.Lib.Prometheus;
 /// We use a custom implementation, since the default implementation of prometheus-net doesn't support any labels.
 /// Should be removed as soon as all voting applications switched to OpenTelemetry / OpenMetrics.
 /// </summary>
-public sealed class PrometheusMeterAdapter : BackgroundService
+public sealed partial class PrometheusMeterAdapter : BackgroundService
 {
     // We use separate listeners for counter-style meters and gauge-style meters.
     // This way we can easily predetermine the type at instrument creation time and not worry about it later.
@@ -106,6 +107,12 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         }
     }
 
+    [GeneratedRegex("^[a-zA-Z_][a-zA-Z0-9_]*$")]
+    private static partial Regex ValidMetricNameExpression();
+
+    [GeneratedRegex("[^a-zA-Z0-9_]")]
+    private static partial Regex NegotiatedMetricNameExpression();
+
     private static bool IsGenericType(Type givenType, Type genericType)
     {
         if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
@@ -148,7 +155,7 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         var instrumentKey = BuildKey(instrument, tags);
         var counter = _counters.GetOrAdd(
             instrumentKey,
-            _ => Metrics.CreateCounter(instrument.Name, instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
+            _ => Metrics.CreateCounter(NormalizeMetricsKey(instrument.Name), instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
         counter.WithLabels(tagsDict.Values.ToArray()).Inc(measurement);
     }
 
@@ -176,7 +183,7 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         var instrumentKey = BuildKey(instrument, tags);
         var gauge = _gauges.GetOrAdd(
             instrumentKey,
-            _ => Metrics.CreateGauge(instrument.Name, instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
+            _ => Metrics.CreateGauge(NormalizeMetricsKey(instrument.Name), instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
         gauge.WithLabels(tagsDict.Values.ToArray()).Set(measurement);
     }
 
@@ -204,7 +211,7 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         var instrumentKey = BuildKey(instrument, tags);
         var histogram = _histograms.GetOrAdd(
             instrumentKey,
-            _ => Metrics.CreateHistogram(instrument.Name, instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
+            _ => Metrics.CreateHistogram(NormalizeMetricsKey(instrument.Name), instrument.Description ?? string.Empty, tagsDict.Keys.ToArray()));
         histogram.WithLabels(tagsDict.Values.ToArray()).Observe(measurement);
     }
 
@@ -247,9 +254,17 @@ public sealed class PrometheusMeterAdapter : BackgroundService
         var dict = new Dictionary<string, string>(tags.Length);
         foreach (var (tagName, tagValue) in tags)
         {
-            dict.Add(tagName, tagValue?.ToString() ?? string.Empty);
+            dict.Add(NormalizeMetricsKey(tagName), tagValue?.ToString() ?? string.Empty);
         }
 
         return dict;
     }
+
+    /// <summary>
+    /// Replaces invalid non-compliant characters from the metric name with an underline character.
+    /// </summary>
+    /// <param name="name">The metrics name.</param>
+    /// <returns>The normalized metric name.</returns>
+    private string NormalizeMetricsKey(string name)
+        => ValidMetricNameExpression().IsMatch(name) ? name : NegotiatedMetricNameExpression().Replace(name, "_");
 }

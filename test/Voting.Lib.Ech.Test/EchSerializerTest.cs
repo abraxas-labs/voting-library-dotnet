@@ -25,7 +25,7 @@ public class EchSerializerTest
     [Fact]
     public async Task WriteXmlShouldWork()
     {
-        using var ms = new MemoryStream();
+        await using var ms = new MemoryStream();
         _serializer.WriteXml(ms, CreateDelivery(2, true));
         await ms.FlushAsync();
 
@@ -41,7 +41,7 @@ public class EchSerializerTest
         var importer = new XmlReflectionImporter();
         var voter = importer.GetElementName(typeof(VotingPersonType), typeof(VoterListType), nameof(VoterListType.Voter));
 
-        using var ms = new MemoryStream();
+        await using var ms = new MemoryStream();
         await _serializer.WriteXmlWithElements(ms, voter, delivery, GenerateVoters(2));
         await ms.FlushAsync();
 

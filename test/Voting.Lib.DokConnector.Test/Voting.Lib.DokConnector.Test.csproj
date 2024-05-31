@@ -6,4 +6,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.DokConnector\Voting.Lib.DokConnector.csproj" />
   </ItemGroup>
+
 </Project>
