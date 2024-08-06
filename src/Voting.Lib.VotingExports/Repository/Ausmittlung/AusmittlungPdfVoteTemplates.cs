@@ -136,6 +136,7 @@ public static class AusmittlungPdfVoteTemplates
         {
             DomainOfInfluenceType.Ch,
             DomainOfInfluenceType.Ct,
+            DomainOfInfluenceType.Mu,
         },
     };
 

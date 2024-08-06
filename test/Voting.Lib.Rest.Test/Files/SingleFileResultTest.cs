@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Voting.Lib.Rest.Files;
+using Voting.Lib.Testing.Mocks;
 using Xunit;
 
 namespace Voting.Lib.Rest.Test.Files;
@@ -54,6 +55,25 @@ public class SingleFileResultTest
             var entryContentText = await reader.ReadToEndAsync();
             entryContentText.Should().Be($"Content of test-file-{i}.txt");
             i++;
+        }
+    }
+
+    [Fact]
+    public async Task ZipEntriesShouldHaveTimezoneDateTime()
+    {
+        var clock = new MockedClock();
+        var result = SingleFileResult.CreateZipFile(BuildFiles(3), "files.zip", clock.UtcNow.ConvertUtcTimeToSwissTime());
+        result.ContentType.Should().Be("application/zip");
+        result.FileDownloadName.Should().Be("files.zip");
+        var responseBuffer = await FetchResponse(result);
+
+        await using var zipStream = new MemoryStream(responseBuffer);
+        using var unzipped = new ZipArchive(zipStream, ZipArchiveMode.Read, false, Encoding.UTF8);
+        unzipped.Entries.Should().HaveCount(3);
+
+        foreach (var entry in unzipped.Entries.OrderBy(x => x.Name))
+        {
+            entry.LastWriteTime.Should().Be(new DateTime(2020, 1, 10, 14, 12, 10));
         }
     }
 

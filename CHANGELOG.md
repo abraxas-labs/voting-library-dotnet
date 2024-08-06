@@ -1,4 +1,4 @@
-# ✨ Changelog (`v12.9.1`)
+# ✨ Changelog (`v12.10.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v12.9.1
-Previous version ---- v11.34.0
+This version -------- v12.10.1
+Previous version ---- v12.9.1
 Initial version ----- v7.7.37
-Total commits ------- 25
+Total commits ------- 3
 ```
+
+## [v12.10.1] - 2024-07-04
+
+### 🔄 Changed
+
+- compare http headers with case-insensitivity according to rfc-2616
+
+## [v12.10.0] - 2024-06-25
+
+### 🔄 Changed
+
+- create zip file with last time the entry changed
+
+## [v12.9.2] - 2024-06-20
+
+### 🔄 Changed
+
+- allow template vote_result_e_voting_only for Municipality
 
 ## [v12.9.1] - 2024-05-28
 
@@ -415,24 +433,6 @@ Total commits ------- 25
 
 ## [v11.18.1] - 2023-10-19
 
-### 🔄 Changed
-
-- map correct is low prio health check
-
-## [v11.18.0] - 2023-10-18
-
-### 🔄 Changed
-
-- add detailed CSV activity protocol
-
-## [v11.17.1] - 2023-10-11
-
-### 🔄 Changed
-
-- use correct event position in eventing meter
-
-## [v11.17.0] - 2023-10-10
-
 ### 🆕 Added
 
 - add roles cache to minimize calls to iam
@@ -585,6 +585,24 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v11.18.0] - 2023-10-18
+
+### 🔄 Changed
+
+- add detailed CSV activity protocol
+
+## [v11.17.1] - 2023-10-11
+
+### 🔄 Changed
+
+- use correct event position in eventing meter
+
+## [v11.17.0] - 2023-10-10
+
+### 🆕 Added
+
+- add roles cache to minimize calls to iam
 
 ## [v11.16.0] - 2023-10-09
 

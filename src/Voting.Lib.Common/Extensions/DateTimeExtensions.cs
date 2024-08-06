@@ -8,7 +8,7 @@ namespace System;
 /// </summary>
 public static class DateTimeExtensions
 {
-    private static readonly TimeZoneInfo _chTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Europe/Zurich");
+    private static readonly TimeZoneInfo ChTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Europe/Zurich");
 
     /// <summary>
     /// Returns a new Utc <see cref="DateTime"/> that takes place the next day at 00:00.
@@ -30,8 +30,24 @@ public static class DateTimeExtensions
             return dateTime.AddDays(1).Date;
         }
 
-        var chDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTime, _chTimeZoneInfo);
+        var chDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTime, ChTimeZoneInfo);
         var chNextDate = chDateTime.AddDays(1).Date;
-        return TimeZoneInfo.ConvertTimeToUtc(chNextDate, _chTimeZoneInfo);
+        return TimeZoneInfo.ConvertTimeToUtc(chNextDate, ChTimeZoneInfo);
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="DateTime"/> in swiss time.
+    /// </summary>
+    /// <param name="dateTime">DateTime in utc.</param>
+    /// <returns>A <see cref="DateTime"/> in swiss time.</returns>
+    /// <exception cref="ArgumentException">If DateTime is not in utc.</exception>
+    public static DateTime ConvertUtcTimeToSwissTime(this DateTime dateTime)
+    {
+        if (dateTime.Kind != DateTimeKind.Utc)
+        {
+            throw new ArgumentException($"DateTime must be of kind {DateTimeKind.Utc}");
+        }
+
+        return TimeZoneInfo.ConvertTimeFromUtc(dateTime, ChTimeZoneInfo);
     }
 }

@@ -118,13 +118,13 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
     protected ITenantService TenantService { get; }
 
     private string? Tenant =>
-        _tenant ??= Context.Request.Headers.FirstOrDefault(header => header.Key == Options.TenantHeaderName)
+        _tenant ??= Context.Request.Headers.FirstOrDefault(header => string.Equals(header.Key, Options.TenantHeaderName, StringComparison.OrdinalIgnoreCase))
             .Value
             .FirstOrDefault()
             ?? Options.DefaultTenantId;
 
     private IReadOnlyCollection<string> Apps =>
-        _apps ??= Context.Request.Headers.FirstOrDefault(header => header.Key == Options.AppHeaderName).Value;
+        _apps ??= Context.Request.Headers.FirstOrDefault(header => string.Equals(header.Key, Options.AppHeaderName, StringComparison.OrdinalIgnoreCase)).Value;
 
     private string SubjectToken => _subjectToken ??=
         Context.Request.Headers

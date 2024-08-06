@@ -22,11 +22,13 @@ public static class SingleFileResult
     /// </summary>
     /// <param name="files">The list of files.</param>
     /// <param name="zipName">The name of the resulting ZIP file.</param>
+    /// <param name="zipEntryLastWriteTime">The last time the entry in the zip archive was changed. If null the <see cref="DateTime.Now"/> is used.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>Returns a file result for a single file.</returns>
     public static FileResult CreateZipFile(
         IAsyncEnumerable<IFile> files,
         string zipName,
+        DateTimeOffset? zipEntryLastWriteTime = null,
         CancellationToken ct = default)
     {
         return new FileCallbackResult(MediaTypeNames.Application.Zip, zipName, async bodyWriter =>
@@ -35,6 +37,10 @@ public static class SingleFileResult
             await foreach (var fileModel in files.WithCancellation(ct).ConfigureAwait(false))
             {
                 var zipEntry = archive.CreateEntry(fileModel.Filename);
+                if (zipEntryLastWriteTime.HasValue)
+                {
+                    zipEntry.LastWriteTime = zipEntryLastWriteTime.Value;
+                }
 
                 await using var zipEntryStream = zipEntry.Open();
 

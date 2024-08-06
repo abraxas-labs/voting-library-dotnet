@@ -59,4 +59,34 @@ public class DateTimeExtensionsTest
         action.Should().Throw<ArgumentException>()
             .WithMessage("DateTime must be of kind Utc");
     }
+
+    [Fact]
+    public void TestConvertUtcTimeToSwissTime()
+    {
+        var dataSet = new List<(DateTime Input, DateTime ExpectedResult)>
+        {
+            (new DateTime(2021, 12, 31, 22, 59, 59, DateTimeKind.Utc), new DateTime(2021, 12, 31, 23, 59, 59)),
+            (new DateTime(2021, 12, 31, 23, 0, 0, DateTimeKind.Utc), new DateTime(2022, 1, 1, 0, 0, 0, 0)),
+            (new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2022, 1, 1, 1, 0, 0)),
+            (new DateTime(2022, 6, 1, 21, 59, 59, DateTimeKind.Utc), new DateTime(2022, 6, 1, 23, 59, 59)),
+            (new DateTime(2022, 6, 1, 22, 0, 0, DateTimeKind.Utc), new DateTime(2022, 6, 2, 0, 0, 0)),
+            (new DateTime(2022, 6, 2, 0, 0, 0, DateTimeKind.Utc), new DateTime(2022, 6, 2, 2, 0, 0)),
+        };
+
+        foreach (var (input, expectedResult) in dataSet)
+        {
+            var result = input.ConvertUtcTimeToSwissTime();
+            result.Should().Be(expectedResult);
+        }
+    }
+
+    [Theory]
+    [InlineData(DateTimeKind.Unspecified)]
+    [InlineData(DateTimeKind.Local)]
+    public void TestConvertUtcTimeToSwissTimeWithNonUtcDateTimeKindShouldThrow(DateTimeKind dateTimeKind)
+    {
+        var action = () => new DateTime(2021, 12, 31, 0, 0, 0, dateTimeKind).ConvertUtcTimeToSwissTime();
+        action.Should().Throw<ArgumentException>()
+            .WithMessage("DateTime must be of kind Utc");
+    }
 }
