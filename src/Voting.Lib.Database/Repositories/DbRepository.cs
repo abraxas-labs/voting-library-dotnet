@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
@@ -85,7 +86,7 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
 
     /// <inheritdoc />
     public virtual Task<TEntity?> GetByKey(TKey key)
-        => Query().FirstOrDefaultAsync(x => x.Id.Equals(key))!;
+        => Query().FirstOrDefaultAsync(x => x.Id.Equals(key));
 
     /// <inheritdoc />
     public virtual Task<bool> ExistsByKey(TKey key)
@@ -183,42 +184,71 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
     /// <inheritdoc />
     public virtual async Task DeleteByKey(TKey key)
     {
-        var entity = GetTrackedOrPseudoEntity(key);
-        Set.Remove(entity);
-        await Context.SaveChangesAsync().ConfigureAwait(false);
+        var existed = await DeleteByKeyIfExists(key).ConfigureAwait(false);
+        if (!existed)
+        {
+            // Mimick the behavior of the old implementation, which threw in this case
+            throw new DbUpdateConcurrencyException($"Entity with id {key} does not exist");
+        }
     }
 
     /// <inheritdoc />
     public virtual async Task<bool> DeleteByKeyIfExists(TKey key)
     {
-        if (!await ExistsByKey(key).ConfigureAwait(false))
+        if (IsTracked(key, out var entity))
         {
-            return false;
+            // To stay backwards compatible, we still detach entities from the local tracked state
+            // since this method did this previously.
+            Context.Entry(entity).State = EntityState.Detached;
         }
 
-        await DeleteByKey(key).ConfigureAwait(false);
-        return true;
+        var rowsAffected = await Set
+            .Where(x => key.Equals(x.Id))
+            .ExecuteDeleteAsync()
+            .ConfigureAwait(false);
+        return rowsAffected > 0;
     }
 
     /// <inheritdoc />
     public virtual async Task DeleteRangeByKey(IEnumerable<TKey> keys)
     {
-        var toRemove = keys.Select(GetTrackedOrPseudoEntity).ToList();
-        Set.RemoveRange(toRemove);
-        await Context.SaveChangesAsync().ConfigureAwait(false);
-    }
+        // Use a transaction if none exists to ensure we can roll back the changes if the deletion fails
+        var transaction = Context.Database.CurrentTransaction == null
+            ? await Context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted).ConfigureAwait(false)
+            : null;
 
-    /// <summary>
-    /// If an entity is tracked locally the tracked instance is returned.
-    /// Otherwise a new instance with the key set is returned.
-    /// </summary>
-    /// <param name="key">The key, for which entity should be looked by. Evaluated with FirstOrDefault.</param>
-    /// <returns>The found tracked entity, or a new entity with the key set otherwise.</returns>
-    protected TEntity GetTrackedOrPseudoEntity(TKey key)
-    {
-        return IsTracked(key, out var entity)
-            ? entity
-            : new TEntity { Id = key };
+        var keyList = keys.ToList();
+        var affectedRows = await Set
+            .Where(x => keyList.Contains(x.Id))
+            .ExecuteDeleteAsync()
+            .ConfigureAwait(false);
+
+        if (affectedRows != keyList.Count)
+        {
+            if (transaction != null)
+            {
+                await transaction.DisposeAsync().ConfigureAwait(false);
+            }
+
+            // Mimick the behavior of the old implementation, which threw in this case
+            throw new DbUpdateConcurrencyException($"Expected operation to affect {keyList.Count} rows, but it affected {affectedRows}");
+        }
+
+        foreach (var key in keyList)
+        {
+            // To stay backwards compatible, we still detach entities from the local tracked state
+            // since this method did this previously.
+            if (IsTracked(key, out var entity))
+            {
+                Context.Entry(entity).State = EntityState.Detached;
+            }
+        }
+
+        if (transaction != null)
+        {
+            await transaction.CommitAsync().ConfigureAwait(false);
+            await transaction.DisposeAsync().ConfigureAwait(false);
+        }
     }
 
     /// <summary>

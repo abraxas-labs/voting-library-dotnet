@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -59,12 +60,14 @@ public class MultipartRequestHelper
     /// </summary>
     /// <param name="request">The HTTP request to read data from.</param>
     /// <param name="processRequest">The function to process the request content.</param>
+    /// <param name="acceptedDataContentTypes">List of accepted content types. If set, the content type of the data section is checked, otherwise ignored.</param>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <returns>The read data.</returns>
     /// <exception cref="ValidationException">If the request format or section does not match the expected format or sections.</exception>
     public async Task<TResult> ReadFile<TResult>(
         HttpRequest request,
-        Func<MultipartFile, Task<TResult>> processRequest)
+        Func<MultipartFile, Task<TResult>> processRequest,
+        string[]? acceptedDataContentTypes = null)
     {
         await foreach (var section in ReadSections(request))
         {
@@ -72,6 +75,11 @@ public class MultipartRequestHelper
             if (multipartFile == null || !FormFieldNameFile.Equals(multipartFile.FormFieldName, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
+            }
+
+            if (acceptedDataContentTypes?.Contains(multipartFile.ContentType) == false)
+            {
+                throw new ValidationException($"Content type {multipartFile.ContentType} not allowed.");
             }
 
             return await processRequest(multipartFile).ConfigureAwait(false);
@@ -85,11 +93,13 @@ public class MultipartRequestHelper
     /// </summary>
     /// <param name="request">The HTTP request to read data from.</param>
     /// <param name="processFile">The function to process the file.</param>
+    /// <param name="acceptedDataContentTypes">List of accepted content types. If set, the content type of the data section is checked, otherwise ignored.</param>
     /// <returns>The read data.</returns>
     /// <exception cref="ValidationException">If the request format or section does not match the expected format or sections.</exception>
     public async Task ReadFiles(
         HttpRequest request,
-        Func<MultipartFile, Task> processFile)
+        Func<MultipartFile, Task> processFile,
+        string[]? acceptedDataContentTypes = null)
     {
         await foreach (var section in ReadSections(request))
         {
@@ -97,6 +107,11 @@ public class MultipartRequestHelper
             if (multipartFile == null)
             {
                 continue;
+            }
+
+            if (acceptedDataContentTypes?.Contains(multipartFile.ContentType) == false)
+            {
+                throw new ValidationException($"Content type {multipartFile.ContentType} not allowed.");
             }
 
             await processFile(multipartFile).ConfigureAwait(false);
@@ -109,6 +124,7 @@ public class MultipartRequestHelper
     /// <param name="request">The HTTP request to read data from.</param>
     /// <param name="processRequest">The function to process the request content.</param>
     /// <param name="processRequestWithoutFile">The function to process the request data if no file was provided.</param>
+    /// <param name="acceptedDataContentTypes">List of accepted content types. If set, the content type of the data section is checked, otherwise ignored.</param>
     /// <typeparam name="TData">The type of the json encoded request data.</typeparam>
     /// <typeparam name="TResult">The result type.</typeparam>
     /// <returns>The read data.</returns>
@@ -116,7 +132,8 @@ public class MultipartRequestHelper
     public async Task<TResult> ReadFileAndData<TData, TResult>(
         HttpRequest request,
         Func<MultipartData<TData>, Task<TResult>> processRequest,
-        Func<TData, Task<TResult>>? processRequestWithoutFile = null)
+        Func<TData, Task<TResult>>? processRequestWithoutFile = null,
+        string[]? acceptedDataContentTypes = null)
     {
         var data = new MultipartRequestData<TData>();
         await foreach (var section in ReadSections(request))
@@ -124,6 +141,11 @@ public class MultipartRequestHelper
             var fileAndRequestData = await ProcessSection(section, data).ConfigureAwait(false);
             if (fileAndRequestData != null)
             {
+                if (acceptedDataContentTypes?.Contains(fileAndRequestData.ContentType) == false)
+                {
+                    throw new ValidationException($"Content type {fileAndRequestData.ContentType} not allowed.");
+                }
+
                 return await processRequest(fileAndRequestData).ConfigureAwait(false);
             }
         }
@@ -170,7 +192,7 @@ public class MultipartRequestHelper
         }
 
         var fileName = ReadFileName(contentDisposition);
-        return new MultipartFile(fileName, section.Body, sectionName);
+        return new MultipartFile(fileName, section.Body, section.ContentType, sectionName);
     }
 
     private static string ReadFileName(ContentDispositionHeaderValue contentDisposition)
@@ -267,7 +289,7 @@ public class MultipartRequestHelper
         }
 
         var fileName = ReadFileName(contentDisposition);
-        return new MultipartData<TData>(fileName, section.Body, data.RequestData);
+        return new MultipartData<TData>(fileName, section.Body, section.ContentType, data.RequestData);
     }
 
     private async Task<T> ReadSectionAsJson<T>(MultipartSection section)

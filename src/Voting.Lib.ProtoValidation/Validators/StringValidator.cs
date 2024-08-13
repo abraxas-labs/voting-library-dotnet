@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Abraxas.Voting.Validation.V1;
 
@@ -166,96 +167,87 @@ public class StringValidator : IProtoFieldValidator
         }
     }
 
-    private void ValidateRegex(ProtoValidationContext context, string fieldName, string value, string regexString)
-    {
-        if (!MatchRegex(value, new Regex(regexString)))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "does not match the Regex Pattern."));
-        }
-    }
-
     private void ValidateEmail(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _emailRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a valid E-Mail Address."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _emailRegex, "is not a valid E-Mail Address.", false, false);
 
     private void ValidatePhone(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _phoneRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a valid Phone Number."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _phoneRegex, "is not a valid Phone Number.", false, false);
+
+    private void ValidateRegex(ProtoValidationContext context, string fieldName, string value, string regexString)
+        => ValidateString(context, fieldName, value, new Regex(regexString), "does not match the Regex Pattern.", false, false);
 
     private void ValidateNumeric(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _numericRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not numeric."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _numericRegex, "is not numeric.", false);
 
     private void ValidateAlphabetic(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _alphaRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not alphabetic."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _alphaRegex, "is not alphabetic.", false);
 
     private void ValidateAlphabeticWithWhitespace(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _alphaWhiteRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not alphabetic with Whitespace."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _alphaWhiteRegex, "is not alphabetic with Whitespace.", false);
 
     private void ValidateAlphanumericWithWhitespace(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _alphaNumWhiteRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not alphanumeric with Whitespace."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _alphaNumWhiteRegex, "is not alphanumeric with Whitespace.", false);
 
     private void ValidateSimpleSinglelineText(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _simpleSlTextRegex) || MatchRegex(value, _untrimmedRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a Simple Singleline Text."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _simpleSlTextRegex, "is not a Simple Singleline Text.", true);
 
     private void ValidateSimpleMultilineText(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _simpleMlTextRegex) || MatchRegex(value, _untrimmedRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a Simple Multiline Text."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _simpleMlTextRegex, "is not a Simple Multiline Text.", true);
 
     private void ValidateComplexSinglelineText(ProtoValidationContext context, string fieldName, string value)
-    {
-        if (!MatchRegex(value, _complexSlTextRegex) || MatchRegex(value, _untrimmedRegex))
-        {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a Complex Singleline Text."));
-        }
-    }
+        => ValidateString(context, fieldName, value, _complexSlTextRegex, "is not a Complex Singleline Text.", true);
 
     private void ValidateComplexMultilineText(ProtoValidationContext context, string fieldName, string value)
+        => ValidateString(context, fieldName, value, _complexMlTextRegex, "is not a Complex Multiline Text.", true);
+
+    private void ValidateString(ProtoValidationContext context, string fieldName, string value, Regex regex, string validationMessage, bool requireTrimmed, bool reportInvalidChars = true)
     {
-        if (!MatchRegex(value, _complexMlTextRegex) || MatchRegex(value, _untrimmedRegex))
+        if (requireTrimmed)
         {
-            context.Failures.Add(new ProtoValidationError(fieldName, "is not a Complex Multiline Text."));
+            EnsureNoUntrimmedWhitespace(context, fieldName, value);
+        }
+
+        if (regex.Match(value).Success)
+        {
+            return;
+        }
+
+        if (reportInvalidChars)
+        {
+            var invalidChars = GetNonMatchingCharactersAsUtf8Hex(value, regex);
+            if (invalidChars.Count > 0)
+            {
+                context.Failures.Add(new ProtoValidationError(fieldName, $"{validationMessage} Non-matching characters (UTF-8 hex): {string.Join(", ", invalidChars)}"));
+                return;
+            }
+        }
+
+        context.Failures.Add(new ProtoValidationError(fieldName, validationMessage));
+    }
+
+    private void EnsureNoUntrimmedWhitespace(ProtoValidationContext context, string fieldName, string value)
+    {
+        if (_untrimmedRegex.Match(value).Success)
+        {
+            context.Failures.Add(new ProtoValidationError(fieldName, "is not a trimmed Text, contains leading or trailing whitespace characters."));
         }
     }
 
-    private bool MatchRegex(string value, Regex pattern)
+    private List<string> GetNonMatchingCharactersAsUtf8Hex(string value, Regex regex)
     {
-        return pattern.Match(value).Success;
+        var nonMatchingCharsHex = new List<string>();
+        var utf8Encoding = System.Text.Encoding.UTF8;
+
+        foreach (char c in value)
+        {
+            if (!regex.IsMatch(c.ToString()))
+            {
+                var utf8Bytes = utf8Encoding.GetBytes(new[] { c });
+                var hexString = BitConverter.ToString(utf8Bytes).Replace("-", " ");
+                nonMatchingCharsHex.Add(hexString);
+            }
+        }
+
+        return nonMatchingCharsHex;
     }
 }

@@ -10,6 +10,7 @@ namespace Voting.Lib.Rest.Files;
 /// </summary>
 /// <param name="FileName">The name of the uploaded file.</param>
 /// <param name="FileContent">The content of the uploaded file.</param>
+/// <param name="ContentType">The content type of the uploaded file.</param>
 /// <param name="RequestData">The json data of the request.</param>
 /// <typeparam name="TData">The type of the data of the request.</typeparam>
-public record MultipartData<TData>(string? FileName, Stream FileContent, TData RequestData);
+public record MultipartData<TData>(string? FileName, Stream FileContent, string? ContentType, TData RequestData);

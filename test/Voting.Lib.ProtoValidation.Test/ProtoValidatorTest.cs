@@ -65,7 +65,7 @@ public class ProtoValidatorTest
             };
         });
 
-        ShouldThrowWithErrorMessage(msg, "'Email' is not a valid E-Mail Address.\n'Phone' is not a valid Phone Number.\n'Name' is not a Complex Singleline Text.");
+        ShouldThrowWithErrorMessage(msg, "'Email' is not a valid E-Mail Address.\n'Phone' is not a valid Phone Number.\n'Name' is not a Complex Singleline Text. Non-matching characters (UTF-8 hex): 0A");
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class ProtoValidatorTest
             c.Children.Add(new RepeatChild { Description = string.Empty });
         });
 
-        ShouldThrowWithErrorMessage(msg, "'Description' is not a Complex Singleline Text.\n'Description' has Length 3, but the MinLength is 4\n'Description' has Length 0, but the MinLength is 4\n'Description' is not a Complex Singleline Text.");
+        ShouldThrowWithErrorMessage(msg, "'Description' is not a Complex Singleline Text. Non-matching characters (UTF-8 hex): 08\n'Description' has Length 3, but the MinLength is 4\n'Description' has Length 0, but the MinLength is 4\n'Description' is not a Complex Singleline Text.");
     }
 
     [Fact]
