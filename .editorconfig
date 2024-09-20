@@ -22,4 +22,4 @@ csharp_style_namespace_declarations = file_scoped:warning
 csharp_prefer_braces = true:warning
 
 # copyright
-file_header_template = (c) Copyright 2024 by Abraxas Informatik AG\nFor license information see LICENSE file
+file_header_template = (c) Copyright by Abraxas Informatik AG\nFor license information see LICENSE file

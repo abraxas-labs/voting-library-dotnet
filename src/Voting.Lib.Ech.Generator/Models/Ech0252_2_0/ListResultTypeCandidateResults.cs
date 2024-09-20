@@ -30,13 +30,57 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("candidateIdentification", Order=0)]
         public string CandidateIdentification { get; set; }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<string> _candidateReferenceOnPosition;
+        
+        /// <summary>
+        /// <para xml:lang="en">Minimum length: 1.</para>
+        /// <para xml:lang="en">Maximum length: 10.</para>
+        /// </summary>
+        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
+        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(10)]
+        [System.Xml.Serialization.XmlElementAttribute("candidateReferenceOnPosition", Order=1)]
+        public System.Collections.Generic.List<string> CandidateReferenceOnPosition
+        {
+            get
+            {
+                return _candidateReferenceOnPosition;
+            }
+            set
+            {
+                _candidateReferenceOnPosition = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the CandidateReferenceOnPosition collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool CandidateReferenceOnPositionSpecified
+        {
+            get
+            {
+                return ((this.CandidateReferenceOnPosition != null) 
+                            && (this.CandidateReferenceOnPosition.Count != 0));
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="ListResultTypeCandidateResults" /> class.</para>
+        /// </summary>
+        public ListResultTypeCandidateResults()
+        {
+            this._candidateReferenceOnPosition = new System.Collections.Generic.List<string>();
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
+        }
+        
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 9999999.</para>
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("countOfVotesFromChangedBallots", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("countOfVotesFromChangedBallots", Order=2)]
         public uint CountOfVotesFromChangedBallots { get; set; }
         
         /// <summary>
@@ -45,16 +89,21 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("countOfVotesFromUnchangedBallots", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute("countOfVotesFromUnchangedBallots", Order=3)]
         public uint CountOfVotesFromUnchangedBallots { get; set; }
         
-        [System.Xml.Serialization.XmlElementAttribute("candidateListResultsInfo", Order=3)]
+        /// <summary>
+        /// <para>element is delivered afterwards, when decided from the sender and the receiver. As soon as it is delivered, it must be always delivered</para>
+        /// </summary>
+        [System.ComponentModel.DescriptionAttribute("element is delivered afterwards, when decided from the sender and the receiver. A" +
+            "s soon as it is delivered, it must be always delivered")]
+        [System.Xml.Serialization.XmlElementAttribute("candidateListResultsInfo", Order=4)]
         public ListResultTypeCandidateResultsCandidateListResultsInfo CandidateListResultsInfo { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=5)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get
@@ -78,14 +127,6 @@ namespace Ech0252_2_0
                 return ((this.NamedElement != null) 
                             && (this.NamedElement.Count != 0));
             }
-        }
-        
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="ListResultTypeCandidateResults" /> class.</para>
-        /// </summary>
-        public ListResultTypeCandidateResults()
-        {
-            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
         }
     }
 }

@@ -20,15 +20,9 @@ namespace Ech0252_2_0
     public partial class CandidateResultType
     {
         
-        /// <summary>
-        /// <para xml:lang="en">Minimum length: 1.</para>
-        /// <para xml:lang="en">Maximum length: 50.</para>
-        /// </summary>
-        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
-        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("candidateIdentification", Order=0)]
-        public string CandidateIdentification { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("candidateOrWriteInCandidate", Order=0)]
+        public CandidateOrWriteInCandidateType CandidateOrWriteInCandidate { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>

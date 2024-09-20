@@ -1,6 +1,7 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -53,17 +54,17 @@ public class UserService : IUserService
     }
 
     /// <inheritdoc cref="IUserService.RequestSecondFactor"/>
-    public async Task<string> RequestSecondFactor(string loginId, string provider, string message)
+    public async Task<SecondFactor> RequestSecondFactor(string loginId, string provider, string message)
     {
         var request = new V1SecondFactorProviderItem { Provider = provider, Message = message };
         var response = await _client.IdentityService_RequestSecondFactorByLoginIdAsync(loginId, request).ConfigureAwait(false);
-        return response.Code;
+        return new SecondFactor(response.Code, response.Nevis.Qr, response.Nevis.Nevis_action_token_jtis);
     }
 
     /// <inheritdoc cref="IUserService.VerifySecondFactor"/>
-    public async Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, CancellationToken ct)
+    public async Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, ICollection<string> tokenJwtIds, CancellationToken ct)
     {
-        var request = new V1VerifySecondFactorRequest { Provider = provider, Code = secondFactorAuthId };
+        var request = new V1VerifySecondFactorRequest { Provider = provider, Code = secondFactorAuthId, Nevis = new V1NevisVerification { Nevis_action_token_jtis = tokenJwtIds } };
         try
         {
             await _client.IdentityService_VerifySecondFactorByLoginIdAsync(loginId, request, ct).ConfigureAwait(false);

@@ -1,4 +1,4 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using FluentAssertions;
@@ -31,6 +31,27 @@ public class DeliveryHeaderProviderTest
 
         var headerProvider = new DeliveryHeaderProvider(config, new MockedClock(), messageIdProviderMock.Object);
         headerProvider.BuildHeader().ShouldMatchSnapshot();
+    }
+
+    [Fact]
+    public void BuildHeaderWithTestDeliveryFlagShouldWork()
+    {
+        var config = new EchConfig
+        {
+            Product = "Voting.Lib.Tests",
+            SenderId = "Voting.Lib.Tests.Sender",
+            TestDeliveryFlag = false,
+            ProductVersion = "0.1.2",
+            MessageType = "1710967",
+        };
+
+        var messageIdProviderMock = new Mock<IEchMessageIdProvider>();
+        messageIdProviderMock
+            .Setup(x => x.NewId())
+            .Returns("constant-message-id");
+
+        var headerProvider = new DeliveryHeaderProvider(config, new MockedClock(), messageIdProviderMock.Object);
+        headerProvider.BuildHeader(true).ShouldMatchSnapshot();
     }
 
     [Fact]

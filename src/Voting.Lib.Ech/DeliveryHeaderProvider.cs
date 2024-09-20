@@ -1,4 +1,4 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using Ech0058_5_0;
@@ -44,21 +44,36 @@ public class DeliveryHeaderProvider
     /// <summary>
     /// Builds a new delivery header.
     /// </summary>
+    /// <param name="isTestingPhase">Whether testing phase is in progress (true) or not (false).</param>
+    /// <returns>The created header.</returns>
+    public HeaderType BuildHeader(bool isTestingPhase)
+    {
+        return BuildHeaderType(_config.TestDeliveryFlag || isTestingPhase);
+    }
+
+    /// <summary>
+    /// Builds a new delivery header.
+    /// </summary>
     /// <returns>The created header.</returns>
     public HeaderType BuildHeader()
+    {
+        return BuildHeaderType(_config.TestDeliveryFlag);
+    }
+
+    private static string Truncate(string s, int maxLength)
+        => s.Length > maxLength ? s[..maxLength] : s;
+
+    private HeaderType BuildHeaderType(bool testDeliveryFlag)
     {
         return new HeaderType
         {
             Action = ActionNew,
             MessageId = _messageIdProvider.NewId(),
             SendingApplication = _sendingApplication,
-            TestDeliveryFlag = _config.TestDeliveryFlag,
+            TestDeliveryFlag = testDeliveryFlag,
             SenderId = _config.SenderId,
             MessageDate = _clock.UtcNow,
             MessageType = _config.MessageType,
         };
     }
-
-    private static string Truncate(string s, int maxLength)
-        => s.Length > maxLength ? s[..maxLength] : s;
 }

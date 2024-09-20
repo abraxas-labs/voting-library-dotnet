@@ -35,7 +35,7 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.Xml.Serialization.XmlElementAttribute("politicalFirsName", Order=1)]
-        public string PoliticalFirsName { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("politicalFirstName", Order=1)]
+        public string PoliticalFirstName { get; set; }
     }
 }

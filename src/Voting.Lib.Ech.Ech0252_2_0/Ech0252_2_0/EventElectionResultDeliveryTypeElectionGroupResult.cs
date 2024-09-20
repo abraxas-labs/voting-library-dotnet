@@ -26,7 +26,6 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("electionGroupIdentification", Order=0)]
         public string ElectionGroupIdentification { get; set; }
         

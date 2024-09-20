@@ -1,4 +1,4 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System.Collections.Generic;
@@ -14,11 +14,11 @@ public static class AusmittlungXmlContestTemplates
     /// <summary>
     /// Gets the eCH-0252 majority election result export template.
     /// </summary>
-    public static readonly TemplateModel MajorityElectionsEch0252 = new()
+    public static readonly TemplateModel MajorityElectionResultsEch0252 = new()
     {
-        Key = "majority_election_ech_0252",
-        Filename = "eCH-0252_majority-elections_{0}",
-        Description = "Majorzwahlresultate (eCH-0252)",
+        Key = "majority_election_result_ech_0252",
+        Filename = "eCH-0252_majority-election-result-delivery_{0}",
+        Description = "Majorzwahlresultate (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
         EntityType = EntityType.Contest,
         ResultType = ResultType.Contest,
@@ -28,11 +28,11 @@ public static class AusmittlungXmlContestTemplates
     /// <summary>
     /// Gets the eCH-0252 proportional election result export template.
     /// </summary>
-    public static readonly TemplateModel ProportionalElectionsEch0252 = new()
+    public static readonly TemplateModel ProportionalElectionResultsEch0252 = new()
     {
-        Key = "proportional_election_ech_0252",
-        Filename = "eCH-0252_proportional-elections_{0}",
-        Description = "Proporzwahlresultate (eCH-0252)",
+        Key = "proportional_election_result_ech_0252",
+        Filename = "eCH-0252_proportional-election-result-delivery_{0}",
+        Description = "Proporzwahlresultate (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
         EntityType = EntityType.Contest,
         ResultType = ResultType.Contest,
@@ -42,11 +42,39 @@ public static class AusmittlungXmlContestTemplates
     /// <summary>
     /// Gets the eCH-0252 vote result export template.
     /// </summary>
-    public static readonly TemplateModel VoteEch0252 = new()
+    public static readonly TemplateModel VoteResultsEch0252 = new()
     {
-        Key = "vote_ech_0252",
-        Filename = "eCH-0252_votes_{0}",
-        Description = "Abstimmungsresultate (eCH-0252)",
+        Key = "vote_result_ech_0252",
+        Filename = "eCH-0252_vote-result-delivery_{0}",
+        Description = "Abstimmungsresultate (eCH-0252 Result Delivery)",
+        Format = ExportFileFormat.Xml,
+        EntityType = EntityType.Contest,
+        ResultType = ResultType.Contest,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the eCH-0252 majority election information export template.
+    /// </summary>
+    public static readonly TemplateModel MajorityElectionInfosEch0252 = new()
+    {
+        Key = "majority_election_info_ech_0252",
+        Filename = "eCH-0252_majority-election-info-delivery_{0}",
+        Description = "Majorzwahlinformationen (eCH-0252 Information Delivery)",
+        Format = ExportFileFormat.Xml,
+        EntityType = EntityType.Contest,
+        ResultType = ResultType.Contest,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the eCH-0252 proportional election information export template.
+    /// </summary>
+    public static readonly TemplateModel ProportionalElectionInfosEch0252 = new()
+    {
+        Key = "proportional_election_info_ech_0252",
+        Filename = "eCH-0252_proportional-election-info-delivery_{0}",
+        Description = "Proporzwahlinformationen (eCH-0252 Information Delivery)",
         Format = ExportFileFormat.Xml,
         EntityType = EntityType.Contest,
         ResultType = ResultType.Contest,
@@ -55,8 +83,10 @@ public static class AusmittlungXmlContestTemplates
 
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
-        MajorityElectionsEch0252,
-        ProportionalElectionsEch0252,
-        VoteEch0252,
+        MajorityElectionInfosEch0252,
+        ProportionalElectionInfosEch0252,
+        MajorityElectionResultsEch0252,
+        ProportionalElectionResultsEch0252,
+        VoteResultsEch0252,
     };
 }

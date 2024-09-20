@@ -26,28 +26,28 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("countOfVotingCardsReceivedInBallotbox", Order=0)]
-        public uint CountOfVotingCardsReceivedInBallotboxValue { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("countOfVotingCardsReceivedInBallotBox", Order=0)]
+        public uint CountOfVotingCardsReceivedInBallotBoxValue { get; set; }
         
         /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the CountOfVotingCardsReceivedInBallotbox property is specified.</para>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the CountOfVotingCardsReceivedInBallotBox property is specified.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        public bool CountOfVotingCardsReceivedInBallotboxValueSpecified { get; set; }
+        public bool CountOfVotingCardsReceivedInBallotBoxValueSpecified { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 9999999.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<uint> CountOfVotingCardsReceivedInBallotbox
+        public System.Nullable<uint> CountOfVotingCardsReceivedInBallotBox
         {
             get
             {
-                if (this.CountOfVotingCardsReceivedInBallotboxValueSpecified)
+                if (this.CountOfVotingCardsReceivedInBallotBoxValueSpecified)
                 {
-                    return this.CountOfVotingCardsReceivedInBallotboxValue;
+                    return this.CountOfVotingCardsReceivedInBallotBoxValue;
                 }
                 else
                 {
@@ -56,8 +56,8 @@ namespace Ech0252_2_0
             }
             set
             {
-                this.CountOfVotingCardsReceivedInBallotboxValue = value.GetValueOrDefault();
-                this.CountOfVotingCardsReceivedInBallotboxValueSpecified = value.HasValue;
+                this.CountOfVotingCardsReceivedInBallotBoxValue = value.GetValueOrDefault();
+                this.CountOfVotingCardsReceivedInBallotBoxValueSpecified = value.HasValue;
             }
         }
         
@@ -67,28 +67,28 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("countOfVotingCardsReceivedPrematurelyInBallotbox", Order=1)]
-        public uint CountOfVotingCardsReceivedPrematurelyInBallotboxValue { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("countOfVotingCardsReceivedPrematurelyInBallotBox", Order=1)]
+        public uint CountOfVotingCardsReceivedPrematurelyInBallotBoxValue { get; set; }
         
         /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the CountOfVotingCardsReceivedPrematurelyInBallotbox property is specified.</para>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the CountOfVotingCardsReceivedPrematurelyInBallotBox property is specified.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        public bool CountOfVotingCardsReceivedPrematurelyInBallotboxValueSpecified { get; set; }
+        public bool CountOfVotingCardsReceivedPrematurelyInBallotBoxValueSpecified { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 9999999.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<uint> CountOfVotingCardsReceivedPrematurelyInBallotbox
+        public System.Nullable<uint> CountOfVotingCardsReceivedPrematurelyInBallotBox
         {
             get
             {
-                if (this.CountOfVotingCardsReceivedPrematurelyInBallotboxValueSpecified)
+                if (this.CountOfVotingCardsReceivedPrematurelyInBallotBoxValueSpecified)
                 {
-                    return this.CountOfVotingCardsReceivedPrematurelyInBallotboxValue;
+                    return this.CountOfVotingCardsReceivedPrematurelyInBallotBoxValue;
                 }
                 else
                 {
@@ -97,8 +97,8 @@ namespace Ech0252_2_0
             }
             set
             {
-                this.CountOfVotingCardsReceivedPrematurelyInBallotboxValue = value.GetValueOrDefault();
-                this.CountOfVotingCardsReceivedPrematurelyInBallotboxValueSpecified = value.HasValue;
+                this.CountOfVotingCardsReceivedPrematurelyInBallotBoxValue = value.GetValueOrDefault();
+                this.CountOfVotingCardsReceivedPrematurelyInBallotBoxValueSpecified = value.HasValue;
             }
         }
         

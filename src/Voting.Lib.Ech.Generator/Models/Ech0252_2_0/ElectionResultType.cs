@@ -30,8 +30,8 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("electionIdentification", Order=0)]
         public string ElectionIdentification { get; set; }
         
-        [System.Xml.Serialization.XmlElementAttribute("majoralElection", Order=1)]
-        public ElectionResultTypeMajoralElection MajoralElection { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("majorityElection", Order=1)]
+        public ElectionResultTypeMajorityElection MajorityElection { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("proportionalElection", Order=2)]
         public ElectionResultTypeProportionalElection ProportionalElection { get; set; }

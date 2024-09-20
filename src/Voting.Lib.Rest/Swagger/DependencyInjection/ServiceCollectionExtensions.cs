@@ -1,4 +1,4 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Voting.Lib.Rest.Swagger.Configuration;
 using Voting.Lib.Rest.Swagger.DocumentFilters;
 using Voting.Lib.Rest.Swagger.OperationFilters;
@@ -32,6 +33,15 @@ public static class ServiceCollectionExtensions
     {
         services.Configure<SwaggerConfig>(configuration.GetSection(SwaggerConfigSection));
         var config = configuration.GetSection(SwaggerConfigSection).Get<SwaggerConfig>()!;
+
+        if (!config.EnableSwaggerGenerator)
+        {
+            Log.Logger.Information("Swagger Generator has been disabled.");
+
+            return services;
+        }
+
+        Log.Logger.Information("Swagger Generator has been enabled.");
 
         return AddSwaggerGenerator(services, config);
     }

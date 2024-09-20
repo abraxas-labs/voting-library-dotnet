@@ -24,6 +24,47 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("election", Order=0)]
         public Ech0155_5_0.ElectionType Election { get; set; }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<NamedIdType> _otherIdentification;
+        
+        [System.Xml.Serialization.XmlElementAttribute("otherIdentification", Order=1)]
+        public System.Collections.Generic.List<NamedIdType> OtherIdentification
+        {
+            get
+            {
+                return _otherIdentification;
+            }
+            set
+            {
+                _otherIdentification = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the OtherIdentification collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool OtherIdentificationSpecified
+        {
+            get
+            {
+                return ((this.OtherIdentification != null) 
+                            && (this.OtherIdentification.Count != 0));
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="ElectionGroupInfoTypeElectionGroupElectionInformation" /> class.</para>
+        /// </summary>
+        public ElectionGroupInfoTypeElectionGroupElectionInformation()
+        {
+            this._otherIdentification = new System.Collections.Generic.List<NamedIdType>();
+            this._candidate = new System.Collections.Generic.List<CandidateType>();
+            this._list = new System.Collections.Generic.List<Ech0155_5_0.ListType>();
+            this._listUnion = new System.Collections.Generic.List<Ech0155_5_0.ListUnionType>();
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
+        }
+        
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.00.</para>
         /// <para xml:lang="en">Maximum inclusive value: 100.00.</para>
@@ -32,7 +73,7 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0.00", "100.00", ParseLimitsInInvariantCulture=true, ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("quorum", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("quorum", Order=2)]
         public decimal QuorumValue { get; set; }
         
         /// <summary>
@@ -75,13 +116,13 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.Xml.Serialization.XmlElementAttribute("referencedElectionAssociationId", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute("referencedElectionAssociationId", Order=3)]
         public string ReferencedElectionAssociationId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<CandidateType> _candidate;
         
-        [System.Xml.Serialization.XmlElementAttribute("candidate", Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute("candidate", Order=4)]
         public System.Collections.Generic.List<CandidateType> Candidate
         {
             get
@@ -107,21 +148,10 @@ namespace Ech0252_2_0
             }
         }
         
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="ElectionGroupInfoTypeElectionGroupElectionInformation" /> class.</para>
-        /// </summary>
-        public ElectionGroupInfoTypeElectionGroupElectionInformation()
-        {
-            this._candidate = new System.Collections.Generic.List<CandidateType>();
-            this._list = new System.Collections.Generic.List<Ech0155_5_0.ListType>();
-            this._listUnion = new System.Collections.Generic.List<Ech0155_5_0.ListUnionType>();
-            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
-        }
-        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<Ech0155_5_0.ListType> _list;
         
-        [System.Xml.Serialization.XmlElementAttribute("list", Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute("list", Order=5)]
         public System.Collections.Generic.List<Ech0155_5_0.ListType> List
         {
             get
@@ -150,7 +180,7 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<Ech0155_5_0.ListUnionType> _listUnion;
         
-        [System.Xml.Serialization.XmlElementAttribute("listUnion", Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute("listUnion", Order=6)]
         public System.Collections.Generic.List<Ech0155_5_0.ListUnionType> ListUnion
         {
             get
@@ -179,7 +209,7 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=7)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get

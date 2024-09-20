@@ -1,7 +1,8 @@
-// (c) Copyright 2024 by Abraxas Informatik AG
+// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Voting.Lib.Iam.Models;
@@ -28,13 +29,13 @@ public class UserServiceMock : IUserService
     /// <summary>
     /// Returns a string of a random generated guid.
     /// </summary>
-    public Task<string> RequestSecondFactor(string loginId, string provider, string message)
-        => Task.FromResult(Guid.NewGuid().ToString());
+    public Task<SecondFactor> RequestSecondFactor(string loginId, string provider, string message)
+        => Task.FromResult(new SecondFactor(Guid.NewGuid().ToString(), string.Empty, new List<string>()));
 
     /// <inheritdoc cref="IUserService.VerifySecondFactor"/>
     /// <summary>
     /// Returns true if the code matches the <see cref="SecureConnectTestDefaults.MockedVerified2faId"/>.
     /// </summary>
-    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, CancellationToken ct)
+    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, ICollection<string> tokenJwtIds, CancellationToken ct)
         => Task.FromResult(secondFactorAuthId == SecureConnectTestDefaults.MockedVerified2faId);
 }

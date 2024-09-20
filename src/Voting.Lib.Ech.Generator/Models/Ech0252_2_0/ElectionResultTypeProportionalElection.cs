@@ -35,8 +35,8 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("countOfEmptyVotesOfChangedBallotsWithoutListDesignation", Order=1)]
-        public uint CountOfEmptyVotesOfChangedBallotsWithoutListDesignation { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("countOfBlankVotesOfChangedBallotsWithoutListDesignation", Order=1)]
+        public uint CountOfBlankVotesOfChangedBallotsWithoutListDesignation { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<ListResultType> _listResults;

@@ -30,10 +30,19 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("listIdentification", Order=0)]
         public string ListIdentification { get; set; }
         
+        /// <summary>
+        /// <para xml:lang="en">Minimum length: 1.</para>
+        /// <para xml:lang="en">Maximum length: 6.</para>
+        /// </summary>
+        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
+        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(6)]
+        [System.Xml.Serialization.XmlElementAttribute("listIndentureNumber", Order=1)]
+        public string ListIndentureNumber { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<ElectedTypeProportionalElectionListElectedCandidate> _electedCandidate;
         
-        [System.Xml.Serialization.XmlElementAttribute("electedCandidate", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("electedCandidate", Order=2)]
         public System.Collections.Generic.List<ElectedTypeProportionalElectionListElectedCandidate> ElectedCandidate
         {
             get
@@ -74,13 +83,13 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(decimal), "0", "9999999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("countOfSeatsGained", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute("countOfSeatsGained", Order=3)]
         public uint CountOfSeatsGained { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=4)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get

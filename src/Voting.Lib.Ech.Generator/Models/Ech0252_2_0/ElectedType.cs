@@ -20,8 +20,8 @@ namespace Ech0252_2_0
     public partial class ElectedType
     {
         
-        [System.Xml.Serialization.XmlElementAttribute("majoralElection", Order=0)]
-        public ElectedTypeMajoralElection MajoralElection { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("majorityElection", Order=0)]
+        public ElectedTypeMajorityElection MajorityElection { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<ElectedTypeProportionalElectionList> _proportionalElection;

@@ -30,8 +30,52 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("candidateIdentification", Order=0)]
         public string CandidateIdentification { get; set; }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<string> _candidateReferenceOnPosition;
+        
+        /// <summary>
+        /// <para xml:lang="en">Minimum length: 1.</para>
+        /// <para xml:lang="en">Maximum length: 10.</para>
+        /// </summary>
+        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
+        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(10)]
+        [System.Xml.Serialization.XmlElementAttribute("candidateReferenceOnPosition", Order=1)]
+        public System.Collections.Generic.List<string> CandidateReferenceOnPosition
+        {
+            get
+            {
+                return _candidateReferenceOnPosition;
+            }
+            set
+            {
+                _candidateReferenceOnPosition = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the CandidateReferenceOnPosition collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool CandidateReferenceOnPositionSpecified
+        {
+            get
+            {
+                return ((this.CandidateReferenceOnPosition != null) 
+                            && (this.CandidateReferenceOnPosition.Count != 0));
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="ElectedTypeProportionalElectionListElectedCandidate" /> class.</para>
+        /// </summary>
+        public ElectedTypeProportionalElectionListElectedCandidate()
+        {
+            this._candidateReferenceOnPosition = new System.Collections.Generic.List<string>();
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
+        }
+        
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("electedByDraw", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("electedByDraw", Order=2)]
         public bool ElectedByDrawValue { get; set; }
         
         /// <summary>
@@ -62,10 +106,13 @@ namespace Ech0252_2_0
             }
         }
         
+        [System.Xml.Serialization.XmlElementAttribute("sortID", Order=3)]
+        public string SortId { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=2)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=4)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get
@@ -89,14 +136,6 @@ namespace Ech0252_2_0
                 return ((this.NamedElement != null) 
                             && (this.NamedElement.Count != 0));
             }
-        }
-        
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="ElectedTypeProportionalElectionListElectedCandidate" /> class.</para>
-        /// </summary>
-        public ElectedTypeProportionalElectionListElectedCandidate()
-        {
-            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
         }
     }
 }

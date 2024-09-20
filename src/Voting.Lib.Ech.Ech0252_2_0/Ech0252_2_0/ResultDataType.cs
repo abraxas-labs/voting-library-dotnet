@@ -28,8 +28,8 @@ namespace Ech0252_2_0
         public VotingCardInformationType VotingCardInformation { get; set; }
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("fullyCountedTrue", Order=2)]
-        public bool FullyCountedTrue { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("isFullyCounted", Order=2)]
+        public bool IsFullyCounted { get; set; }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Xml.Serialization.XmlElementAttribute("releasedTimestamp", Order=3, DataType="dateTime")]
