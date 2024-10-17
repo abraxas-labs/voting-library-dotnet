@@ -36,10 +36,9 @@ public interface IUserService
     /// </summary>
     /// <param name="loginId">The login id.</param>
     /// <param name="provider">A <see cref="V1SecondFactorProvider"/> for the 2fa.</param>
-    /// <param name="secondFactorAuthId">The unique identifier of the 2fa.</param>
     /// <param name="tokenJwtIds">The jwt ids of the 2fa.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <exception cref="Voting.Lib.Iam.Exceptions.VerifySecondFactorTimeoutException">Throws if the request runs into a timeout.</exception>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation, resolving to the bool result.</returns>
-    Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, ICollection<string> tokenJwtIds, CancellationToken ct);
+    Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, ICollection<string> tokenJwtIds, CancellationToken ct);
 }

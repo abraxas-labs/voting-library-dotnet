@@ -27,12 +27,14 @@ public static class XmlExtensions
     /// <param name="type">The type to create the name for.</param>
     /// <param name="containedType">The type which contains the actual type.</param>
     /// <param name="containedMemberName">The name of the member of the type in the container.</param>
+    /// <param name="customNamespace">The custom namespace of the XML element.</param>
     /// <returns>The <see cref="XmlQualifiedName"/>.</returns>
     public static XmlQualifiedName GetElementName(
         this XmlReflectionImporter importer,
         Type type,
         Type containedType,
-        string containedMemberName)
+        string containedMemberName,
+        string? customNamespace = null)
     {
         var elAttr = containedType
             .GetProperty(containedMemberName)
@@ -46,7 +48,7 @@ public static class XmlExtensions
 
         return elAttr == null
             ? GetElementName(importer, type)
-            : new XmlQualifiedName(elAttr.ElementName, elAttr.Namespace ?? typeAttr?.Namespace ?? importer.ImportTypeMapping(type).Namespace);
+            : new XmlQualifiedName(elAttr.ElementName, customNamespace ?? elAttr.Namespace ?? typeAttr?.Namespace ?? importer.ImportTypeMapping(type).Namespace);
     }
 
     /// <summary>
@@ -88,7 +90,13 @@ public static class XmlExtensions
         }
     }
 
-    internal static async Task<bool> MoveToElementAsync(this XmlReader reader, XmlQualifiedName name)
+    /// <summary>
+    /// Move the underlying stream of the reader to the name of the element to look up.
+    /// </summary>
+    /// <param name="reader">The <see cref="XmlReader"/>.</param>
+    /// <param name="name">The name of the element to look up.</param>
+    /// <returns>Whether the name of the element to look up to was found or not.</returns>
+    public static async Task<bool> MoveToElementAsync(this XmlReader reader, XmlQualifiedName name)
     {
         while (await reader.ReadToNodeTypeAsync(XmlNodeType.Element))
         {
@@ -99,6 +107,28 @@ public static class XmlExtensions
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Deserializes the XML element.
+    /// </summary>
+    /// <param name="reader">The <see cref="XmlReader"/>.</param>
+    /// <param name="serializer">The <see cref="XmlSerializer"/>.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+    /// <typeparam name="T">The type to which found elements should be deserialized.</typeparam>
+    /// <returns>The deserialized XML element.</returns>
+    /// <exception cref="ValidationException">If the XML element could not be deserialized.</exception>
+    public static async Task<T> DeserializeElement<T>(
+        this XmlReader reader,
+        XmlSerializer serializer,
+        CancellationToken cancellationToken)
+        where T : class
+    {
+        // since there is no async serializer we need to read async first to then deserialize synchronous
+        var el = await XNode.ReadFromAsync(reader, cancellationToken);
+        using var nodeReader = el.CreateReader();
+        return serializer.Deserialize(nodeReader) as T
+               ?? throw new ValidationException("Could not read XML");
     }
 
     private static XmlQualifiedName GetElementName(this XmlReflectionImporter importer, Type type)
@@ -123,17 +153,4 @@ public static class XmlExtensions
     private static bool Matches(this XmlReader reader, XmlQualifiedName name)
         => name.Name.Equals(reader.LocalName, StringComparison.Ordinal)
             && name.Namespace.Equals(reader.NamespaceURI, StringComparison.Ordinal);
-
-    private static async Task<T> DeserializeElement<T>(
-        this XmlReader reader,
-        XmlSerializer serializer,
-        CancellationToken cancellationToken)
-        where T : class
-    {
-        // since there is no async serializer we need to read async first to then deserialize synchronous
-        var el = await XNode.ReadFromAsync(reader, cancellationToken);
-        using var nodeReader = el.CreateReader();
-        return serializer.Deserialize(nodeReader) as T
-            ?? throw new ValidationException("Could not read XML");
-    }
 }

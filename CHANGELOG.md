@@ -1,4 +1,4 @@
-# ✨ Changelog (`v12.14.0`)
+# ✨ Changelog (`v12.15.3`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v12.14.0
-Previous version ---- v12.10.7
+This version -------- v12.15.3
+Previous version ---- v12.14.0
 Initial version ----- v7.7.37
-Total commits ------- 9
+Total commits ------- 5
 ```
+
+## [v12.15.3] - 2024-10-08
+
+### 🔄 Changed
+
+- remove domain of influence types for result protocol and counting circle protocol
+
+## [v12.15.2] - 2024-10-08
+
+### 🔄 Changed
+
+- eCH-0045 delivery header deserializer
+
+## [v12.15.1] - 2024-09-27
+
+### ⚠️ Deprecated
+
+- remove deprecated second factor code, instead use jwts as primary codes
+
+## [v12.15.0] - 2024-09-26
+
+### 🔄 Changed
+
+- add comment to delivery header provider
 
 ## [v12.14.0] - 2024-09-10
 
@@ -385,36 +409,6 @@ Refactored StringValidator to consolidate validation methods into a single `Vali
 
 ## [v11.32.0] - 2024-01-31
 
-### 🔄 Changed
-
-- add AuthorizeAnyPermission to authorize against a list of permissions
-
-## [v11.31.0] - 2024-01-29
-
-### 🔄 Changed
-
-- add wp gemeinden sk stat export
-
-## [v11.30.1] - 2024-01-22
-
-### 🔄 Changed
-
-- integrate api client generator for dotnet as self-managed project dependency in voting libraries.
-
-## [v11.30.0] - 2024-01-05
-
-### 🔄 Changed
-
-- add eCH-0252
-
-## [v11.29.0] - 2023-12-20
-
-### 🔄 Changed
-
-- add permissions to Voting.Lib.Iam
-
-## [v11.28.0] - 2023-12-19
-
 ### 🆕 Added
 
 - add dmdoc callback fail policy
@@ -592,6 +586,36 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v11.31.0] - 2024-01-29
+
+### 🔄 Changed
+
+- add wp gemeinden sk stat export
+
+## [v11.30.1] - 2024-01-22
+
+### 🔄 Changed
+
+- integrate api client generator for dotnet as self-managed project dependency in voting libraries.
+
+## [v11.30.0] - 2024-01-05
+
+### 🔄 Changed
+
+- add eCH-0252
+
+## [v11.29.0] - 2023-12-20
+
+### 🔄 Changed
+
+- add permissions to Voting.Lib.Iam
+
+## [v11.28.0] - 2023-12-19
+
+### 🔄 Changed
+
+- add eCH generator
 
 ## [v11.27.1] - 2023-12-15
 

@@ -71,6 +71,11 @@ public class EchConfig
     public string ProductVersion { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the comment used in the delivery header.
+    /// </summary>
+    public string? Comment { get; set; }
+
+    /// <summary>
     /// Creates a new <see cref="EchConfig"/> instance
     /// and applies the product info based on the assembly of the provided type.
     /// </summary>

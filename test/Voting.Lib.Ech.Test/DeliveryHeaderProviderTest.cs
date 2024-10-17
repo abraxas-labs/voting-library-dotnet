@@ -69,4 +69,26 @@ public class DeliveryHeaderProviderTest
         var header = headerProvider.BuildHeader();
         header.SendingApplication.ProductVersion.Should().Be("0.1.2-a-ve");
     }
+
+    [Fact]
+    public void BuildHeaderWithCommentShouldWork()
+    {
+        var config = new EchConfig
+        {
+            Product = "Voting.Lib.Tests",
+            SenderId = "Voting.Lib.Tests.Sender",
+            TestDeliveryFlag = false,
+            ProductVersion = "0.1.2",
+            MessageType = "1710967",
+            Comment = "STA / Live",
+        };
+
+        var messageIdProviderMock = new Mock<IEchMessageIdProvider>();
+        messageIdProviderMock
+            .Setup(x => x.NewId())
+            .Returns("constant-message-id");
+
+        var headerProvider = new DeliveryHeaderProvider(config, new MockedClock(), messageIdProviderMock.Object);
+        headerProvider.BuildHeader(true).ShouldMatchSnapshot();
+    }
 }

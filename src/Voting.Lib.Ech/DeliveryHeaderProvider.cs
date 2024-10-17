@@ -74,6 +74,7 @@ public class DeliveryHeaderProvider
             SenderId = _config.SenderId,
             MessageDate = _clock.UtcNow,
             MessageType = _config.MessageType,
+            Comment = _config.Comment,
         };
     }
 }

@@ -21,12 +21,6 @@ public static class AusmittlungPdfMajorityElectionTemplates
         Description = "Gemeindeprotokoll",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.MajorityElection,
-        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
-        {
-            DomainOfInfluenceType.Ch,
-            DomainOfInfluenceType.Ct,
-            DomainOfInfluenceType.Bz,
-        },
         ResultType = ResultType.CountingCircleResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };

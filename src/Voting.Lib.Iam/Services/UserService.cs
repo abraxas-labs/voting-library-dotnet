@@ -58,13 +58,13 @@ public class UserService : IUserService
     {
         var request = new V1SecondFactorProviderItem { Provider = provider, Message = message };
         var response = await _client.IdentityService_RequestSecondFactorByLoginIdAsync(loginId, request).ConfigureAwait(false);
-        return new SecondFactor(response.Code, response.Nevis.Qr, response.Nevis.Nevis_action_token_jtis);
+        return new SecondFactor(response.Nevis.Qr, response.Nevis.Nevis_action_token_jtis);
     }
 
     /// <inheritdoc cref="IUserService.VerifySecondFactor"/>
-    public async Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, ICollection<string> tokenJwtIds, CancellationToken ct)
+    public async Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, ICollection<string> tokenJwtIds, CancellationToken ct)
     {
-        var request = new V1VerifySecondFactorRequest { Provider = provider, Code = secondFactorAuthId, Nevis = new V1NevisVerification { Nevis_action_token_jtis = tokenJwtIds } };
+        var request = new V1VerifySecondFactorRequest { Provider = provider, Nevis = new V1NevisVerification { Nevis_action_token_jtis = tokenJwtIds } };
         try
         {
             await _client.IdentityService_VerifySecondFactorByLoginIdAsync(loginId, request, ct).ConfigureAwait(false);

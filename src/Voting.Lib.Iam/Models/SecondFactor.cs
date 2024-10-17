@@ -10,17 +10,11 @@ namespace Voting.Lib.Iam.Models;
 /// </summary>
 public class SecondFactor
 {
-    internal SecondFactor(string code, string qr, ICollection<string> tokenJwtIds)
+    internal SecondFactor(string qr, ICollection<string> tokenJwtIds)
     {
-        Code = code;
         Qr = qr;
         TokenJwtIds = tokenJwtIds;
     }
-
-    /// <summary>
-    /// Gets or sets the code.
-    /// </summary>
-    public string Code { get; set; }
 
     /// <summary>
     /// Gets or sets the qr code.

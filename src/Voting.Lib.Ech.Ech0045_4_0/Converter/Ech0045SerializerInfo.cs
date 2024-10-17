@@ -11,6 +11,7 @@ namespace Voting.Lib.Ech.Ech0045_4_0.Converter;
 internal static class Ech0045SerializerInfo
 {
     internal static readonly XmlQualifiedName Voter;
+    internal static readonly XmlQualifiedName DeliveryHeader;
 
     static Ech0045SerializerInfo()
     {
@@ -19,5 +20,6 @@ internal static class Ech0045SerializerInfo
         // works for the generated eCH classes, however it may not work with all edge cases correctly
         var importer = new XmlReflectionImporter();
         Voter = importer.GetElementName(typeof(VotingPersonType), typeof(VoterListType), nameof(VoterListType.Voter));
+        DeliveryHeader = importer.GetElementName(typeof(Ech0058_5_0.HeaderType), typeof(VoterDelivery), "DeliveryHeader", "http://www.ech.ch/xmlns/eCH-0045/4");
     }
 }

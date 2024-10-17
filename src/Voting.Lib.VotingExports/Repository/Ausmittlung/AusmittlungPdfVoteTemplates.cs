@@ -78,12 +78,6 @@ public static class AusmittlungPdfVoteTemplates
         EntityType = EntityType.Vote,
         ResultType = ResultType.MultiplePoliticalBusinessesCountingCircleResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
-        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
-        {
-            DomainOfInfluenceType.Ch,
-            DomainOfInfluenceType.Ct,
-            DomainOfInfluenceType.Bz,
-        },
         PerDomainOfInfluenceType = true,
     };
 

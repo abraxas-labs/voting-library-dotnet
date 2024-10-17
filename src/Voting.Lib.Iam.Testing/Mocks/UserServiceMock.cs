@@ -30,12 +30,12 @@ public class UserServiceMock : IUserService
     /// Returns a string of a random generated guid.
     /// </summary>
     public Task<SecondFactor> RequestSecondFactor(string loginId, string provider, string message)
-        => Task.FromResult(new SecondFactor(Guid.NewGuid().ToString(), string.Empty, new List<string>()));
+        => Task.FromResult(new SecondFactor(Guid.NewGuid().ToString(), new List<string>()));
 
     /// <inheritdoc cref="IUserService.VerifySecondFactor"/>
     /// <summary>
     /// Returns true if the code matches the <see cref="SecureConnectTestDefaults.MockedVerified2faId"/>.
     /// </summary>
-    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string secondFactorAuthId, ICollection<string> tokenJwtIds, CancellationToken ct)
-        => Task.FromResult(secondFactorAuthId == SecureConnectTestDefaults.MockedVerified2faId);
+    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, ICollection<string> tokenJwtIds, CancellationToken ct)
+        => Task.FromResult(tokenJwtIds.Contains(SecureConnectTestDefaults.MockedVerified2faId));
 }
