@@ -21,7 +21,7 @@
       ]
     },
     "dotnet-xscgen": {
-      "version": "2.1.963",
+      "version": "2.1.1164",
       "commands": [
         "xscgen"
       ]

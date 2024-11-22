@@ -29,7 +29,7 @@ public class AggregateRepositoryMockStore
     /// <param name="aggregateId">The aggregate ID.</param>
     /// <param name="events">The published events or null if no events have been published.</param>
     /// <returns>Returns true if events for the aggregate ID exist.</returns>
-    public bool TryGetEvents(string aggregateName, Guid aggregateId, [MaybeNullWhen(false)] out IEnumerable<IDomainEvent> events)
+    public bool TryGetEvents(string aggregateName, Guid aggregateId, [MaybeNullWhen(false)] out IReadOnlyList<IDomainEvent> events)
     {
         var streamName = BuildStreamName(aggregateName, aggregateId);
         if (_eventPerAggregate.TryGetValue(streamName, out var domainEvents))

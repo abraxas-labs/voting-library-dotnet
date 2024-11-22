@@ -8,6 +8,7 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using EventStore.Client;
 using Voting.Lib.Common;
+using Voting.Lib.Eventing.Subscribe;
 
 namespace Voting.Lib.Eventing.Diagnostics;
 
@@ -109,6 +110,8 @@ public static class EventingMeter
             SubscriptionLatestEventPreparePositionGaugeName,
             () => BuildProcessorScopeMeasurement(LatestEventPreparePositionsByProcessorScope),
             description: "The event prepare position of the latest event in a stream");
+
+        InitHistograms();
     }
 
     internal static void EventProcessed(string processorScopeName, EventRecord originalEventRecord, EventRecord eventRecord, TimeSpan duration)
@@ -171,5 +174,13 @@ public static class EventingMeter
         return value == ulong.MaxValue
             ? long.MaxValue
             : (long)value;
+    }
+
+    private static void InitHistograms()
+    {
+        SubscriptionEventTypeProcessedDurationSeconds.Record(
+            0,
+            CreateProcessorScopeTag(typeof(TransientEventProcessorScope).FullName ?? nameof(TransientEventProcessorScope)),
+            new(EventTypeLabelName, "Initialization"));
     }
 }

@@ -11,7 +11,7 @@ namespace Voting.Lib.Eventing.Domain;
 /// <summary>
 /// Base class for event sourced aggregates.
 /// </summary>
-public abstract class BaseEventSourcingAggregate
+public abstract class BaseEventSourcingAggregate : IEventSourcingAggregateVersion
 {
     private readonly LinkedList<IDomainEvent> _uncommittedEvents = new();
 

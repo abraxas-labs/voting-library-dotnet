@@ -18,11 +18,11 @@ public class ActionId
     /// Initializes a new instance of the <see cref="ActionId"/> class.
     /// </summary>
     /// <param name="action">The action.</param>
-    /// <param name="aggregates">The aggregates.</param>
-    public ActionId(string action, params BaseEventSourcingAggregate[] aggregates)
+    /// <param name="aggregateVersions">The included aggregate versions.</param>
+    public ActionId(string action, params IEventSourcingAggregateVersion[] aggregateVersions)
     {
         Action = action;
-        Aggregates = aggregates;
+        AggregateVersions = aggregateVersions;
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class ActionId
     /// <summary>
     /// Gets the aggregates.
     /// </summary>
-    public IReadOnlyCollection<BaseEventSourcingAggregate> Aggregates { get; }
+    public IReadOnlyCollection<IEventSourcingAggregateVersion> AggregateVersions { get; }
 
     /// <summary>
     /// Computes the SHA256 hash of this action ID.
@@ -43,7 +43,7 @@ public class ActionId
     /// <returns>Returns the computed hash.</returns>
     public string ComputeHash()
     {
-        var aggregateVersions = Aggregates.Select(x => $"{x.StreamName}@{x.Version}");
+        var aggregateVersions = AggregateVersions.Select(x => $"{x.StreamName}@{x.Version}");
         var input = string.Join(ActionIdSeparator, aggregateVersions.Prepend(Action));
         return HashUtil.GetSHA256Hash(input);
     }

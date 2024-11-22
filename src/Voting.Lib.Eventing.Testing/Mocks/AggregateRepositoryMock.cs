@@ -41,6 +41,22 @@ public class AggregateRepositoryMock : IAggregateRepository
         _aggregateRepositoryHandler = aggregateRepositoryHandler;
     }
 
+    /// <inheritdoc />
+    public Task<EventSourcingAggregateVersion?> TryGetVersion<TAggregate>(Guid id)
+        where TAggregate : BaseEventSourcingAggregate
+    {
+        var aggregate = _aggregateFactory.New<TAggregate>();
+        aggregate.Id = id;
+
+        if (!_store.TryGetEvents(aggregate.AggregateName, id, out var events))
+        {
+            return Task.FromResult<EventSourcingAggregateVersion?>(null);
+        }
+
+        var version = events[^1].AggregateVersion;
+        return Task.FromResult<EventSourcingAggregateVersion?>(new EventSourcingAggregateVersion(aggregate.StreamName, version));
+    }
+
     /// <summary>
     /// Reconstructs the aggregate by applying all saved events.
     /// </summary>

@@ -4,7 +4,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(MsExtensionsVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(MsExtensionsVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.0" />

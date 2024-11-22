@@ -30,7 +30,7 @@ public class ActionIdTest
             Enumerable.Range(0, amountOfEvents).ToList().ForEach(_ => aggregate.RaiseEvent());
         }
 
-        new ActionId(action, aggregates.Cast<BaseEventSourcingAggregate>().ToArray())
+        new ActionId(action, aggregates.Cast<IEventSourcingAggregateVersion>().ToArray())
             .ComputeHash()
             .Should()
             .Be(hash);

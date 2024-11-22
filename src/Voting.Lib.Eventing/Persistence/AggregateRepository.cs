@@ -38,6 +38,22 @@ public class AggregateRepository : IAggregateRepository
     }
 
     /// <inheritdoc/>
+    public async Task<EventSourcingAggregateVersion?> TryGetVersion<TAggregate>(Guid id)
+        where TAggregate : BaseEventSourcingAggregate
+    {
+        var aggregate = _aggregateFactory.New<TAggregate>();
+        aggregate.Id = id;
+
+        var version = await _aggregateEventReader.TryGetVersion(aggregate.StreamName, id).ConfigureAwait(false);
+        if (version == null)
+        {
+            return null;
+        }
+
+        return new EventSourcingAggregateVersion(aggregate.StreamName, version.Value);
+    }
+
+    /// <inheritdoc/>
     public async Task<TAggregate> GetById<TAggregate>(Guid id)
         where TAggregate : BaseEventSourcingAggregate
     {

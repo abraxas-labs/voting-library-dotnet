@@ -1,4 +1,4 @@
-# ✨ Changelog (`v12.15.3`)
+# ✨ Changelog (`v12.16.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v12.15.3
-Previous version ---- v12.14.0
+This version -------- v12.16.0
+Previous version ---- v12.15.3
 Initial version ----- v7.7.37
-Total commits ------- 5
+Total commits ------- 3
 ```
+
+## [v12.16.0] - 2024-11-08
+
+### 🔄 Changed
+
+- add event sourcing read stream version api
+
+## [v12.15.5] - 2024-10-30
+
+### :arrows_counterclockwise: Changed
+
+- update xscgen and add serializeEmptyCollections option
+
+## [v12.15.4] - 2024-10-23
+
+### 🔄 Changed
+
+- init eventing meter histogram to avoid no data alerts
+
+### 🔒 Security
+
+- update Microsoft.Extensions.Caching.Memory to close vulnerability
 
 ## [v12.15.3] - 2024-10-08
 
@@ -397,17 +419,9 @@ Refactored StringValidator to consolidate validation methods into a single `Vali
 
 ## [v11.33.1] - 2024-02-08
 
-### 🔄 Changed
-
-- move mock to lib and add tests
-
-## [v11.33.0] - 2024-02-02
-
 ### 🆕 Added
 
 - support for database query monitoring
-
-## [v11.32.0] - 2024-01-31
 
 ### 🆕 Added
 
@@ -586,6 +600,18 @@ BREAKING CHANGE: dotnet 5
 also improve waiting for event store connection
 
 also fixed aggregate repo
+
+## [v11.33.0] - 2024-02-02
+
+### 🆕 Added
+
+- support for database query monitoring
+
+## [v11.32.0] - 2024-01-31
+
+### 🔄 Changed
+
+- add AuthorizeAnyPermission to authorize against a list of permissions
 
 ## [v11.31.0] - 2024-01-29
 

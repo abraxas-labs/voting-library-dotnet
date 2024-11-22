@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using EventStore.Client;
 using Voting.Lib.Eventing.Domain;
 
 namespace Voting.Lib.Eventing.Persistence;
@@ -12,6 +14,14 @@ namespace Voting.Lib.Eventing.Persistence;
 /// </summary>
 public interface IAggregateEventReader
 {
+    /// <summary>
+    /// Reads the version of an aggregate.
+    /// </summary>
+    /// <param name="stream">The name of the stream to read.</param>
+    /// <param name="aggregateId">The id of the aggregate to read.</param>
+    /// <returns>The stream revision or null if the stream/aggregate cannot be found.</returns>
+    Task<StreamRevision?> TryGetVersion(string stream, Guid aggregateId);
+
     /// <summary>
     /// Read all aggregate events from a stream.
     /// </summary>

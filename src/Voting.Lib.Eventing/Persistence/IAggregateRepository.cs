@@ -14,6 +14,28 @@ namespace Voting.Lib.Eventing.Persistence;
 public interface IAggregateRepository
 {
     /// <summary>
+    /// Gets a version of an aggregate.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type to load.</typeparam>
+    /// <param name="id">The aggregate id to load.</param>
+    /// <returns>The version of the aggregate.</returns>
+    /// <exception cref="AggregateNotFoundException">If the aggregate was not found.</exception>
+    // TODO test
+    async Task<EventSourcingAggregateVersion> GetVersion<TAggregate>(Guid id)
+        where TAggregate : BaseEventSourcingAggregate
+        => await TryGetVersion<TAggregate>(id).ConfigureAwait(false) ?? throw new AggregateNotFoundException(id);
+
+    /// <summary>
+    /// Try to get a version of an aggregate.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type to load.</typeparam>
+    /// <param name="id">The aggregate id to load.</param>
+    /// <returns>The version of the aggregate or <c>null</c> if it does not exist.</returns>
+    // TODO test
+    Task<EventSourcingAggregateVersion?> TryGetVersion<TAggregate>(Guid id)
+        where TAggregate : BaseEventSourcingAggregate;
+
+    /// <summary>
     /// Load an aggregate by its id.
     /// </summary>
     /// <typeparam name="TAggregate">The aggregate type to load.</typeparam>

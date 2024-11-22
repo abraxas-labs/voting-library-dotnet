@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using EventStore.Client;
 using Voting.Lib.Eventing.Domain;
 using Voting.Lib.Eventing.Exceptions;
@@ -24,6 +25,25 @@ public class AggregateEventReader : IAggregateEventReader
     {
         _serializer = serializer;
         _client = client;
+    }
+
+    /// <inheritdoc/>
+    public async Task<StreamRevision?> TryGetVersion(string stream, Guid aggregateId)
+    {
+        var reader = _client.ReadStreamAsync(Direction.Backwards, stream, StreamPosition.End);
+        var state = await reader.ReadState.ConfigureAwait(false);
+        if (state == ReadState.StreamNotFound)
+        {
+            return null;
+        }
+
+        await using var enumerator = reader.GetAsyncEnumerator();
+        if (!await enumerator.MoveNextAsync().ConfigureAwait(false))
+        {
+            return null;
+        }
+
+        return StreamRevision.FromStreamPosition(reader.Current.Event.EventNumber);
     }
 
     /// <inheritdoc/>

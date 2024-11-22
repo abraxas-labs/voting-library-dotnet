@@ -75,6 +75,9 @@ public class DeliveryHeaderProvider
             MessageDate = _clock.UtcNow,
             MessageType = _config.MessageType,
             Comment = _config.Comment,
+            RecipientId = null,
+            NamedMetaData = null,
+            Attachment = null,
         };
     }
 }
