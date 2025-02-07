@@ -21,6 +21,7 @@ public sealed class CronSchedulerService<TJob> : BackgroundService
     private const char CronPartSeparator = ' ';
     private const int StandardCronFormatSeparatorCount = 4;
     private readonly JobRunner _jobRunner;
+    private readonly TimeProvider _timeProvider;
     private readonly ILogger<CronSchedulerService<TJob>> _logger;
     private readonly CronExpression _cronExpression;
     private readonly TimeZoneInfo _timeZone;
@@ -30,10 +31,12 @@ public sealed class CronSchedulerService<TJob> : BackgroundService
     /// </summary>
     /// <param name="jobRunner">The job runner.</param>
     /// <param name="jobConfig">The job configuration.</param>
+    /// <param name="timeProvider">The time provider.</param>
     /// <param name="logger">The logger.</param>
-    public CronSchedulerService(JobRunner jobRunner, ICronJobConfig jobConfig, ILogger<CronSchedulerService<TJob>> logger)
+    public CronSchedulerService(JobRunner jobRunner, ICronJobConfig jobConfig, TimeProvider timeProvider, ILogger<CronSchedulerService<TJob>> logger)
     {
         _jobRunner = jobRunner;
+        _timeProvider = timeProvider;
         _logger = logger;
         var cronFormat = jobConfig.CronSchedule.Count(x => x == CronPartSeparator) == StandardCronFormatSeparatorCount
             ? CronFormat.Standard
@@ -47,7 +50,7 @@ public sealed class CronSchedulerService<TJob> : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var now = DateTimeOffset.Now;
+            var now = _timeProvider.GetLocalNow();
             var nextRun = _cronExpression.GetNextOccurrence(now, _timeZone);
 
             if (nextRun == null)
@@ -56,8 +59,9 @@ public sealed class CronSchedulerService<TJob> : BackgroundService
                 return;
             }
 
-            await Task.Delay(nextRun.Value - now, stoppingToken).ConfigureAwait(false);
-            await _jobRunner.RunJob<TJob>(stoppingToken).ConfigureAwait(false);
+            // configure await needs to be true, to ensure the time provider works correctly
+            await Task.Delay(nextRun.Value - now, _timeProvider, stoppingToken).ConfigureAwait(true);
+            await _jobRunner.RunJob<TJob>(stoppingToken).ConfigureAwait(true);
         }
     }
 }

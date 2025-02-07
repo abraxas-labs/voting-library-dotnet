@@ -13,6 +13,8 @@ namespace Voting.Lib.Eventing.Persistence;
 /// <inheritdoc/>
 public class AggregateRepository : IAggregateRepository
 {
+    private const int EventsPublishChunkSize = 100;
+
     private readonly IEventPublisher _eventPublisher;
     private readonly IAggregateEventReader _aggregateEventReader;
     private readonly IAggregateFactory _aggregateFactory;
@@ -116,6 +118,33 @@ public class AggregateRepository : IAggregateRepository
         await _aggregateRepositoryHandler.AfterSaved(aggregate, events).ConfigureAwait(false);
     }
 
+    /// <inheritdoc/>
+    public async Task SaveChunked<TAggregate>(TAggregate aggregate, int? chunkSize = null)
+        where TAggregate : BaseEventSourcingAggregate
+    {
+        chunkSize ??= EventsPublishChunkSize;
+
+        await _aggregateRepositoryHandler.BeforeSaved(aggregate).ConfigureAwait(false);
+        var events = aggregate.GetUncommittedEvents().ToList();
+        if (events.Count == 0)
+        {
+            return;
+        }
+
+        var eventsWithMetadata = events.Select(ev => new EventWithMetadata(ev.Data, ev.Metadata, ev.Id));
+
+        ulong expectedVersionGap = 0;
+        foreach (var eventsChunk in eventsWithMetadata.Chunk(EventsPublishChunkSize))
+        {
+            await _eventPublisher.Publish(aggregate.StreamName, eventsChunk, CalculateStreamRevision(aggregate.OriginalVersion, expectedVersionGap)).ConfigureAwait(false);
+            expectedVersionGap += (ulong)chunkSize.Value;
+        }
+
+        aggregate.ClearUncommittedEvents();
+        aggregate.OriginalVersion = aggregate.Version!.Value;
+        await _aggregateRepositoryHandler.AfterSaved(aggregate, events).ConfigureAwait(false);
+    }
+
     private async Task<TAggregate> GetById<TAggregate>(Guid id, DateTime? endTimestampInclusive)
         where TAggregate : BaseEventSourcingAggregate
     {
@@ -129,5 +158,17 @@ public class AggregateRepository : IAggregateRepository
 
         aggregate.OriginalVersion = aggregate.Version ?? StreamRevision.FromStreamPosition(StreamPosition.Start);
         return aggregate;
+    }
+
+    private StreamRevision? CalculateStreamRevision(StreamRevision? revision, ulong gap)
+    {
+        if (revision != null)
+        {
+            return revision.Value + gap;
+        }
+
+        return revision = gap == 0
+            ? null
+            : new StreamRevision(gap - 1);
     }
 }

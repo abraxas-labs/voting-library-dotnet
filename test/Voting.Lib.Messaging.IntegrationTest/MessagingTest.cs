@@ -39,7 +39,7 @@ public class MessagingTest : RabbitMqFixture
         await using var scope = ServiceProvider.CreateAsyncScope();
 
         using var listenCancellationTokenSource = new CancellationTokenSource();
-        listenCancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
+        listenCancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(3));
         var publisher = scope.ServiceProvider.GetRequiredService<MessageProducerBuffer>();
         var hub = scope.ServiceProvider.GetRequiredService<T>();
 
@@ -65,7 +65,7 @@ public class MessagingTest : RabbitMqFixture
         await publisher.TryComplete();
 
         await taskCompletionSource.Task.WaitAsync(listenCancellationTokenSource.Token);
-        listenCancellationTokenSource.Cancel();
+        await listenCancellationTokenSource.CancelAsync();
         await listenTask;
 
         sum.Should().Be(expectedSum);

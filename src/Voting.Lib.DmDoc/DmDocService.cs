@@ -254,6 +254,13 @@ public class DmDocService : IDmDocService
     }
 
     /// <inheritdoc />
+    public Task<List<Brick>> ListActiveBricks(string category, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.ActiveBricks(category);
+        return _http.GetDmDoc<List<Brick>>(url, ct);
+    }
+
+    /// <inheritdoc />
     public async Task<string> GetBrickContentEditorUrl(int brickId, int brickContentId, CancellationToken ct = default)
     {
         var url = _urlBuilder.BricksContentEditor(brickId, brickContentId);
@@ -277,6 +284,20 @@ public class DmDocService : IDmDocService
             },
             ct);
         return (response.BrickId, response.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task TagBricks(int[] brickIds, string tag, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.BricksTagReferences();
+        var response = await _http.PostDmDoc<TagBricksRequest, TagBricksResponse>(
+            url,
+            new TagBricksRequest
+            {
+                TagInternName = tag,
+                BrickIds = brickIds,
+            },
+            ct);
     }
 
     private Task<TResp> WithFinalDraft<TDraftData, TResp>(

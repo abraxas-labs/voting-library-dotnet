@@ -1,4 +1,4 @@
-# ✨ Changelog (`v12.16.0`)
+# ✨ Changelog (`v12.24.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,119 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v12.16.0
-Previous version ---- v12.15.3
+This version -------- v12.24.0
+Previous version ---- v12.16.0
 Initial version ----- v7.7.37
-Total commits ------- 3
+Total commits ------- 18
 ```
+
+## [v12.24.0] - 2025-01-28
+
+### 🆕 Added
+
+- add person extension for householder in ech-0045
+
+## [v12.23.0] - 2025-01-20
+
+### 🆕 Added
+
+- add HSM integration tests based on the cryptoserver simulator docker image.
+- add integration tests for all cryptographic operations provided by the HSM adapter.
+
+### ❌ Removed
+
+- remove public key retrieval in HSM health check to decouple from specific application use cases.
+
+## [v12.22.3] - 2025-01-10
+
+### 🔄 Changed
+
+- update Pkcs11Interop library from 5.1.2 to 5.2.0.
+- refer to GitHub release notes [Pkcs11Interop 5.2.0](https://github.com/Pkcs11Interop/Pkcs11Interop/releases/tag/v5.2.0)
+
+## [v12.22.2] - 2024-12-20
+
+### 🔄 Changed
+
+- extend dmdoc lib for selection of active bricks
+
+## [v12.22.1] - 2024-12-19
+
+### 🔄 Changed
+
+- add x-vrsg-tenant query parameter to be able to update a user
+
+## [v12.22.0] - 2024-12-18
+
+### 🔄 Changed
+
+- update minio lib and testcontainer according to latest operated version
+
+## [v12.21.0] - 2024-12-16
+
+### 🔄 Changed
+
+- update eCH-0252-2-0 version
+
+## [v12.20.0] - 2024-12-13
+
+### 🆕 Added
+
+- introduced a setting which allows to include the user id in the log output
+
+## [v12.19.1] - 2024-12-12
+
+### 🔄 Changed
+
+- enable e-voting reports for municipality political businesses
+
+## [v12.19.0] - 2024-12-12
+
+### 🔄 Changed
+
+- snapshotting of bricks
+
+## [v12.18.0] - 2024-12-09
+
+### 🔄 Changed
+
+- fix flaky tests by using fake time provider
+
+## [v12.17.2] - 2024-12-08
+
+### 🔄 Changed
+
+- upgrade test containers and use minio provided container, fixes flaky wait condition
+
+## [v12.17.1] - 2024-12-04
+
+### 🔄 Changed
+
+- add end result detail protocol for multiple counting circle results
+
+## [v12.17.0] - 2024-12-03
+
+### 🔄 Changed
+
+- add secondary majority election protocols
+
+## [v12.16.3] - 2024-12-03
+
+### 🔄 Changed
+
+- remove vote temporary end result protocol
+
+## [v12.16.2] - 2024-11-28
+
+### 🔄 Changed
+
+- support publish large amount of events
+
+## [v12.16.1] - 2024-11-27
+
+### 🔄 Changed
+
+- disable e-voting reports for municipality
 
 ## [v12.16.0] - 2024-11-08
 
@@ -189,7 +297,219 @@ Refactored StringValidator to consolidate validation methods into a single `Vali
 
 ### 🔄 Changed
 
-- add eCH-0252 for elections
+- remove temporary tenant for 2fa transaction confirmation authorization
+- updated VOTING IAM API client
+
+### 🔄 Changed
+
+- add percent sign for complex single- and multiline string validation
+
+### 🔒 Security
+
+- remove deprecated dependency Microsoft.Extensions.PlatformAbstractions
+
+### 🔄 Changed
+
+- prevent malware scanner from closing input stream
+- ensure DLL import resolver is only registered once
+
+### 🔄 Changed
+
+- add support for apostophe mark for complex single- and multiline string validation
+
+### 🆕 Added
+
+- register custom dll resolver for pkcs11 adapter
+
+### 🔄 Changed
+
+- Update from .NET 6 to .NET 8
+
+### 🔒 Security
+
+- Apply patch policy for outdated and vulnerable dependencies. The components EventStore, Minio and MassTransit are patched as part of a follow-up task.
+
+### 🆕 Added
+
+- support for database query monitoring
+
+### 🆕 Added
+
+- add dmdoc callback fail policy
+- add dmdoc callback timeout parameter
+- add documentation
+
+### 🆕 Added
+
+- add dmdoc draft cleanup mode to handle cleanup requirements
+- separate dequeuing and processing of queued items and delay execution
+
+### 🆕 Added
+
+- add dmdoc draft cleanup job
+- add dmdoc draft cleanup queue
+- add scheduler config and DI registration for the job and queue
+
+### 🆕 Added
+
+- add dmdoc draft deletion options for hard deletion and content only
+
+### 🔄 Changed
+
+- migrate from deprecated DotNet.Testcontainers to Testcontainers
+
+### 🆕 Added
+
+- add roles cache to minimize calls to iam
+
+### 🆕 Added
+
+- config option to disable malware scanning
+
+### 🔄 Changed
+
+- skip malware scanning request if it is disabled by config
+
+### 🆕 Added
+
+- add http probes health check for 3rd party apis
+
+### 🔄 Changed
+
+- extend cert pinning config with http probe health check option
+
+### 🔄 Changed
+
+- enhance logging for cert pinning
+
+also store aggregate type in aggregate store mock
+
+### 🔄 Changed
+
+- allow generic context type for list comparison
+
+### 🆕 Added
+
+- add user secret support to configuration builder
+
+### 🆕 Added
+
+- add iam app handler to pass the configured app header with every request
+
+### 🆕 Added
+
+- add grpc path prefix delegation handler
+
+### 🆕 Added
+
+- add junit test reporting services
+
+BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
+
+### 🆕 Added
+
+- extended malware scanner service for string content
+
+### 🆕 Added
+
+- malware scanner service
+
+### 🆕 Added
+
+- add service name to service user mock data
+
+### 🆕 Added
+
+- Added ECDSA signature
+- Added AES-MAC encryption
+
+### 🆕 Added
+
+- Added bulk create signature
+- Added more supported types in ByteConverter
+
+### 🆕 Added
+
+- add date only today value
+
+BREAKING CHANGE: added bulk root parameter
+
+BREAKING CHANGE: export template models domain of influence types is now a readonly set
+
+### 🆕 Added
+
+- add overload for single file result creation to be independent of IFile
+
+BREAKING CHANGE: changed DmDoc API because of better streaming support
+
+### 🆕 Added
+
+- add headers to grpc request log output
+
+### 🆕 Added
+
+- add grpc request logger tooling to record load testing playbooks
+
+### 🔄 Changed
+
+- introduce project wide variable for grpc packages to align package versions
+
+### 🆕 Added
+
+- add log messages for debugging
+- add configure await to signal intention for continuation
+
+### 🔄 Changed
+
+- adapt correlation id header to changed name for logging
+
+### 🆕 Added
+
+- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+
+### 🆕 Added
+
+- tenant header for modifications made by a service user
+- powershell client generator script
+
+### 🔄 Changed
+
+- exclude parameters for successful generation
+
+### 🆕 Added
+
+- CORS configuration support
+
+these are for example eventstore internal events which are not interesting to voting at all
+
+use the overload without any position, since the position is unsigned and always exclusive
+
+BREAKING CHANGE: activity protocol by event store
+
+BREAKING CHANGE: persistent subscription apis removed
+
+BREAKING CHANGE: event signature
+
+BREAKING CHANGE: removed user store dependency and used generated swagger clients
+
+Replaces the userstore dependency with swagger generated clients
+
+Eventstore should use the default http client builder to ensure certificate pinning
+This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
+
+BREAKING CHANGE: VOTING-638 net6.0 update
+
+note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
+
+BREAKING CHANGE: dotnet 5
+
+also improve waiting for event store connection
+
+also fixed aggregate repo
 
 ## [v12.7.1] - 2024-05-06
 
@@ -419,187 +739,9 @@ Refactored StringValidator to consolidate validation methods into a single `Vali
 
 ## [v11.33.1] - 2024-02-08
 
-### 🆕 Added
-
-- support for database query monitoring
-
-### 🆕 Added
-
-- add dmdoc callback fail policy
-- add dmdoc callback timeout parameter
-- add documentation
-
-### 🆕 Added
-
-- add dmdoc draft cleanup mode to handle cleanup requirements
-- separate dequeuing and processing of queued items and delay execution
-
-### 🆕 Added
-
-- add dmdoc draft cleanup job
-- add dmdoc draft cleanup queue
-- add scheduler config and DI registration for the job and queue
-
-### 🆕 Added
-
-- add dmdoc draft deletion options for hard deletion and content only
-
 ### 🔄 Changed
 
-- migrate from deprecated DotNet.Testcontainers to Testcontainers
-
-### 🆕 Added
-
-- add roles cache to minimize calls to iam
-
-### 🆕 Added
-
-- config option to disable malware scanning
-
-### 🔄 Changed
-
-- skip malware scanning request if it is disabled by config
-
-### 🆕 Added
-
-- add http probes health check for 3rd party apis
-
-### 🔄 Changed
-
-- extend cert pinning config with http probe health check option
-
-### 🔄 Changed
-
-- enhance logging for cert pinning
-
-also store aggregate type in aggregate store mock
-
-### 🔄 Changed
-
-- allow generic context type for list comparison
-
-### 🆕 Added
-
-- add user secret support to configuration builder
-
-### 🆕 Added
-
-- add iam app handler to pass the configured app header with every request
-
-### 🆕 Added
-
-- add grpc path prefix delegation handler
-
-### 🆕 Added
-
-- add junit test reporting services
-
-BREAKING CHANGE: This changes the hash / byte array if guids are involved. The old behaviour can still be applied if Guid.ToString() is used instead
-
-### 🆕 Added
-
-- extended malware scanner service for string content
-
-### 🆕 Added
-
-- malware scanner service
-
-### 🆕 Added
-
-- add service name to service user mock data
-
-### 🆕 Added
-
-- Added ECDSA signature
-- Added AES-MAC encryption
-
-### 🆕 Added
-
-- Added bulk create signature
-- Added more supported types in ByteConverter
-
-### 🆕 Added
-
-- add date only today value
-
-BREAKING CHANGE: added bulk root parameter
-
-BREAKING CHANGE: export template models domain of influence types is now a readonly set
-
-### 🆕 Added
-
-- add overload for single file result creation to be independent of IFile
-
-BREAKING CHANGE: changed DmDoc API because of better streaming support
-
-### 🆕 Added
-
-- add headers to grpc request log output
-
-### 🆕 Added
-
-- add grpc request logger tooling to record load testing playbooks
-
-### 🔄 Changed
-
-- introduce project wide variable for grpc packages to align package versions
-
-### 🆕 Added
-
-- add log messages for debugging
-- add configure await to signal intention for continuation
-
-### 🔄 Changed
-
-- adapt correlation id header to changed name for logging
-
-### 🆕 Added
-
-- add application builder extension which is adding the serilog request logging middleware enriching the log context with tracability properties
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-
-### 🆕 Added
-
-- tenant header for modifications made by a service user
-- powershell client generator script
-
-### 🔄 Changed
-
-- exclude parameters for successful generation
-
-### 🆕 Added
-
-- CORS configuration support
-
-these are for example eventstore internal events which are not interesting to voting at all
-
-use the overload without any position, since the position is unsigned and always exclusive
-
-BREAKING CHANGE: activity protocol by event store
-
-BREAKING CHANGE: persistent subscription apis removed
-
-BREAKING CHANGE: event signature
-
-BREAKING CHANGE: removed user store dependency and used generated swagger clients
-
-Replaces the userstore dependency with swagger generated clients
-
-Eventstore should use the default http client builder to ensure certificate pinning
-This removes ValidateCertificate from the event store config. This should now be configured via the cert pinning config
-
-BREAKING CHANGE: VOTING-638 net6.0 update
-
-note: not releasing as breaking change since all consumers are currently still on 1.x.x and the breaking change is in an api which is not indented for public use
-
-BREAKING CHANGE: dotnet 5
-
-also improve waiting for event store connection
-
-also fixed aggregate repo
+- move mock to lib and add tests
 
 ## [v11.33.0] - 2024-02-02
 

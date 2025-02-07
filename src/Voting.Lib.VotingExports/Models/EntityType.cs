@@ -29,6 +29,11 @@ public enum EntityType
     MajorityElection,
 
     /// <summary>
+    /// Secondary Majority Election.
+    /// </summary>
+    SecondaryMajorityElection,
+
+    /// <summary>
     /// Proportional Election.
     /// </summary>
     ProportionalElection,

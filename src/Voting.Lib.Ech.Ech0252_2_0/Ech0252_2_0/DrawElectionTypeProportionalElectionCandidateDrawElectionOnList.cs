@@ -20,37 +20,9 @@ namespace Ech0252_2_0
     public partial class DrawElectionTypeProportionalElectionCandidateDrawElectionOnList
     {
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("isDrawPending", Order=0)]
-        public bool IsDrawPendingValue { get; set; }
-        
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the IsDrawPending property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        public bool IsDrawPendingValueSpecified { get; set; }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<bool> IsDrawPending
-        {
-            get
-            {
-                if (this.IsDrawPendingValueSpecified)
-                {
-                    return this.IsDrawPendingValue;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            set
-            {
-                this.IsDrawPendingValue = value.GetValueOrDefault();
-                this.IsDrawPendingValueSpecified = value.HasValue;
-            }
-        }
+        public bool IsDrawPending { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Minimum length: 1.</para>

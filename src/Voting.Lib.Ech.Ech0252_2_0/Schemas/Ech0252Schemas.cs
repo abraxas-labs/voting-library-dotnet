@@ -25,7 +25,7 @@ public sealed class Ech0252Schemas
         ["http://www.ech.ch/xmlns/eCH-0010/6"] = "eCH-0010-6-0.xsd",
         ["http://www.ech.ch/xmlns/eCH-0044/4"] = "eCH-0044-4-1.xsd",
         ["http://www.ech.ch/xmlns/eCH-0058/5"] = "eCH-0058-5-0.xsd",
-        ["http://www.ech.ch/xmlns/eCH-0155/5"] = "eCH-0155-5-0.xsd",
+        ["http://www.ech.ch/xmlns/eCH-0155/5"] = "eCH-0155-5-1.xsd",
         ["http://www.ech.ch/xmlns/eCH-0252/2"] = "eCH-0252-2-0.xsd",
     };
 

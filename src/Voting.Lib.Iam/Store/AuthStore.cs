@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Exceptions;
 using Voting.Lib.Iam.Models;
 
@@ -16,15 +17,17 @@ namespace Voting.Lib.Iam.Store;
 internal sealed class AuthStore : IAuth, IAuthStore
 {
     private readonly ILogger<AuthStore> _logger;
+    private readonly AuthStoreConfig _config;
     private User _user = new();
     private Tenant _tenant = new();
     private string _accessToken = string.Empty;
     private IReadOnlyCollection<string> _roles = Array.Empty<string>();
     private IReadOnlyCollection<string> _permissions = Array.Empty<string>();
 
-    public AuthStore(ILogger<AuthStore> logger)
+    public AuthStore(ILogger<AuthStore> logger, AuthStoreConfig config)
     {
         _logger = logger;
+        _config = config;
     }
 
     /// <inheritdoc />
@@ -68,11 +71,18 @@ internal sealed class AuthStore : IAuth, IAuthStore
     // since the "async context" (where the log scope information is stored) has been cleared.
     public IDisposable? StartLogScope()
     {
-        return _logger.BeginScope(new Dictionary<string, object>
+        var state = new Dictionary<string, object>
         {
             ["TenantId"] = _tenant.Id,
             ["Roles"] = _roles,
-        });
+        };
+
+        if (_config.EnableUserInformationLogging)
+        {
+            state.Add("UserId", _user.Loginid);
+        }
+
+        return _logger.BeginScope(state);
     }
 
     private T GetAuthValue<T>(T value)

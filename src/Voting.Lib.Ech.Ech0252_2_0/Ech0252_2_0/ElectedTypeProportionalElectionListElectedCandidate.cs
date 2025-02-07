@@ -99,13 +99,16 @@ namespace Ech0252_2_0
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute("sortID", Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute("mandateType", Order=3)]
+        public MandateTypeType MandateType { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("sortID", Order=4)]
         public string SortId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=5)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get

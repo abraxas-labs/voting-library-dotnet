@@ -257,6 +257,14 @@ public interface IDmDocService
     Task<List<Brick>> ListBricks(string category, CancellationToken ct = default);
 
     /// <summary>
+    /// Get all active bricks of a specific category.
+    /// </summary>
+    /// <param name="category">The category (specified by intern name of the category).</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns all bricks of a specific category.</returns>
+    Task<List<Brick>> ListActiveBricks(string category, CancellationToken ct = default);
+
+    /// <summary>
     /// Get a new brick content standalone editor URL.
     /// </summary>
     /// <param name="brickId">The brick ID.</param>
@@ -273,4 +281,13 @@ public interface IDmDocService
     /// <param name="ct">The cancellation token.</param>
     /// <returns>Returns the new brick and brick content ID.</returns>
     Task<(int NewBrickId, int NewContentId)> UpdateBrickContent(int brickContentId, string content, CancellationToken ct = default);
+
+    /// <summary>
+    /// Add a tag to a list of bricks.
+    /// </summary>
+    /// <param name="brickIds">List of brick ID's to tag.</param>
+    /// <param name="tag">tag name to tag the bricks.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task TagBricks(int[] brickIds, string tag, CancellationToken ct = default);
 }

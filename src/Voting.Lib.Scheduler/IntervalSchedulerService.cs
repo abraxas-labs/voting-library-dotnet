@@ -17,6 +17,7 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
     where TJob : IScheduledJob
 {
     private readonly JobRunner _jobRunner;
+    private readonly TimeProvider _timeProvider;
     private readonly bool _runOnStart;
     private readonly TimeSpan _jobInterval;
     private PeriodicTimer? _timer;
@@ -26,8 +27,9 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
     /// </summary>
     /// <param name="jobRunner">The job runner.</param>
     /// <param name="jobConfig">The job configuration.</param>
+    /// <param name="timeProvider">The time provider.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the job config is invalid.</exception>
-    public IntervalSchedulerService(JobRunner jobRunner, IJobConfig jobConfig)
+    public IntervalSchedulerService(JobRunner jobRunner, IJobConfig jobConfig, TimeProvider timeProvider)
     {
         if (jobConfig.Interval <= TimeSpan.Zero)
         {
@@ -35,6 +37,7 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
         }
 
         _jobRunner = jobRunner;
+        _timeProvider = timeProvider;
         _jobInterval = jobConfig.Interval;
         _runOnStart = jobConfig.RunOnStart;
     }
@@ -49,7 +52,7 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _timer = new PeriodicTimer(_jobInterval);
+        _timer = new PeriodicTimer(_jobInterval, _timeProvider);
 
         if (_runOnStart)
         {

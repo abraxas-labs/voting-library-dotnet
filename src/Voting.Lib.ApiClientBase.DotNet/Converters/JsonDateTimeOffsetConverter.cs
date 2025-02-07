@@ -27,7 +27,8 @@ public class JsonDateTimeOffsetConverter : JsonConverter
     /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
-        writer?.WriteValue(value?.ToString());
+        // Convert to RFC 3339
+        writer?.WriteValue((value as DateTimeOffset?)?.DateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'"));
     }
 
     /// <inheritdoc/>

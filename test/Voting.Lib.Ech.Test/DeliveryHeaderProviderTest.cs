@@ -61,13 +61,13 @@ public class DeliveryHeaderProviderTest
         {
             Product = "Voting.Lib.Tests",
             SenderId = "Voting.Lib.Tests.Sender",
-            ProductVersion = "0.1.2-a-very-long-string",
+            ProductVersion = "10.2.10+aba65782aa5ff1cf842b425b0e199bd4fb90d5b3",
             MessageType = "1710967",
         };
 
         var headerProvider = new DeliveryHeaderProvider(config, new MockedClock(), new DefaultEchMessageIdProvider());
         var header = headerProvider.BuildHeader();
-        header.SendingApplication.ProductVersion.Should().Be("0.1.2-a-ve");
+        header.SendingApplication.ProductVersion.Should().Be("10.2.10+ab");
     }
 
     [Fact]

@@ -31,7 +31,7 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Xml.Serialization.XmlElementAttribute("voterType", Order=1)]
-        public Ech0155_5_0.VoterTypeType VoterTypeValue { get; set; }
+        public Ech0155_5_1.VoterTypeType VoterTypeValue { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Gets or sets a value indicating whether the VoterType property is specified.</para>
@@ -41,7 +41,7 @@ namespace Ech0252_2_0
         public bool VoterTypeValueSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<Ech0155_5_0.VoterTypeType> VoterType
+        public System.Nullable<Ech0155_5_1.VoterTypeType> VoterType
         {
             get
             {
@@ -91,6 +91,42 @@ namespace Ech0252_2_0
                 this.SexValue = value.GetValueOrDefault();
                 this.SexValueSpecified = value.HasValue;
             }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<NamedElementType> _namedElement;
+        
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=3)]
+        public System.Collections.Generic.List<NamedElementType> NamedElement
+        {
+            get
+            {
+                return _namedElement;
+            }
+            set
+            {
+                _namedElement = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the NamedElement collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NamedElementSpecified
+        {
+            get
+            {
+                return (this.NamedElement != null);
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="CountOfVotersInformationTypeSubtotalInfo" /> class.</para>
+        /// </summary>
+        public CountOfVotersInformationTypeSubtotalInfo()
+        {
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
         }
     }
 }

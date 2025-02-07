@@ -27,26 +27,6 @@ public static class AusmittlungPdfVoteTemplates
     };
 
     /// <summary>
-    /// Gets the temporary end result protocol domain of influences export template.
-    /// </summary>
-    public static readonly TemplateModel TemporaryEndResultDomainOfInfluencesProtocol = new TemplateModel
-    {
-        Key = "vote_domain_of_influence_overall_temporary_end_result",
-        Filename = "Abst_{0}_provisorischeErgebnisse_{1}_{2}",
-        Description = "Provisorische Ergebnisse",
-        Format = ExportFileFormat.Pdf,
-        EntityType = EntityType.Vote,
-        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
-        {
-            DomainOfInfluenceType.Ch,
-            DomainOfInfluenceType.Ct,
-            DomainOfInfluenceType.Bz,
-        },
-        ResultType = ResultType.PoliticalBusinessResult,
-        GeneratedBy = VotingApp.VotingAusmittlung,
-    };
-
-    /// <summary>
     /// Gets the end result domain of influences protocol export template.
     /// </summary>
     public static readonly TemplateModel EndResultDomainOfInfluencesProtocol = new TemplateModel
@@ -56,12 +36,6 @@ public static class AusmittlungPdfVoteTemplates
         Description = "Detailergebnisse",
         Format = ExportFileFormat.Pdf,
         EntityType = EntityType.Vote,
-        DomainOfInfluenceTypes = new HashSet<DomainOfInfluenceType>
-        {
-            DomainOfInfluenceType.Ch,
-            DomainOfInfluenceType.Ct,
-            DomainOfInfluenceType.Bz,
-        },
         ResultType = ResultType.PoliticalBusinessResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -151,7 +125,6 @@ public static class AusmittlungPdfVoteTemplates
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         EndResultProtocol,
-        TemporaryEndResultDomainOfInfluencesProtocol,
         EndResultDomainOfInfluencesProtocol,
         ResultProtocol,
         EVotingDetailsResultProtocol,

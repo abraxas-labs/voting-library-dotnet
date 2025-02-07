@@ -3,6 +3,7 @@
 
 using System;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.Extensions.Time.Testing;
 using Voting.Lib.Common;
 
 namespace Voting.Lib.Testing.Mocks;
@@ -67,6 +68,19 @@ public class MockedClock : TimeProvider, IClock
     /// <returns>The timestamp.</returns>
     public static Timestamp GetTimestampDate(int dayDelta = 0)
         => GetDate(dayDelta).Date.ToTimestamp();
+
+    /// <summary>
+    /// Creates a <see cref="FakeTimeProvider"/> instance.
+    /// The default timestamp is set to <see cref="UtcNowDate"/>,
+    /// the timezone to zurich.
+    /// </summary>
+    /// <returns>The created instance.</returns>
+    public static FakeTimeProvider CreateFakeTimeProvider()
+    {
+        var mockedClock = new FakeTimeProvider(UtcNowOffset);
+        mockedClock.SetLocalTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Europe/Zurich"));
+        return mockedClock;
+    }
 
     /// <summary>
     /// Gets a fixed timestamp of 2020-01-10 13:12:10.200 UTC or an overwritten value.

@@ -32,8 +32,9 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The ServiceCollection.</param>
     /// <param name="config">The secure connect api options.</param>
+    /// <param name="authStoreConfig">The auth store configurations.</param>
     /// <returns>The AuthenticationBuilder instance.</returns>
-    public static AuthenticationBuilder AddVotingLibIam(this IServiceCollection services, SecureConnectApiOptions config)
+    public static AuthenticationBuilder AddVotingLibIam(this IServiceCollection services, SecureConnectApiOptions config, AuthStoreConfig authStoreConfig)
     {
         return services
             .AddSingleton(sp => sp.GetRequiredService<IOptionsMonitor<SecureConnectServiceAccountOptions>>().CurrentValue)
@@ -47,6 +48,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITenantService, TenantService>()
             .AddHttpClient<ISecureConnectPermissionServiceClient, SecureConnectPermissionServiceClient>(x => x.BaseAddress = config.PermissionUrl).AddDefaultSecureConnectServiceToken().Services
             .AddHttpClient<ISecureConnectIdentityServiceClient, SecureConnectIdentityServiceClient>(x => x.BaseAddress = config.IdentityUrl).AddDefaultSecureConnectServiceToken().Services
+            .AddSingleton(authStoreConfig)
             .AddForwardRefScoped<IAuth, AuthStore>()
             .AddForwardRefScoped<IAuthStore, AuthStore>()
             .AddCache<User>(new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8) })

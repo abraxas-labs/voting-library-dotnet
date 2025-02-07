@@ -78,10 +78,10 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("domainOfInfluence", Order=3)]
-        public Ech0155_5_0.DomainOfInfluenceType DomainOfInfluence { get; set; }
+        public Ech0155_5_1.DomainOfInfluenceType DomainOfInfluence { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("superiorAuthority", Order=4)]
-        public Ech0155_5_0.DomainOfInfluenceType SuperiorAuthority { get; set; }
+        public Ech0155_5_1.DomainOfInfluenceType SuperiorAuthority { get; set; }
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("pollingDay", Order=5, DataType="date")]

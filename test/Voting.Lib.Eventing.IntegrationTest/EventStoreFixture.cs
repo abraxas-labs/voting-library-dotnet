@@ -2,8 +2,8 @@
 // For license information see LICENSE file
 
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.EventStoreDb;
 using Voting.Lib.Eventing.Configuration;
 using Voting.Lib.Eventing.DependencyInjection;
 using Voting.Lib.Eventing.IntegrationTest.Events;
@@ -13,7 +13,7 @@ namespace Voting.Lib.Eventing.IntegrationTest;
 
 public class EventStoreFixture : IAsyncLifetime
 {
-    private IContainer _eventStoreContainer = null!; // initialized during InitializeAsync
+    private EventStoreDbContainer _eventStoreContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 
@@ -21,9 +21,7 @@ public class EventStoreFixture : IAsyncLifetime
 
     public virtual async Task InitializeAsync()
     {
-        _eventStoreContainer = EventStoreTestContainer.Build();
-
-        await _eventStoreContainer.StartAsync();
+        _eventStoreContainer = await EventStoreTestContainer.StartNew();
         Configuration = new()
         {
             Authorities = new() { _eventStoreContainer.Hostname + ":" + _eventStoreContainer.GetMappedPublicPort(EventStoreTestContainer.HttpPort) },

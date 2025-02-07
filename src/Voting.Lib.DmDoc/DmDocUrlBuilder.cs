@@ -74,6 +74,14 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
         => BuildUrl("bricks", BuildBricksQueryString(("category_name", category)));
 
     /// <inheritdoc />
+    public string ActiveBricks(string category)
+    => BuildUrl("bricks", BuildBricksActiveQueryString(("category_name", category)));
+
+    /// <inheritdoc />
+    public string BricksTagReferences()
+        => BuildUrl("bricks/tag_references");
+
+    /// <inheritdoc />
     public string BricksContentEditor(int brickId, int brickContentId)
         => BuildUrl($"bricks/{brickId}/brick_contents/{brickContentId}/edit");
 
@@ -109,6 +117,23 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
         {
             ("show_current", false),
             ("show_editable", true),
+            ("skip_preview_data", true),
+            ("skip_containers", true),
+            ("skip_dirty_check", true),
+        };
+
+        if (param.HasValue)
+        {
+            paramList.Add(param.Value);
+        }
+
+        return paramList.ToArray();
+    }
+
+    private (string, object?)[] BuildBricksActiveQueryString((string Field, object? Value)? param = null)
+    {
+        var paramList = new List<(string Field, object? Value)>
+        {
             ("skip_preview_data", true),
             ("skip_containers", true),
             ("skip_dirty_check", true),

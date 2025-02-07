@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Minio;
+using Minio.DataModel.Args;
 using Voting.Lib.ObjectStorage.Config;
 
 namespace Voting.Lib.ObjectStorage;
@@ -17,7 +18,7 @@ namespace Voting.Lib.ObjectStorage;
 /// <inheritdoc />
 public class ObjectStorageClient : IObjectStorageClient
 {
-    private readonly MinioClient _client;
+    private readonly IMinioClient _client;
     private readonly ILogger<ObjectStorageClient> _logger;
     private readonly string? _publicUrlHostReplacement;
     private readonly TimeSpan _publicUrlDefaultTtl;

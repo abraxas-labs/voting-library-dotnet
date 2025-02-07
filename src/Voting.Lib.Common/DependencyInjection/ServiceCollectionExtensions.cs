@@ -28,12 +28,13 @@ public static class ServiceCollectionExtensions
     public const string CorsConfigSectionKey = "Cors";
 
     /// <summary>
-    /// Adds the system clock to the service collection.
+    /// Adds the system time provider and clock to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The same service collection instance.</returns>
     public static IServiceCollection AddSystemClock(this IServiceCollection services)
     {
+        services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton<IClock, SystemClock>();
         return services;
     }

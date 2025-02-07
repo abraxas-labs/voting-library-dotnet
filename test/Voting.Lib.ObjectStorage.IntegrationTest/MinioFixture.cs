@@ -2,8 +2,8 @@
 // For license information see LICENSE file
 
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.Minio;
 using Voting.Lib.ObjectStorage.Config;
 using Voting.Lib.ObjectStorage.DependencyInjection;
 using Xunit;
@@ -12,7 +12,10 @@ namespace Voting.Lib.ObjectStorage.IntegrationTest;
 
 public class MinioFixture : IAsyncLifetime
 {
-    private IContainer _minioContainer = null!; // initialized during InitializeAsync
+    private const string MinioImage = "docker.io/minio/minio:RELEASE.2024-04-18T19-09-19Z";
+    private const int MinioApiPort = 9000;
+
+    private MinioContainer _minioContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 
@@ -20,15 +23,17 @@ public class MinioFixture : IAsyncLifetime
 
     public virtual async Task InitializeAsync()
     {
-        _minioContainer = MinioTestContainer.Build();
+        _minioContainer = new MinioBuilder()
+            .WithImage(MinioImage)
+            .Build();
 
         await _minioContainer.StartAsync();
         Configuration = new()
         {
-            Endpoint = "localhost:" + _minioContainer.GetMappedPublicPort(MinioTestContainer.ApiPort),
+            Endpoint = "localhost:" + _minioContainer.GetMappedPublicPort(MinioApiPort),
             UseSsl = false,
-            AccessKey = MinioTestContainer.Username,
-            SecretKey = MinioTestContainer.Password,
+            AccessKey = _minioContainer.GetAccessKey(),
+            SecretKey = _minioContainer.GetSecretKey(),
         };
 
         var services = new ServiceCollection();

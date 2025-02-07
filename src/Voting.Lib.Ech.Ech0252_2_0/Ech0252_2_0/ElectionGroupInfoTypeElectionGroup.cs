@@ -31,10 +31,10 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("domainOfInfluence", Order=1)]
-        public Ech0155_5_0.DomainOfInfluenceType DomainOfInfluence { get; set; }
+        public Ech0155_5_1.DomainOfInfluenceType DomainOfInfluence { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("superiorAuthority", Order=2)]
-        public Ech0155_5_0.DomainOfInfluenceType SuperiorAuthority { get; set; }
+        public Ech0155_5_1.DomainOfInfluenceType SuperiorAuthority { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("electionGroupPosition", Order=3)]
         public string ElectionGroupPosition { get; set; }

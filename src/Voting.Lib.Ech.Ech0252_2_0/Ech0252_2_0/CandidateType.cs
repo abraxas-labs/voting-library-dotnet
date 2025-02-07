@@ -17,7 +17,7 @@ namespace Ech0252_2_0
     [System.Xml.Serialization.XmlTypeAttribute("candidateType", Namespace="http://www.ech.ch/xmlns/eCH-0252/2")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CandidateType : Ech0155_5_0.CandidateType
+    public partial class CandidateType : Ech0155_5_1.CandidateType
     {
         
         /// <summary>

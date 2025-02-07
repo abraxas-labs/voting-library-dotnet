@@ -1,7 +1,9 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Threading.Tasks;
+using EventStore.Client;
 using FluentAssertions;
 using Google.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,12 +20,14 @@ public class AggregateTest : EventStoreSampleDataFixture
 {
     private AsyncServiceScope _scope; // initialized during InitializeAsync
     private IAggregateRepository _repo = null!; // initialized during InitializeAsync
+    private IAggregateFactory _factory = null!; // initialized during InitializeAsync
 
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
         _scope = GetService<IServiceScopeFactory>().CreateAsyncScope();
         _repo = _scope.ServiceProvider.GetRequiredService<IAggregateRepository>();
+        _factory = _scope.ServiceProvider.GetRequiredService<IAggregateFactory>();
     }
 
     [Fact]
@@ -64,6 +68,33 @@ public class AggregateTest : EventStoreSampleDataFixture
 
         await MockEvents.PublishEvents(_scope.ServiceProvider, MockEvents.TestStream1, 1);
         await Assert.ThrowsAsync<VersionMismatchException>(async () => await _repo.Save(aggregate));
+    }
+
+    [Fact]
+    public async Task SaveChunkedShouldWork()
+    {
+        var aggregate = _factory.New<TestAggregate>();
+        aggregate.Add();
+        aggregate.Add2();
+        aggregate.Add();
+        aggregate.OriginalVersion.Should().BeNull();
+
+        await _repo.SaveChunked(aggregate, 2);
+        aggregate.Sum1.Should().Be(3);
+        aggregate.Sum2.Should().Be(1);
+        aggregate.OriginalVersion.Should().Be(new StreamRevision(2));
+
+        aggregate = await _repo.GetById<TestAggregate>(Guid.Empty);
+        aggregate.Add2();
+        aggregate.Add();
+        aggregate.Add2();
+        aggregate.Add();
+
+        await _repo.SaveChunked(aggregate, 2);
+        aggregate.Sum1.Should().Be(15);
+        aggregate.Sum2.Should().Be(7);
+        aggregate.OriginalVersion.Should().Be(new StreamRevision(6));
+        aggregate.GetUncommittedEvents().Should().BeEmpty();
     }
 
     protected override void ConfigureEventing(IEventingServiceCollection eventing)

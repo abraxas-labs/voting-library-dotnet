@@ -191,6 +191,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voting.Lib.ApiClientBase.Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.MalwareScanner.Test", "test\Voting.Lib.MalwareScanner.Test\Voting.Lib.MalwareScanner.Test.csproj", "{73B964C2-D09D-4039-8232-217CF88C75FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0155_5_1", "src\Voting.Lib.Ech.Ech0155_5_1\Voting.Lib.Ech.Ech0155_5_1.csproj", "{0847C056-3B95-4505-99D1-0380D38D07FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -690,6 +692,12 @@ Global
 		{73B964C2-D09D-4039-8232-217CF88C75FD}.DebugUpdateSnapshots|Any CPU.Build.0 = DebugUpdateSnapshots|Any CPU
 		{73B964C2-D09D-4039-8232-217CF88C75FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73B964C2-D09D-4039-8232-217CF88C75FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0847C056-3B95-4505-99D1-0380D38D07FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -778,6 +786,7 @@ Global
 		{BA5031B6-3D4A-4A69-B330-014654638F53} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
 		{BECF9889-B5B9-47C0-AE64-67BA12951803} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
 		{73B964C2-D09D-4039-8232-217CF88C75FD} = {352F6EBB-2D6D-4B5E-B83E-C0F978E926BA}
+		{0847C056-3B95-4505-99D1-0380D38D07FB} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77CC4E7B-CE12-47E2-8B45-298D167EDDE1}

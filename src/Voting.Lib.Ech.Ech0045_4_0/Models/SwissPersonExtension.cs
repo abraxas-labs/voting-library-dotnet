@@ -42,6 +42,24 @@ public class SwissPersonExtension
     public bool? SendVotingCardsToDomainOfInfluenceReturnAddress { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the person is householder of the residence.
+    /// </summary>
+    [XmlElement(ElementName = "isHouseholder", Namespace = "")]
+    public bool IsHouseholder { get; set; }
+
+    /// <summary>
+    /// Gets or sets the residence building id.
+    /// </summary>
+    [XmlElement(ElementName = "residenceBuildingId", Namespace = "")]
+    public int? ResidenceBuildingId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the residence apartment id.
+    /// </summary>
+    [XmlElement(ElementName = "residenceApartmentId", Namespace = "")]
+    public int? ResidenceApartmentId { get; set; }
+
+    /// <summary>
     /// Whether or not the property <see cref="SendVotingCardsToDomainOfInfluenceReturnAddress"/> should be serialized.
     /// </summary>
     /// <returns>True if the property <see cref="SendVotingCardsToDomainOfInfluenceReturnAddress"/> has a value.</returns>

@@ -86,4 +86,15 @@ public interface IAggregateRepository
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task Save<TAggregate>(TAggregate aggregate, bool disableIdempotencyGuarantee = false)
         where TAggregate : BaseEventSourcingAggregate;
+
+    /// <summary>
+    /// Saves an aggregate in chunks. Required for large amount of events which cannot be transmitted within one request.
+    /// Note that this method does not behave like a transaction. The caller is responsible for a fallback if one chunk cannot be saved.
+    /// </summary>
+    /// <typeparam name="TAggregate">The aggregate type to save.</typeparam>
+    /// <param name="aggregate">The aggregate to save.</param>
+    /// <param name="chunkSize">The size of each chunk.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task SaveChunked<TAggregate>(TAggregate aggregate, int? chunkSize = null)
+        where TAggregate : BaseEventSourcingAggregate;
 }

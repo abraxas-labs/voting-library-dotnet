@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Time.Testing;
 using Voting.Lib.Scheduler.Test.Mocks;
+using Voting.Lib.Testing.Mocks;
 using Xunit;
 
 namespace Voting.Lib.Scheduler.Test;
@@ -35,14 +37,16 @@ public class IntervalSchedulerServiceTest
     public async Task ShouldExecute()
     {
         var interval = TimeSpan.FromSeconds(1);
-        var (scheduler, store, disposable) = BuildScheduler(interval);
-        using var toDispose = disposable;
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(interval);
+        await using var toDispose = disposable;
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(0);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(2);
+
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(0);
+
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(2);
         await scheduler.StopAsync(CancellationToken.None);
     }
 
@@ -50,14 +54,15 @@ public class IntervalSchedulerServiceTest
     public async Task ShouldExecuteOnStart()
     {
         var interval = TimeSpan.FromSeconds(1);
-        var (scheduler, store, disposable) = BuildScheduler(interval, true);
-        using var toDispose = disposable;
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(interval, true);
+        await using var toDispose = disposable;
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(0);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(2);
+
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(0);
+
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(2);
         await scheduler.StopAsync(CancellationToken.None);
     }
 
@@ -65,17 +70,22 @@ public class IntervalSchedulerServiceTest
     public async Task ShouldDropParallelExecutions()
     {
         var interval = TimeSpan.FromSeconds(1);
-        var (scheduler, store, disposable) = BuildScheduler(interval);
-        using var toDispose = disposable;
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(interval);
+        await using var toDispose = disposable;
         store.JobExecutionTime = TimeSpan.FromSeconds(2);
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(0);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        await Task.Delay(store.JobExecutionTime);
-        store.CountOfExecutions.Should().Be(2);
+
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(0);
+
+        // 1. run is still running, 2. run is not yet started (interval is skipped).
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(1);
+
+        // 1. run should be completed by now, 2. run should be started.
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(2);
         await scheduler.StopAsync(CancellationToken.None);
     }
 
@@ -83,26 +93,42 @@ public class IntervalSchedulerServiceTest
     public async Task ShouldCancelIfStopped()
     {
         var interval = TimeSpan.FromSeconds(1);
-        var (scheduler, store, disposable) = BuildScheduler(interval);
-        using var toDispose = disposable;
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(interval);
+        await using var toDispose = disposable;
         store.JobExecutionTime = TimeSpan.FromSeconds(2);
+
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(interval + TimeSpan.FromSeconds(.1));
+        await AdvanceTime(timeProvider, interval);
         await scheduler.StopAsync(CancellationToken.None);
-        await Task.Delay(store.JobExecutionTime + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(1);
+
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(1);
     }
 
-    private (IHostedService SchedulerService, JobStore Store, IDisposable Disposable) BuildScheduler(TimeSpan interval, bool runOnStart = false)
+    private (IHostedService SchedulerService, JobStore Store, FakeTimeProvider TimeProvider, ServiceProvider Services) BuildScheduler(TimeSpan interval, bool runOnStart = false)
     {
         var sc = new ServiceCollection();
         sc.AddLogging();
         sc.AddSingleton<JobStore>();
         sc.AddScheduledJob<MockJob>(interval, runOnStart);
+        sc.AddMockedTimeProvider();
         var services = sc.BuildServiceProvider();
         var schedulerService = services.GetRequiredService<IHostedService>();
         var store = services.GetRequiredService<JobStore>();
-        return (schedulerService, store, services);
+        var timeProvider = services.GetRequiredService<FakeTimeProvider>();
+        return (schedulerService, store, timeProvider, services);
+    }
+
+    private async Task AdvanceTime(FakeTimeProvider timeProvider, params TimeSpan[] deltas)
+    {
+        // multiple separate advances may be needed to notify multiple delays in the scheduler.
+        foreach (var delta in deltas)
+        {
+            timeProvider.Advance(delta);
+
+            // ensures the code of the thread being awaited/asserted continues
+            // value was evaluated by trial & error
+            await Task.Delay(20);
+        }
     }
 }

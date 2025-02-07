@@ -102,6 +102,6 @@ namespace Ech0252_2_0
         public ushort NumberOfEntries { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("extension", Order=5)]
-        public Ech0155_5_0.ExtensionType Extension { get; set; }
+        public Ech0155_5_1.ExtensionType Extension { get; set; }
     }
 }

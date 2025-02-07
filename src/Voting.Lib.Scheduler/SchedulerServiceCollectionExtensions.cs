@@ -51,6 +51,7 @@ public static class SchedulerServiceCollectionExtensions
         services.TryAddScoped<TJob>();
         services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<IntervalSchedulerService<TJob>>(sp, config));
         services.TryAddSingleton<JobRunner>();
+        services.AddSystemClock();
         return services;
     }
 
@@ -96,6 +97,7 @@ public static class SchedulerServiceCollectionExtensions
         services.TryAddScoped<TJob>();
         services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<CronSchedulerService<TJob>>(sp, config));
         services.TryAddSingleton<JobRunner>();
+        services.AddSystemClock();
         return services;
     }
 }

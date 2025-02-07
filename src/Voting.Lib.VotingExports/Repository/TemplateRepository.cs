@@ -26,6 +26,7 @@ public static class TemplateRepository
             .Concat(AusmittlungPdfContestTemplates.All)
             .Concat(AusmittlungPdfVoteTemplates.All)
             .Concat(AusmittlungPdfMajorityElectionTemplates.All)
+            .Concat(AusmittlungPdfSecondaryMajorityElectionTemplates.All)
             .Concat(AusmittlungPdfProportionalElectionTemplates.All)
             .Concat(AusmittlungXmlContestTemplates.All)
             .Concat(AusmittlungXmlVoteTemplates.All)

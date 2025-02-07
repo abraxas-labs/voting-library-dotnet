@@ -203,11 +203,11 @@ namespace Ech0252_2_0
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<Ech0155_5_0.OccupationalTitleInformationTypeOccupationalTitleInfo> _occupationalTitle;
+        private System.Collections.Generic.List<Ech0155_5_1.OccupationalTitleInformationTypeOccupationalTitleInfo> _occupationalTitle;
         
         [System.Xml.Serialization.XmlArrayAttribute("occupationalTitle", Order=8)]
         [System.Xml.Serialization.XmlArrayItemAttribute("occupationalTitleInfo", Namespace="http://www.ech.ch/xmlns/eCH-0155/5")]
-        public System.Collections.Generic.List<Ech0155_5_0.OccupationalTitleInformationTypeOccupationalTitleInfo> OccupationalTitle
+        public System.Collections.Generic.List<Ech0155_5_1.OccupationalTitleInformationTypeOccupationalTitleInfo> OccupationalTitle
         {
             get
             {
@@ -236,16 +236,16 @@ namespace Ech0252_2_0
         /// </summary>
         public WriteInCandidateType()
         {
-            this._occupationalTitle = new System.Collections.Generic.List<Ech0155_5_0.OccupationalTitleInformationTypeOccupationalTitleInfo>();
+            this._occupationalTitle = new System.Collections.Generic.List<Ech0155_5_1.OccupationalTitleInformationTypeOccupationalTitleInfo>();
             this._swiss = new System.Collections.Generic.List<string>();
-            this._partyAffiliation = new System.Collections.Generic.List<Ech0155_5_0.PartyAffiliationInformationTypePartyAffiliationInfo>();
+            this._partyAffiliation = new System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo>();
         }
         
         [System.Xml.Serialization.XmlElementAttribute("contactAddress", Order=9)]
         public Ech0010_6_0.PersonMailAddressType ContactAddress { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("politicalAddress", Order=10)]
-        public Ech0155_5_0.PoliticalAddressInfoType PoliticalAddress { get; set; }
+        public Ech0155_5_1.PoliticalAddressInfoType PoliticalAddress { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("dwellingAddress", Order=11)]
         public Ech0010_6_0.AddressInformationType DwellingAddress { get; set; }
@@ -322,11 +322,11 @@ namespace Ech0252_2_0
         public string Title { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<Ech0155_5_0.PartyAffiliationInformationTypePartyAffiliationInfo> _partyAffiliation;
+        private System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo> _partyAffiliation;
         
         [System.Xml.Serialization.XmlArrayAttribute("partyAffiliation", Order=16)]
         [System.Xml.Serialization.XmlArrayItemAttribute("partyAffiliationInfo", Namespace="http://www.ech.ch/xmlns/eCH-0155/5")]
-        public System.Collections.Generic.List<Ech0155_5_0.PartyAffiliationInformationTypePartyAffiliationInfo> PartyAffiliation
+        public System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo> PartyAffiliation
         {
             get
             {

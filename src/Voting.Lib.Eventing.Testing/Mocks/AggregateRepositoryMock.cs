@@ -133,6 +133,13 @@ public class AggregateRepositoryMock : IAggregateRepository
     }
 
     /// <inheritdoc />
+    public Task SaveChunked<TAggregate>(TAggregate aggregate, int? chunkSize = null)
+        where TAggregate : BaseEventSourcingAggregate
+    {
+        return Save(aggregate);
+    }
+
+    /// <inheritdoc />
     public Task<TAggregate> GetSnapshotById<TAggregate>(Guid id, DateTime endTimestampInclusive)
         where TAggregate : BaseEventSourcingAggregate
     {

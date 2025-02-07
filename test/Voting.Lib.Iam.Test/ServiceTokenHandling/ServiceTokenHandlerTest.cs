@@ -1,6 +1,7 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -43,7 +44,7 @@ public class ServiceTokenHandlerTest
         var postConfigureOptions = new SecureConnectServiceAccountPostConfigureOptions(httpClientFactoryMock.Object);
         postConfigureOptions.PostConfigure("test", options);
 
-        var clock = new MockedClock();
+        var clock = MockedClock.CreateFakeTimeProvider();
         var handler = new ServiceTokenHandler(NullLogger<ServiceTokenHandler>.Instance, options, clock, httpClientFactoryMock.Object);
 
         // fetch the token the first time
@@ -60,7 +61,7 @@ public class ServiceTokenHandlerTest
 
         // seek the time ahead 1 hour
         // token should be expired and a new one should be fetched
-        clock.UtcNow = clock.UtcNow.AddHours(1);
+        clock.Advance(TimeSpan.FromHours(1));
         ExpectTokenFetch(httpMessageHandler, "foo-bar-access-token2");
         token = await handler.GetServiceToken();
         token.Should().Be("foo-bar-access-token2");
@@ -68,7 +69,7 @@ public class ServiceTokenHandlerTest
 
         // seek the time slightly before the token expiry
         // token should be assumed as expired and a new one should be fetched.
-        clock.UtcNow = clock.UtcNow.AddSeconds(599);
+        clock.Advance(TimeSpan.FromSeconds(599));
         ExpectTokenFetch(httpMessageHandler, "foo-bar-access-token3");
         token = await handler.GetServiceToken();
         token.Should().Be("foo-bar-access-token3");

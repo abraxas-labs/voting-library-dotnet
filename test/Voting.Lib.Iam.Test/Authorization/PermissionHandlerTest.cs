@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Voting.Lib.Iam.Authorization;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Store;
 using Xunit;
 
@@ -21,7 +22,7 @@ public class PermissionHandlerTest : IAsyncDisposable
 
     public PermissionHandlerTest()
     {
-        _authStore = new AuthStore(NullLogger<AuthStore>.Instance);
+        _authStore = new AuthStore(NullLogger<AuthStore>.Instance, new AuthStoreConfig());
 
         _serviceProvider = new ServiceCollection()
             .AddAuthorization()

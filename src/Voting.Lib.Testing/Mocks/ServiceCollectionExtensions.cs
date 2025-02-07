@@ -5,6 +5,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Voting.Lib.Common;
 
@@ -28,6 +29,24 @@ public static class ServiceCollectionExtensions
     {
         services.RemoveAll<TService>();
         services.TryAddSingleton<TMock>();
+        services.AddSingleton<TService>(sp => sp.GetRequiredService<TMock>());
+        return services;
+    }
+
+    /// <summary>
+    /// replaces all instances of TService with the provided singleton instance of TMock.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="mock">The mock instance.</param>
+    /// <typeparam name="TService">The type of the service to be removed.</typeparam>
+    /// <typeparam name="TMock">The type of the mock.</typeparam>
+    /// <returns>The updated service collection instance.</returns>
+    public static IServiceCollection AddMock<TService, TMock>(this IServiceCollection services, TMock mock)
+        where TService : class
+        where TMock : class, TService
+    {
+        services.RemoveAll<TService>();
+        services.TryAddSingleton(mock);
         services.AddSingleton<TService>(sp => sp.GetRequiredService<TMock>());
         return services;
     }
@@ -60,13 +79,14 @@ public static class ServiceCollectionExtensions
         => services.RemoveAll<IHostedService>();
 
     /// <summary>
-    /// Replaces the SystemClock with a fixed timestamp clock.
+    /// Replaces the system time provider with a <see cref="FakeTimeProvider"/>.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection instance.</returns>
-    public static IServiceCollection AddMockedClock(this IServiceCollection services)
-        => services
-            .RemoveAll<TimeProvider>()
-            .AddMock<TimeProvider, MockedClock>()
-            .AddMock<IClock, MockedClock>();
+    public static IServiceCollection AddMockedTimeProvider(this IServiceCollection services)
+    {
+        return services
+            .AddMock<IClock, MockedClock>()
+            .AddMock<TimeProvider, FakeTimeProvider>(MockedClock.CreateFakeTimeProvider());
+    }
 }

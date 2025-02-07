@@ -1420,7 +1420,7 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity
         /// </remarks>
         /// <returns>A successful response.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body);
+        System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, string x_vrsg_tenant);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1442,7 +1442,7 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity
         /// </remarks>
         /// <returns>A successful response.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, string x_vrsg_tenant, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Returns contacts from user (by loginid)
@@ -7701,9 +7701,9 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity
         /// </remarks>
         /// <returns>A successful response.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body)
+        public virtual System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, string x_vrsg_tenant)
         {
-            return IdentityService_UpdateUserAsync(loginid, body, System.Threading.CancellationToken.None);
+            return IdentityService_UpdateUserAsync(loginid, body, x_vrsg_tenant, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -7726,7 +7726,7 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity
         /// </remarks>
         /// <returns>A successful response.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<V1User> IdentityService_UpdateUserAsync(string loginid, V1User body, string x_vrsg_tenant, System.Threading.CancellationToken cancellationToken)
         {
             if (loginid == null)
                 throw new System.ArgumentNullException("loginid");
@@ -7744,6 +7744,10 @@ namespace Voting.Lib.Iam.Services.ApiClient.Identity
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
+
+                    if (x_vrsg_tenant == null)
+                        throw new System.ArgumentNullException("x_vrsg_tenant");
+                    request_.Headers.TryAddWithoutValidation("x-vrsg-tenant", ConvertToString(x_vrsg_tenant, System.Globalization.CultureInfo.InvariantCulture));
                     var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value);
                     var content_ = new System.Net.Http.StringContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");

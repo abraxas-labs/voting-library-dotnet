@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Grpc.Tools" Version="$(GrpcAspNetCoreVersion)" PrivateAssets="All" />
+    <PackageReference Include="TestContainers.EventStoreDb" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,10 +2,10 @@
 // For license information see LICENSE file
 
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.RabbitMq;
 using Voting.Lib.Messaging.Configuration;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace Voting.Lib.Messaging.IntegrationTest;
 
 public class RabbitMqFixture : IAsyncLifetime
 {
-    private IContainer _rabbitMqContainer = null!; // initialized during InitializeAsync
+    private RabbitMqContainer _rabbitMqContainer = null!; // initialized during InitializeAsync
 
     public ServiceProvider ServiceProvider { get; private set; } = null!; // initialized during InitializeAsync
 
@@ -21,9 +21,8 @@ public class RabbitMqFixture : IAsyncLifetime
 
     public virtual async Task InitializeAsync()
     {
-        _rabbitMqContainer = RabbitMqTestContainer.Build();
+        _rabbitMqContainer = await RabbitMqTestContainer.StartNew();
 
-        await _rabbitMqContainer.StartAsync();
         Configuration = new()
         {
             Hosts = new() { "localhost:" + _rabbitMqContainer.GetMappedPublicPort(RabbitMqTestContainer.ApiPort) },

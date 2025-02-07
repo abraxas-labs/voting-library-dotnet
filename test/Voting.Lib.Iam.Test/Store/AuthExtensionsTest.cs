@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using FluentAssertions;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Exceptions;
 using Voting.Lib.Iam.Store;
 using Voting.Lib.Testing.Mocks;
@@ -15,7 +16,7 @@ public class AuthExtensionsTest
 
     public AuthExtensionsTest()
     {
-        _auth = new AuthStore(new MockLogger<AuthStore>());
+        _auth = new AuthStore(new MockLogger<AuthStore>(), new AuthStoreConfig());
         _auth.SetValues(
             "mock-token",
             new() { Firstname = "firstName", Lastname = "lastName" },

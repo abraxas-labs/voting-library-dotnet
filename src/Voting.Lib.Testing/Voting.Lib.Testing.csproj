@@ -11,7 +11,8 @@
         <PackageReference Include="xunit" Version="2.6.6" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MsAspNetCoreVersion)" />
         <PackageReference Include="Grpc.AspNetCore" Version="$(GrpcAspNetCoreVersion)" />
-        <PackageReference Include="Testcontainers" Version="3.7.0" />
+        <PackageReference Include="Testcontainers" Version="4.0.0" />
+        <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="8.10.0" />
     </ItemGroup>
 
     <ItemGroup>

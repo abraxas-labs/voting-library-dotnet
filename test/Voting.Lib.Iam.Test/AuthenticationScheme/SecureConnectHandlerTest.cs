@@ -20,6 +20,7 @@ using Moq;
 using Voting.Lib.Common.Cache;
 using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.Authorization;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Store;
@@ -58,7 +59,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
             .Setup(x => x.Get(SecureConnectDefaults.AuthenticationScheme))
             .Returns(_options);
 
-        _authStore = new AuthStore(NullLogger<AuthStore>.Instance);
+        _authStore = new AuthStore(NullLogger<AuthStore>.Instance, new AuthStoreConfig());
 
         _jwtBearerHandler = new MockedJwtBearerHandler(
             optionsMonitorMock.Object,

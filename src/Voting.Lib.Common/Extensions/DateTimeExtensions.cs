@@ -50,4 +50,12 @@ public static class DateTimeExtensions
 
         return TimeZoneInfo.ConvertTimeFromUtc(dateTime, ChTimeZoneInfo);
     }
+
+    /// <summary>
+    /// Returns the swiss <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="timeProvider">The time provider.</param>
+    /// <returns>The <see cref="DateTime"/>.</returns>
+    public static DateTime GetSwissDateTime(this TimeProvider timeProvider)
+        => timeProvider.GetUtcNow().UtcDateTime.ConvertUtcTimeToSwissTime();
 }

@@ -62,6 +62,12 @@ public interface IDmDocUrlBuilder
     string Bricks(string category);
 
     /// <summary>
+    /// Gets the bricks URL.
+    /// </summary>
+    /// <returns>The bricks URL.</returns>
+    string BricksTagReferences();
+
+    /// <summary>
     /// Gets the URL for the bricks editor.
     /// </summary>
     /// <param name="brickId">The brick ID.</param>
@@ -132,4 +138,11 @@ public interface IDmDocUrlBuilder
     /// <param name="printJobId">The print job ID.</param>
     /// <returns>Returns the URL to the finished PDF of a print job.</returns>
     string PrintJobPdf(int printJobId);
+
+    /// <summary>
+    /// Gets the URL for active bricks of a specific category.
+    /// </summary>
+    /// <param name="category">The category.</param>
+    /// <returns>The bricks category URL.</returns>
+    string ActiveBricks(string category);
 }

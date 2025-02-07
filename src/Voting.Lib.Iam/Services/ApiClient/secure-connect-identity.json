@@ -2638,6 +2638,12 @@
             "schema": {
               "$ref": "#/definitions/v1User"
             }
+          },
+          {
+            "name": "x-vrsg-tenant",
+            "in": "header",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [

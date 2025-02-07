@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Time.Testing;
 using Voting.Lib.Scheduler.Test.Mocks;
+using Voting.Lib.Testing.Mocks;
 using Xunit;
 
 namespace Voting.Lib.Scheduler.Test;
@@ -39,14 +41,19 @@ public class CronSchedulerServiceTest
     public async Task ShouldExecute()
     {
         var cronSchedule = "* * * * * *"; // every second
-        var (scheduler, store, disposable) = BuildScheduler(cronSchedule);
+        var interval = TimeSpan.FromSeconds(1);
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(cronSchedule);
         using var toDispose = disposable;
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(0);
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        store.CountOfExecutions.Should().Be(2);
+        store.StartedAt.Should().HaveCount(0);
+        store.CancelledAt.Should().HaveCount(0);
+
+        await AdvanceTime(timeProvider, interval, store.JobExecutionTime);
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(0);
+
+        await AdvanceTime(timeProvider, interval, store.JobExecutionTime);
+        store.StartedAt.Should().HaveCount(2);
         await scheduler.StopAsync(CancellationToken.None);
     }
 
@@ -54,17 +61,24 @@ public class CronSchedulerServiceTest
     public async Task ShouldDropParallelExecutions()
     {
         var cronSchedule = "* * * * * *"; // every second
-        var (scheduler, store, disposable) = BuildScheduler(cronSchedule);
+        var interval = TimeSpan.FromSeconds(1);
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(cronSchedule);
         using var toDispose = disposable;
         store.JobExecutionTime = TimeSpan.FromSeconds(2);
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(0);
-        await Task.Delay(TimeSpan.FromSeconds(1));
-        store.CountOfExecutions.Should().Be(1);
-        await Task.Delay(store.JobExecutionTime);
-        store.CountOfExecutions.Should().Be(2);
+
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(0);
+
+        // the interval should trigger the 2. run of the job,
+        // but since the 1. run does not have completed yet, the current run is skipped.
+        await AdvanceTime(timeProvider, interval);
+        store.StartedAt.Should().HaveCount(1);
+
+        // the 2. run should start now, as the 1. run is finished.
+        await AdvanceTime(timeProvider, interval, store.JobExecutionTime);
+        store.StartedAt.Should().HaveCount(2);
         await scheduler.StopAsync(CancellationToken.None);
     }
 
@@ -72,26 +86,46 @@ public class CronSchedulerServiceTest
     public async Task ShouldCancelIfStopped()
     {
         var cronSchedule = "* * * * * *"; // every second
-        var (scheduler, store, disposable) = BuildScheduler(cronSchedule);
+        var interval = TimeSpan.FromSeconds(1);
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler(cronSchedule);
         using var toDispose = disposable;
         store.JobExecutionTime = TimeSpan.FromSeconds(2);
         await scheduler.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromSeconds(1));
+
+        // 1. run should start after <interval>
+        await AdvanceTime(timeProvider, interval);
+
+        // stop scheduler while 1. run is still running
+        // this should cancel the running job
         await scheduler.StopAsync(CancellationToken.None);
-        await Task.Delay(store.JobExecutionTime + TimeSpan.FromSeconds(.1));
-        store.CountOfExecutions.Should().Be(1);
-        store.CountOfCancellations.Should().Be(1);
+        store.StartedAt.Should().HaveCount(1);
+        store.CancelledAt.Should().HaveCount(1);
     }
 
-    private (IHostedService SchedulerService, JobStore Store, IDisposable Disposable) BuildScheduler(string schedule)
+    private (IHostedService SchedulerService, JobStore Store, FakeTimeProvider TimeProvider, IDisposable Disposable) BuildScheduler(string schedule)
     {
         var sc = new ServiceCollection();
         sc.AddLogging();
         sc.AddSingleton<JobStore>();
         sc.AddCronJob<MockJob>(schedule);
+        sc.AddMockedTimeProvider();
         var services = sc.BuildServiceProvider();
         var schedulerService = services.GetRequiredService<IHostedService>();
         var store = services.GetRequiredService<JobStore>();
-        return (schedulerService, store, services);
+        var timeProvider = services.GetRequiredService<FakeTimeProvider>();
+        return (schedulerService, store, timeProvider, services);
+    }
+
+    private async Task AdvanceTime(FakeTimeProvider timeProvider, params TimeSpan[] deltas)
+    {
+        // multiple separate advances may be needed to notify multiple delays in the scheduler.
+        foreach (var delta in deltas)
+        {
+            timeProvider.Advance(delta);
+
+            // ensures the code of the thread being awaited/asserted continues
+            // value was evaluated by trial & error
+            await Task.Delay(100);
+        }
     }
 }

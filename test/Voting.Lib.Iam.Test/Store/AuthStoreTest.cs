@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Exceptions;
 using Voting.Lib.Iam.Store;
 using Voting.Lib.Testing.Mocks;
@@ -15,12 +16,13 @@ namespace Voting.Lib.Iam.Test.Store;
 public class AuthStoreTest
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
 {
+    private readonly AuthStoreConfig _config = new();
     private readonly AuthStore _authStore;
     private readonly MockLogger<AuthStore> _logger = new();
 
     public AuthStoreTest()
     {
-        _authStore = new AuthStore(_logger);
+        _authStore = new AuthStore(_logger, _config);
     }
 
     [Fact]
@@ -58,7 +60,7 @@ public class AuthStoreTest
     public void StartLogScopeShouldWork()
     {
         var roles = new[] { "Role1", "Role2" };
-        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
+        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName", Loginid = "123456789" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
         using (_authStore.StartLogScope())
         {
             _logger.ActiveScopes.Should().HaveCount(1);
@@ -66,6 +68,27 @@ public class AuthStoreTest
             loggerScope.Should().HaveCount(2);
             loggerScope.Should().Contain("TenantId", "TenantId1");
             loggerScope.TryGetValue("Roles", out var scopeRoles).Should().BeTrue();
+            loggerScope.ContainsKey("UserId").Should().BeFalse();
+            scopeRoles.Should().BeEquivalentTo(roles);
+        }
+
+        _logger.ActiveScopes.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void StartLogScopeShouldWorkWhenLoggingUserInformation()
+    {
+        var roles = new[] { "Role1", "Role2" };
+        _config.EnableUserInformationLogging = true;
+        _authStore.SetValues("mock-token", new() { Firstname = "firstName", Lastname = "lastName", Loginid = "123456789" }, new() { Id = "TenantId1", Name = "TenantName" }, roles);
+        using (_authStore.StartLogScope())
+        {
+            _logger.ActiveScopes.Should().HaveCount(1);
+            var loggerScope = _logger.ActiveScopes.Cast<IReadOnlyDictionary<string, object>>().Single();
+            loggerScope.Should().HaveCount(3);
+            loggerScope.Should().Contain("TenantId", "TenantId1");
+            loggerScope.TryGetValue("Roles", out var scopeRoles).Should().BeTrue();
+            loggerScope.Should().Contain("UserId", "123456789");
             scopeRoles.Should().BeEquivalentTo(roles);
         }
 

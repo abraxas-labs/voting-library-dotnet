@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Voting.Lib.Iam.Configuration;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Store;
 using Voting.Lib.Rest.Middleware;
@@ -31,6 +32,7 @@ public class IamLoggingHandlerTest
                 cfg.ClearProviders();
                 cfg.AddProvider(loggerProvider);
             })
+            .AddSingleton(new AuthStoreConfig())
             .AddForwardRefScoped<IAuthStore, AuthStore>();
 
         await using var app = builder.Build();

@@ -224,7 +224,7 @@ public class HsmAdapter : IPkcs11DeviceAdapter, IDisposable
         try
         {
             var pkcs11Configuration = pkcs11Config ?? _pkcs11Config;
-            WithSession(pkcs11Configuration, session => GetPublicKey(session, pkcs11Configuration));
+            WithSession(pkcs11Configuration, _ => default(string));
             return true;
         }
         catch (Exception ex)
@@ -451,7 +451,7 @@ public class HsmAdapter : IPkcs11DeviceAdapter, IDisposable
         }
         catch (Exception ex)
         {
-            throw new Pkcs11Exception("Could not load the pkcs11 library", ex);
+            throw new Pkcs11Exception($"Could not load the pkcs11 library {pkcs11Config.LibraryPath}", ex);
         }
     }
 
