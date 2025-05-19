@@ -101,7 +101,11 @@ public class DatabaseQueryMonitoringInterceptor : DbCommandInterceptor
 
     private void LogQuery(DbCommand command, CommandExecutedEventData eventData)
     {
-        _logger.LogWarning("Long running database query has been detected. Total milliseconds:{DurationInMs}ms\r\n\r\n{CommandText}", eventData.Duration.TotalMilliseconds, command.CommandText);
+        var truncatedCommandText = command.CommandText.Length > _config.MaxCommandTextLength
+            ? command.CommandText[.._config.MaxCommandTextLength] + "..."
+            : command.CommandText;
+
+        _logger.LogWarning("Long running database query has been detected. Total milliseconds:{DurationInMs}ms\r\n\r\n{CommandText}", eventData.Duration.TotalMilliseconds, truncatedCommandText);
     }
 
     private void RegisterQueryMetrics(CommandExecutedEventData eventData)

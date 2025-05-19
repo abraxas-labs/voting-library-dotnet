@@ -5,7 +5,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using EventStore.Client;
 using Google.Protobuf;
-using Google.Protobuf.Reflection;
 
 namespace Voting.Lib.Eventing.Persistence;
 
@@ -34,37 +33,17 @@ public interface IEventSerializer
     IMessage Deserialize(EventRecord eventRecord);
 
     /// <summary>
-    /// Deserialize event data.
-    /// </summary>
-    /// <param name="data">The event data to deserialize.</param>
-    /// <param name="messageType">The message type.</param>
-    /// <returns>Returns the deserialized event data.</returns>
-    IMessage Deserialize(ReadOnlyMemory<byte> data, string messageType);
-
-    /// <summary>
     /// Deserialize an event.
     /// </summary>
     /// <param name="eventRecord">The event to deserialize.</param>
-    /// <typeparam name="T">The type of the deserialized event data.</typeparam>
     /// <returns>Returns the deserialized event data.</returns>
-    T Deserialize<T>(EventRecord eventRecord)
-        where T : IMessage<T>, new();
-
-    /// <summary>
-    /// Deserialize an event.
-    /// </summary>
-    /// <param name="data">The event data to deserialize.</param>
-    /// <typeparam name="T">The type of the deserialized event data.</typeparam>
-    /// <returns>Returns the deserialized event data.</returns>
-    T Deserialize<T>(ReadOnlyMemory<byte> data)
-        where T : IMessage<T>, new();
+    EventWithMetadata DeserializeWithMetadata(EventRecord eventRecord);
 
     /// <summary>
     /// Tries to deserialize an event.
     /// </summary>
     /// <param name="eventRecord">The event to deserialize.</param>
-    /// <param name="metadataDescriptorProvider">The metadata descriptor provider by the event data.</param>
     /// <param name="eventWithMetadata">The deserialized event.</param>
     /// <returns>Returns true if the deserialization succeeded.</returns>
-    bool TryDeserialize(EventRecord eventRecord, Func<IMessage, IDescriptor>? metadataDescriptorProvider, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata);
+    bool TryDeserialize(EventRecord eventRecord, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata);
 }

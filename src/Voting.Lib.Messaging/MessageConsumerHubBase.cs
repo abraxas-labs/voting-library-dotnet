@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -34,12 +33,23 @@ public abstract class MessageConsumerHubBase<TFilterMessage, TListenerMessage>
     }
 
     /// <summary>
-    /// Gets all consumers which are interested in the message.
+    /// Gets the consumers for the given message.
     /// </summary>
     /// <param name="message">The message.</param>
-    /// <returns>Returns all consumers interested in the message.</returns>
-    protected IEnumerable<MessageConsumerRegistration<TFilterMessage, TListenerMessage>> GetConsumers(TFilterMessage message)
-        => _listeners.Values.Where(x => x.CanConsume(message));
+    /// <returns>The list of consumers.</returns>
+    public async Task<List<MessageConsumerRegistration<TFilterMessage, TListenerMessage>>> GetConsumers(TFilterMessage message)
+    {
+        var listeners = new List<MessageConsumerRegistration<TFilterMessage, TListenerMessage>>();
+        foreach (var listener in _listeners.Values)
+        {
+            if (await listener.CanConsume(message).ConfigureAwait(false))
+            {
+                listeners.Add(listener);
+            }
+        }
+
+        return listeners;
+    }
 
     /// <summary>
     /// Registers a message consumer and listens for messages.

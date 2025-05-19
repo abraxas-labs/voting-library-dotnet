@@ -109,6 +109,7 @@ public class TestEventPublisher
     public async Task Publish(bool isCatchUp, long eventNumber, params IMessage[] data)
     {
         await using var scope = _serviceProvider.CreateAsyncScope();
+
         var eventProcessorScopes = scope.ServiceProvider.GetRequiredService<IEnumerable<IEventProcessorScope>>();
         foreach (var eventProcessorScope in eventProcessorScopes)
         {
@@ -124,7 +125,11 @@ public class TestEventPublisher
         var streamPosition = new StreamPosition((ulong)eventNumber);
         foreach (var eventData in events)
         {
+            var eventWithMetadata = new EventWithMetadata(eventData, null, Guid.NewGuid());
+
             await using var scope = _serviceProvider.CreateAsyncScope();
+            scope.ServiceProvider.GetRequiredService<EventProcessorContextAccessor>().SetContext(new EventProcessorContext(isCatchUp, eventWithMetadata));
+
             var registry = (EventProcessorAdapterRegistry)scope.ServiceProvider.GetRequiredService(eventProcessorAdapterRegistry);
             var processor = registry.GetProcessorAdapter(scope.ServiceProvider, eventData.GetType().FullName!);
 
@@ -133,9 +138,7 @@ public class TestEventPublisher
 
             if (processor != null)
             {
-                var eventSerializer = scope.ServiceProvider.GetRequiredService<IEventSerializer>();
-                var data = eventSerializer.Serialize(eventData);
-                await processor.Process(data, isCatchUp).ConfigureAwait(false);
+                await processor.Process(eventWithMetadata, isCatchUp).ConfigureAwait(false);
             }
 
             await eventProcessingScope.Complete(position, streamPosition).ConfigureAwait(false);

@@ -20,6 +20,7 @@ public class ProtobufJsonSerializer : IEventSerializer
     private readonly JsonFormatter _formatter;
     private readonly JsonParser _parser;
     private readonly IProtobufTypeRegistry _typeRegistry;
+    private readonly IMetadataDescriptorProvider? _metadataDescriptorProvider;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProtobufJsonSerializer"/> class.
@@ -27,11 +28,13 @@ public class ProtobufJsonSerializer : IEventSerializer
     /// <param name="formatter">The protobuf JSON formatter.</param>
     /// <param name="parser">The protobuf JSON parser.</param>
     /// <param name="typeRegistry">The protobuf type registry.</param>
-    public ProtobufJsonSerializer(JsonFormatter formatter, JsonParser parser, IProtobufTypeRegistry typeRegistry)
+    /// <param name="metadataDescriptorProvider">The metadata descriptor provider.</param>
+    public ProtobufJsonSerializer(JsonFormatter formatter, JsonParser parser, IProtobufTypeRegistry typeRegistry, IMetadataDescriptorProvider? metadataDescriptorProvider = null)
     {
         _formatter = formatter;
         _parser = parser;
         _typeRegistry = typeRegistry;
+        _metadataDescriptorProvider = metadataDescriptorProvider;
     }
 
     /// <inheritdoc />
@@ -45,7 +48,7 @@ public class ProtobufJsonSerializer : IEventSerializer
     }
 
     /// <inheritdoc />
-    public bool TryDeserialize(EventRecord eventRecord, Func<IMessage, IDescriptor>? metadataDescriptorProvider, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata)
+    public bool TryDeserialize(EventRecord eventRecord, [NotNullWhen(true)] out EventWithMetadata? eventWithMetadata)
     {
         if (!TryDeserialize(eventRecord.Data, eventRecord.EventType, out var data))
         {
@@ -54,7 +57,10 @@ public class ProtobufJsonSerializer : IEventSerializer
         }
 
         IMessage? metadata = null;
-        if (metadataDescriptorProvider != null && eventRecord.Metadata.Length > 0 && !TryDeserialize(eventRecord.Metadata, metadataDescriptorProvider(data).FullName, out metadata))
+        var metadataDescriptor = _metadataDescriptorProvider?.GetMetadataDescriptor(data);
+        if (metadataDescriptor != null
+            && eventRecord.Metadata.Length > 0
+            && !TryDeserialize(eventRecord.Metadata, metadataDescriptor, out metadata))
         {
             eventWithMetadata = default;
             return false;
@@ -69,27 +75,24 @@ public class ProtobufJsonSerializer : IEventSerializer
 
     /// <inheritdoc />
     public IMessage Deserialize(EventRecord eventRecord)
-        => Deserialize(eventRecord.Data, eventRecord.EventType);
-
-    /// <inheritdoc />
-    public T Deserialize<T>(EventRecord eventRecord)
-        where T : IMessage<T>, new()
-        => Deserialize<T>(eventRecord.Data);
-
-    /// <inheritdoc />
-    public T Deserialize<T>(ReadOnlyMemory<byte> data)
-        where T : IMessage<T>, new()
     {
-        var json = Encoding.UTF8.GetString(data.Span);
-        return _parser.Parse<T>(json);
+        if (!TryDeserialize(eventRecord.Data, eventRecord.EventType, out var data))
+        {
+            throw new InvalidOperationException($"Could not deserialize event with metadata for event {eventRecord.EventId} of type {eventRecord.EventType}");
+        }
+
+        return data;
     }
 
     /// <inheritdoc />
-    public IMessage Deserialize(ReadOnlyMemory<byte> data, string messageType)
+    public EventWithMetadata DeserializeWithMetadata(EventRecord eventRecord)
     {
-        return TryDeserialize(data, messageType, out var message)
-            ? message
-            : throw new InvalidOperationException("could not find protobuf type for " + messageType);
+        if (!TryDeserialize(eventRecord, out var eventWithMetadata))
+        {
+            throw new InvalidOperationException($"Could not deserialize event with metadata for event {eventRecord.EventId} of type {eventRecord.EventType}");
+        }
+
+        return eventWithMetadata;
     }
 
     private bool TryDeserialize(ReadOnlyMemory<byte> data, string messageType, [NotNullWhen(true)] out IMessage? message)
@@ -101,6 +104,11 @@ public class ProtobufJsonSerializer : IEventSerializer
             return false;
         }
 
+        return TryDeserialize(data, messageDescriptor, out message);
+    }
+
+    private bool TryDeserialize(ReadOnlyMemory<byte> data, MessageDescriptor messageDescriptor, [NotNullWhen(true)] out IMessage? message)
+    {
         var json = Encoding.UTF8.GetString(data.Span);
         message = _parser.Parse(json, messageDescriptor);
         return true;

@@ -17,6 +17,7 @@ namespace Ech0045_4_0
     [System.Xml.Serialization.XmlTypeAttribute("votingPersonType", Namespace="http://www.ech.ch/xmlns/eCH-0045/4")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("votingPersonType", Namespace="http://www.ech.ch/xmlns/eCH-0045/4")]
     public partial class VotingPersonType
     {
         

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+    <ProjectReference Include="..\..\src\Voting.Lib.Ech.Ech0159_4_0\Voting.Lib.Ech.Ech0159_4_0.csproj" />
   </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ namespace Voting.Lib.Messaging;
 /// <typeparam name="TListenerMessage">The type of listener messages.</typeparam>
 public class MessageConsumerRegistration<TFilterMessage, TListenerMessage>
 {
-    private readonly Predicate<TFilterMessage> _filter;
+    private readonly Func<TFilterMessage, Task<bool>> _filter;
     private readonly Func<TListenerMessage, Task> _consumer;
 
     /// <summary>
@@ -22,7 +22,7 @@ public class MessageConsumerRegistration<TFilterMessage, TListenerMessage>
     /// <param name="filter">A predicate to filter messages that the consumer is interested in.</param>
     /// <param name="consumer">The message consumer function.</param>
     /// <param name="language">The language which should be used in the consumer function.</param>
-    public MessageConsumerRegistration(Predicate<TFilterMessage> filter, Func<TListenerMessage, Task> consumer, string language = "")
+    public MessageConsumerRegistration(Func<TFilterMessage, Task<bool>> filter, Func<TListenerMessage, Task> consumer, string language = "")
     {
         _filter = filter;
         _consumer = consumer;
@@ -39,7 +39,7 @@ public class MessageConsumerRegistration<TFilterMessage, TListenerMessage>
     /// </summary>
     /// <param name="message">The message to check.</param>
     /// <returns>Returns whether the consumer can consume this message.</returns>
-    public bool CanConsume(TFilterMessage message) => _filter(message);
+    public Task<bool> CanConsume(TFilterMessage message) => _filter(message);
 
     /// <summary>
     /// Passes the message to the message consumer.

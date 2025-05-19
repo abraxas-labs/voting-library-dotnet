@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Voting.Lib.Eventing.Domain;
+using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Subscribe;
 
 namespace Voting.Lib.Eventing.DependencyInjection;
@@ -66,4 +67,12 @@ public interface IEventingServiceCollection
     /// <returns>The <see cref="IEventingServiceCollection"/> instance.</returns>
     IEventingServiceCollection AddSubscription<TScope, TAssembly>(string streamName)
         where TScope : class, IEventProcessorScope;
+
+    /// <summary>
+    /// Adds a metadata descriptor provider.
+    /// </summary>
+    /// <typeparam name="TResolver">The type of resolver.</typeparam>
+    /// <returns>The <see cref="IEventingServiceCollection"/> instance.</returns>
+    IEventingServiceCollection AddMetadataDescriptorProvider<TResolver>()
+        where TResolver : class, IMetadataDescriptorProvider;
 }

@@ -114,20 +114,12 @@ public class ComparisonContainer
         Func<TListElement, string> listItemIdentifierExtractor,
         Func<TContext, ComparisonContainer, TListElement, TListElement, Task> listItemCompareFunction)
     {
-        AddEntry(listLeft.Count, listRight.Count);
-
-        for (var i = 0; i < listLeft.Count; i++)
-        {
-            if (!TryAddEqualIdentifierEntry(listLeft, listRight, i, listItemIdentifierExtractor))
-            {
-                continue;
-            }
-
-            var detailLeft = listLeft[i];
-            var detailRight = listRight[i];
-
-            await listItemCompareFunction(ctx, this, detailLeft, detailRight).ConfigureAwait(false);
-        }
+        await CompareListInternal(
+            ctx,
+            listLeft,
+            listRight,
+            listItemIdentifierExtractor,
+            async (context, container, left, right) => await listItemCompareFunction(context, container, left, right));
     }
 
     /// <summary>
@@ -148,20 +140,16 @@ public class ComparisonContainer
         Func<TListElement, string> listItemIdentifierExtractor,
         Action<TContext, ComparisonContainer, TListElement, TListElement> listItemCompareFunction)
     {
-        AddEntry(listLeft.Count, listRight.Count);
-
-        for (var i = 0; i < Math.Max(listLeft.Count, listRight.Count); i++)
-        {
-            if (!TryAddEqualIdentifierEntry(listLeft, listRight, i, listItemIdentifierExtractor))
+        CompareListInternal(
+            ctx,
+            listLeft,
+            listRight,
+            listItemIdentifierExtractor,
+            (context, container, left, right) =>
             {
-                continue;
-            }
-
-            var detailLeft = listLeft[i];
-            var detailRight = listRight[i];
-
-            listItemCompareFunction(ctx, this, detailLeft, detailRight);
-        }
+                listItemCompareFunction(context, container, left, right);
+                return Task.CompletedTask;
+            }).GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -198,28 +186,43 @@ public class ComparisonContainer
     private static string GetLastExpressionMemberName(string argumentExpression) =>
         argumentExpression[(argumentExpression.LastIndexOf('.') + 1)..];
 
-    private static string GetListItemIdentifier<T>(IReadOnlyList<T> list, Func<T, string> listItemIdentifierExtractor, int index) =>
-        index >= list.Count
-            ? string.Empty
-            : listItemIdentifierExtractor(list[index]);
-
-    private bool TryAddEqualIdentifierEntry<T>(
-        IReadOnlyList<T> listLeft,
-        IReadOnlyList<T> listRight,
-        int index,
-        Func<T, string> listItemIdentifierExtractor)
+    private void AddIdentifierEntry<T>(
+        T? detailLeft,
+        T? detailRight,
+        string key)
     {
-        var listItemIdentifierLeft = GetListItemIdentifier(listLeft, listItemIdentifierExtractor, index);
-        var listItemIdentifierRight = GetListItemIdentifier(listRight, listItemIdentifierExtractor, index);
-
         var identifierEntry = new ComparisonEntry<string>(
             Description,
-            $"ListIndex_{index}",
-            listItemIdentifierLeft,
-            listItemIdentifierRight);
+            $"ListIndex_{key}",
+            detailLeft != null ? key : string.Empty,
+            detailRight != null ? key : string.Empty);
 
         _entries.Add(identifierEntry);
+    }
 
-        return identifierEntry.Equal;
+    private async Task CompareListInternal<TListElement, TContext>(
+        TContext ctx,
+        IReadOnlyList<TListElement> listLeft,
+        IReadOnlyList<TListElement> listRight,
+        Func<TListElement, string> listItemIdentifierExtractor,
+        Func<TContext, ComparisonContainer, TListElement, TListElement, Task> listItemCompareFunction)
+    {
+        AddEntry(listLeft.Count, listRight.Count);
+
+        var leftDict = listLeft.ToDictionary(listItemIdentifierExtractor);
+        var rightDict = listRight.ToDictionary(listItemIdentifierExtractor);
+
+        foreach (var key in leftDict.Keys.Union(rightDict.Keys))
+        {
+            leftDict.TryGetValue(key, out var detailLeft);
+            rightDict.TryGetValue(key, out var detailRight);
+
+            AddIdentifierEntry(detailLeft, detailRight, key);
+
+            if (detailLeft != null && detailRight != null)
+            {
+                await listItemCompareFunction(ctx, this, detailLeft, detailRight);
+            }
+        }
     }
 }

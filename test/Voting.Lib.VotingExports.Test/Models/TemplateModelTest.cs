@@ -10,7 +10,7 @@ namespace Voting.Lib.VotingExports.Test.Models;
 public class TemplateModelTest
 {
     [Fact]
-    public void ValidateShouldWorkIfPerDomainOfInfluenceAndMultiple()
+    public void ValidateShouldWorkIfPerDomainOfInfluenceTypeAndMultiple()
     {
         var model = new TemplateModel
         {
@@ -21,11 +21,33 @@ public class TemplateModelTest
     }
 
     [Fact]
-    public void ValidateShouldThrowIfPerDomainOfInfluenceButNotMultiple()
+    public void ValidateShouldThrowIfPerDomainOfInfluenceTypeButNotMultiple()
     {
         var model = new TemplateModel
         {
             PerDomainOfInfluenceType = true,
+            ResultType = ResultType.Contest,
+        };
+        Assert.Throws<ValidationException>(() => model.Validate());
+    }
+
+    [Fact]
+    public void ValidateShouldWorkIfPerDomainOfInfluenceAndMultiple()
+    {
+        var model = new TemplateModel
+        {
+            PerDomainOfInfluence = true,
+            ResultType = ResultType.MultiplePoliticalBusinessesResult,
+        };
+        model.Validate();
+    }
+
+    [Fact]
+    public void ValidateShouldThrowIfPerDomainOfInfluenceButNotMultiple()
+    {
+        var model = new TemplateModel
+        {
+            PerDomainOfInfluence = true,
             ResultType = ResultType.Contest,
         };
         Assert.Throws<ValidationException>(() => model.Validate());

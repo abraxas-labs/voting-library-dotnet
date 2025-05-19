@@ -98,8 +98,8 @@ public class ComparisonContainerTest
 
         var listRight = new List<string>
         {
-            "value1",
             "value3",
+            "value1",
         };
 
         // Act
@@ -109,7 +109,8 @@ public class ComparisonContainerTest
 
         // Assert
         comparisonContainer.Ok.Should().BeFalse();
-        comparisonContainer.EntriesCount.Should().Be(4);
+        comparisonContainer.EntriesCount.Should().Be(5);
+        comparisonContainer.NotEqualEntries.Count().Should().Be(2);
     }
 
     private static void CompareResult(

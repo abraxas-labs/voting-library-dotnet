@@ -108,7 +108,7 @@ public class CronSchedulerServiceTest
         sc.AddLogging();
         sc.AddSingleton<JobStore>();
         sc.AddCronJob<MockJob>(schedule);
-        sc.AddMockedTimeProvider();
+        sc.AddMockedClock();
         var services = sc.BuildServiceProvider();
         var schedulerService = services.GetRequiredService<IHostedService>();
         var store = services.GetRequiredService<JobStore>();

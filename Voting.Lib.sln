@@ -193,6 +193,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.MalwareScanner.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0155_5_1", "src\Voting.Lib.Ech.Ech0155_5_1\Voting.Lib.Ech.Ech0155_5_1.csproj", "{0847C056-3B95-4505-99D1-0380D38D07FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0222_3_0", "src\Voting.Lib.Ech.Ech0222_3_0\Voting.Lib.Ech.Ech0222_3_0.csproj", "{F1495637-158D-479B-AAEA-11D0200C8B10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Database.Postgres", "src\Voting.Lib.Database.Postgres\Voting.Lib.Database.Postgres.csproj", "{52EB8C1D-F037-400C-B52A-FEF427D7AE11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Database.Postgres.IntegrationTest", "test\Voting.Lib.Database.Postgres.IntegrationTest\Voting.Lib.Database.Postgres.IntegrationTest.csproj", "{B38B212D-8EC0-436E-8388-2FC306E25DCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.UserNotifications", "src\Voting.Lib.UserNotifications\Voting.Lib.UserNotifications.csproj", "{F09AD533-815C-4CEE-983F-20476A7FC416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Validation", "src\Voting.Lib.Validation\Voting.Lib.Validation.csproj", "{34BF015F-533E-4249-8DAD-E6DCC48D506B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.RestValidation", "src\Voting.Lib.RestValidation\Voting.Lib.RestValidation.csproj", "{068D6E82-1687-4463-9C3E-8ECD828C90E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -698,6 +710,42 @@ Global
 		{0847C056-3B95-4505-99D1-0380D38D07FB}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
 		{0847C056-3B95-4505-99D1-0380D38D07FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0847C056-3B95-4505-99D1-0380D38D07FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1495637-158D-479B-AAEA-11D0200C8B10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.DebugUpdateSnapshots|Any CPU.ActiveCfg = DebugUpdateSnapshots|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.DebugUpdateSnapshots|Any CPU.Build.0 = DebugUpdateSnapshots|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F09AD533-815C-4CEE-983F-20476A7FC416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -787,6 +835,12 @@ Global
 		{BECF9889-B5B9-47C0-AE64-67BA12951803} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
 		{73B964C2-D09D-4039-8232-217CF88C75FD} = {352F6EBB-2D6D-4B5E-B83E-C0F978E926BA}
 		{0847C056-3B95-4505-99D1-0380D38D07FB} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
+		{F1495637-158D-479B-AAEA-11D0200C8B10} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
+		{52EB8C1D-F037-400C-B52A-FEF427D7AE11} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
+		{B38B212D-8EC0-436E-8388-2FC306E25DCF} = {352F6EBB-2D6D-4B5E-B83E-C0F978E926BA}
+		{F09AD533-815C-4CEE-983F-20476A7FC416} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
+		{34BF015F-533E-4249-8DAD-E6DCC48D506B} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
+		{068D6E82-1687-4463-9C3E-8ECD828C90E6} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77CC4E7B-CE12-47E2-8B45-298D167EDDE1}

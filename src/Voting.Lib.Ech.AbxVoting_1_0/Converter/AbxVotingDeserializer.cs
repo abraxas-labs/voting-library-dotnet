@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml;
-using ABX_Voting_1_0;
+using AbxVoting_1_0;
 using Voting.Lib.Common;
 using Voting.Lib.Ech.AbxVoting_1_0.Schemas;
 using Voting.Lib.Ech.Extensions;

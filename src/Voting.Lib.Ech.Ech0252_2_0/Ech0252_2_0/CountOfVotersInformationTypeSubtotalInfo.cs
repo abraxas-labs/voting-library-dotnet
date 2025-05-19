@@ -93,10 +93,42 @@ namespace Ech0252_2_0
             }
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.Xml.Serialization.XmlElementAttribute("isMinor", Order=3)]
+        public bool IsMinorValue { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the IsMinor property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public bool IsMinorValueSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public System.Nullable<bool> IsMinor
+        {
+            get
+            {
+                if (this.IsMinorValueSpecified)
+                {
+                    return this.IsMinorValue;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                this.IsMinorValue = value.GetValueOrDefault();
+                this.IsMinorValueSpecified = value.HasValue;
+            }
+        }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=4)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get

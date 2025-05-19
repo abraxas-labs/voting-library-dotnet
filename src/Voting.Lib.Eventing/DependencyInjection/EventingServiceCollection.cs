@@ -83,6 +83,7 @@ public class EventingServiceCollection : IEventingServiceCollection
     {
         Services.TryAddSingleton<IEventProcessingRetryPolicy<TScope>, EventProcessingRetryPolicy<TScope>>();
         Services.AddScheduledJob<LatestEventMonitor>(_config.LatestEventPositionMonitorInterval, true);
+        Services.TryAddScoped<EventProcessorContextAccessor>();
         Services.AddHostedService<EventProcessingSubscriber<TScope>>();
         Services.TryAddSingleton<EventProcessingHandler<TScope>>();
         Services.TryAddSingleton<EventProcessorAdapterRegistry<TScope>>();
@@ -94,6 +95,14 @@ public class EventingServiceCollection : IEventingServiceCollection
         Services.AddSingleton(subscription);
         Services.AddSingleton<ISubscription>(subscription);
 
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IEventingServiceCollection AddMetadataDescriptorProvider<TResolver>()
+        where TResolver : class, IMetadataDescriptorProvider
+    {
+        Services.TryAddSingleton<IMetadataDescriptorProvider, TResolver>();
         return this;
     }
 

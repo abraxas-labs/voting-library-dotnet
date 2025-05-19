@@ -10,6 +10,7 @@ using Voting.Lib.Eventing.Exceptions;
 using EventStoreEventData = EventStore.Client.EventData;
 
 namespace Voting.Lib.Eventing.Persistence;
+
 internal class EventPublisher : IEventPublisher
 {
     private readonly EventStoreClient _client;

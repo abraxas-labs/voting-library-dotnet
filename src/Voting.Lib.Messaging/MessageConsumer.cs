@@ -30,13 +30,22 @@ public abstract class MessageConsumer<TMessage, TListenerMessage> : IConsumer<TM
     /// <inheritdoc />
     public async Task Consume(ConsumeContext<TMessage> context)
     {
+        var listeners = await _hub.GetConsumers(context.Message).ConfigureAwait(false);
+        if (listeners.Count == 0)
+        {
+            return;
+        }
+
         var message = await Transform(context.Message).ConfigureAwait(false);
         if (message == null)
         {
             return;
         }
 
-        await _hub.Consume(context.Message, message).ConfigureAwait(false);
+        foreach (var consumer in listeners)
+        {
+            await consumer.Consume(message).ConfigureAwait(false);
+        }
     }
 
     /// <summary>

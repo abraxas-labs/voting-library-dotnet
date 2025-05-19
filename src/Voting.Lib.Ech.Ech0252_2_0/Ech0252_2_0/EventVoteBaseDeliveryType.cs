@@ -36,7 +36,6 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<VoteInfoType> _voteInfo;
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("voteInfo", Order=2)]
         public System.Collections.Generic.List<VoteInfoType> VoteInfo
         {
@@ -51,6 +50,18 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the VoteInfo collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool VoteInfoSpecified
+        {
+            get
+            {
+                return (this.VoteInfo != null);
+            }
+        }
+        
+        /// <summary>
         /// <para xml:lang="en">Initializes a new instance of the <see cref="EventVoteBaseDeliveryType" /> class.</para>
         /// </summary>
         public EventVoteBaseDeliveryType()
@@ -59,10 +70,8 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 1.</para>
         /// <para xml:lang="en">Maximum inclusive value: 999.</para>
         /// </summary>
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(ushort), "1", "999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("numberOfEntries", Order=3)]
         public ushort NumberOfEntries { get; set; }

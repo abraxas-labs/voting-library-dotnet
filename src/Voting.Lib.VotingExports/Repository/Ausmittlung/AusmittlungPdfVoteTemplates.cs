@@ -23,7 +23,7 @@ public static class AusmittlungPdfVoteTemplates
         EntityType = EntityType.Vote,
         ResultType = ResultType.MultiplePoliticalBusinessesResult,
         GeneratedBy = VotingApp.VotingAusmittlung,
-        PerDomainOfInfluenceType = true,
+        PerDomainOfInfluence = true,
     };
 
     /// <summary>

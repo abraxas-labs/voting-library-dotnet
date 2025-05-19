@@ -7,5 +7,6 @@
   "ResultType": null,
   "GeneratedBy": 1,
   "DomainOfInfluenceTypes": null,
-  "PerDomainOfInfluenceType": false
+  "PerDomainOfInfluenceType": false,
+  "PerDomainOfInfluence": false
 }

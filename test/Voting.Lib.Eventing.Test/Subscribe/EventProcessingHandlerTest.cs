@@ -7,6 +7,7 @@ using Google.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Protobuf;
 using Voting.Lib.Eventing.Subscribe;
 using Voting.Lib.Eventing.Test.Events;
@@ -20,27 +21,26 @@ public class EventProcessingHandlerTest
     public async Task HandleEventShouldProcessAndUpdateScope()
     {
         var subscription = new Subscription<TransientEventProcessorScope>(
-            new[] { typeof(TestEvent) },
+            [typeof(TestEvent)],
             WellKnownStreams.CategoryVoting);
 
-        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies(new[] { typeof(TestEvent).Assembly });
+        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies([typeof(TestEvent).Assembly]);
         var adapterRegistry = new EventProcessorAdapterRegistry<TransientEventProcessorScope>(protoRegistry);
-
-        var handlerMock = new Mock<ICatchUpDetectorEventProcessor<TransientEventProcessorScope, TestEvent>>();
-        handlerMock
-            .Setup(x => x.Process(It.IsAny<TestEvent>(), It.IsAny<bool>()))
-            .Returns(Task.CompletedTask);
 
         var scope = new TransientEventProcessorScope();
 
         var serviceProvider = new ServiceCollection()
-            .AddSingleton(new EventProcessorAdapter<TransientEventProcessorScope, TestEvent>(handlerMock.Object, new ProtobufJsonSerializer(JsonFormatter.Default, JsonParser.Default, protoRegistry)))
+            .AddSingleton<IEventSerializer>(new ProtobufJsonSerializer(JsonFormatter.Default, JsonParser.Default, protoRegistry))
+            .AddScoped<EventProcessorAdapter<TransientEventProcessorScope, TestEvent>>()
+            .AddScoped<ICatchUpDetectorEventProcessor<TransientEventProcessorScope, TestEvent>, TestEventProcessor>()
             .AddSingleton(scope)
+            .AddScoped<EventProcessorContextAccessor>()
             .BuildServiceProvider(true);
 
         var handler = new EventProcessingHandler<TransientEventProcessorScope>(
             adapterRegistry,
             NullLogger<EventProcessingHandler<TransientEventProcessorScope>>.Instance,
+            serviceProvider.GetRequiredService<IEventSerializer>(),
             serviceProvider.GetRequiredService<IServiceScopeFactory>());
 
         var handled = await handler.HandleEvent(subscription, new(EventRecordTestUtil.BuildRecord(), null, null));
@@ -54,10 +54,10 @@ public class EventProcessingHandlerTest
     public async Task HandleEventShouldNotUpdateScopeIfNoHandler()
     {
         var subscription = new Subscription<TransientEventProcessorScope>(
-            new[] { typeof(TestEvent) },
+            [typeof(TestEvent)],
             WellKnownStreams.CategoryVoting);
 
-        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies(new[] { typeof(TestEvent).Assembly });
+        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies([typeof(TestEvent).Assembly]);
         var adapterRegistry = new EventProcessorAdapterRegistry<TransientEventProcessorScope>(protoRegistry);
 
         var scope = new TransientEventProcessorScope();
@@ -69,6 +69,7 @@ public class EventProcessingHandlerTest
         var handler = new EventProcessingHandler<TransientEventProcessorScope>(
             adapterRegistry,
             NullLogger<EventProcessingHandler<TransientEventProcessorScope>>.Instance,
+            new ProtobufJsonSerializer(JsonFormatter.Default, JsonParser.Default, protoRegistry),
             serviceProvider.GetRequiredService<IServiceScopeFactory>());
 
         var handled = await handler.HandleEvent(subscription, new(EventRecordTestUtil.BuildRecord(), null, null));
@@ -82,10 +83,10 @@ public class EventProcessingHandlerTest
     public async Task HandleCatchUpCompletedShouldCallCompleters()
     {
         var subscription = new Subscription<TransientEventProcessorScope>(
-            new[] { typeof(TestEvent) },
+            [typeof(TestEvent)],
             WellKnownStreams.CategoryVoting);
 
-        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies(new[] { typeof(TestEvent).Assembly });
+        var protoRegistry = ProtobufTypeRegistry.CreateByScanningAssemblies([typeof(TestEvent).Assembly]);
         var adapterRegistry = new EventProcessorAdapterRegistry<TransientEventProcessorScope>(protoRegistry);
 
         var completerMock = new Mock<IEventProcessorCatchUpCompleter<TransientEventProcessorScope>>();
@@ -100,9 +101,26 @@ public class EventProcessingHandlerTest
         var handler = new EventProcessingHandler<TransientEventProcessorScope>(
             adapterRegistry,
             NullLogger<EventProcessingHandler<TransientEventProcessorScope>>.Instance,
+            new ProtobufJsonSerializer(JsonFormatter.Default, JsonParser.Default, protoRegistry),
             serviceProvider.GetRequiredService<IServiceScopeFactory>());
 
         await handler.HandleCatchUpCompleted(subscription);
         completerMock.Verify(x => x.CatchUpCompleted(), Times.Once());
+    }
+
+    private class TestEventProcessor : ICatchUpDetectorEventProcessor<TransientEventProcessorScope, TestEvent>
+    {
+        private readonly EventProcessorContextAccessor _eventProcessorContextAccessor;
+
+        public TestEventProcessor(EventProcessorContextAccessor eventProcessorContextAccessor)
+        {
+            _eventProcessorContextAccessor = eventProcessorContextAccessor;
+        }
+
+        public Task Process(TestEvent eventData, bool isCatchUp)
+        {
+            _eventProcessorContextAccessor.Context.IsCatchUp.Should().Be(isCatchUp);
+            return Task.CompletedTask;
+        }
     }
 }

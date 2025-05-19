@@ -24,11 +24,12 @@ namespace Ech0252_2_0
         private System.Collections.Generic.List<CandidateResultType> _candidateResult;
         
         /// <summary>
-        /// <para>element ist always supplied for all candidates that are known now. So all elements in candidate must be in candidateResult. additionaly candidates write-in are coming</para>
+        /// <para>The element is always delivered for all candidates that are known at the current time. All elements in candidate must therefore be contained in candidateResult. Addidional write-in candidates must be added in the structure, at the time they are known</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("element ist always supplied for all candidates that are known now. So all element" +
-            "s in candidate must be in candidateResult. additionaly candidates write-in are c" +
-            "oming")]
+        [System.ComponentModel.DescriptionAttribute("The element is always delivered for all candidates that are known at the current " +
+            "time. All elements in candidate must therefore be contained in candidateResult. " +
+            "Addidional write-in candidates must be added in the structure, at the time they " +
+            "are known")]
         [System.Xml.Serialization.XmlElementAttribute("candidateResult", Order=0)]
         public System.Collections.Generic.List<CandidateResultType> CandidateResult
         {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Abraxas.Voting.Validation.V1;
+using Voting.Lib.Validation;
 
 namespace Voting.Lib.ProtoValidation.Validators;
 
@@ -13,38 +14,6 @@ namespace Voting.Lib.ProtoValidation.Validators;
 /// </summary>
 public class StringValidator : IProtoFieldValidator
 {
-    // copied from https://github.com/microsoft/referencesource/blob/5697c29004a34d80acdaf5742d7e699022c64ecd/System.ComponentModel.DataAnnotations/DataAnnotations/EmailAddressAttribute.cs#L54.
-    private static readonly Regex _emailRegex = new Regex(@"^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _phoneRegex = new Regex(@"^\+?(?:[1-9]\s*){0,3}(\s)?(?:[0-9]\s?){7,14}\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _numericRegex = new Regex(@"^\d+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _alphaRegex = new Regex(@"^[\p{L}\p{M}]+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _alphaWhiteRegex = new Regex(@"^[\p{L}\p{M} ]+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _alphaNumWhiteRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} ]+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _simpleSlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} \.'-]+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _simpleMlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} \.'\-\r\n]+\z", RegexOptions.Compiled);
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _complexSlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd} _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=]+\z", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
-
-    // copied from concept VO Ausmittlung - Daten Validierung
-    private static readonly Regex _complexMlTextRegex = new Regex(@"^[\p{L}\p{M}\p{Nd}\r\n _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=]+\z", RegexOptions.Compiled, TimeSpan.FromMilliseconds(500));
-
-    private static readonly Regex _untrimmedRegex = new Regex(@"(^\s+)|(\s+\z)", RegexOptions.Compiled);
-
     /// <inheritdoc />
     public void Validate(ProtoValidationContext context, Rules rules, object? value, string fieldName)
     {
@@ -168,37 +137,37 @@ public class StringValidator : IProtoFieldValidator
     }
 
     private void ValidateEmail(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _emailRegex, "is not a valid E-Mail Address.", false, false);
+        => ValidateString(context, fieldName, value, StringValidation.EmailRegex, "is not a valid E-Mail Address.", false, false);
 
     private void ValidatePhone(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _phoneRegex, "is not a valid Phone Number.", false, false);
+        => ValidateString(context, fieldName, value, StringValidation.PhoneRegex, "is not a valid Phone Number.", false, false);
 
     private void ValidateRegex(ProtoValidationContext context, string fieldName, string value, string regexString)
         => ValidateString(context, fieldName, value, new Regex(regexString), "does not match the Regex Pattern.", false, false);
 
     private void ValidateNumeric(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _numericRegex, "is not numeric.", false);
+        => ValidateString(context, fieldName, value, StringValidation.NumericRegex, "is not numeric.", false);
 
     private void ValidateAlphabetic(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _alphaRegex, "is not alphabetic.", false);
+        => ValidateString(context, fieldName, value, StringValidation.AlphaRegex, "is not alphabetic.", false);
 
     private void ValidateAlphabeticWithWhitespace(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _alphaWhiteRegex, "is not alphabetic with Whitespace.", false);
+        => ValidateString(context, fieldName, value, StringValidation.AlphaWhiteRegex, "is not alphabetic with Whitespace.", false);
 
     private void ValidateAlphanumericWithWhitespace(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _alphaNumWhiteRegex, "is not alphanumeric with Whitespace.", false);
+        => ValidateString(context, fieldName, value, StringValidation.AlphaNumWhiteRegex, "is not alphanumeric with Whitespace.", false);
 
     private void ValidateSimpleSinglelineText(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _simpleSlTextRegex, "is not a Simple Singleline Text.", true);
+        => ValidateString(context, fieldName, value, StringValidation.SimpleSlTextRegex, "is not a Simple Singleline Text.", true);
 
     private void ValidateSimpleMultilineText(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _simpleMlTextRegex, "is not a Simple Multiline Text.", true);
+        => ValidateString(context, fieldName, value, StringValidation.SimpleMlTextRegex, "is not a Simple Multiline Text.", true);
 
     private void ValidateComplexSinglelineText(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _complexSlTextRegex, "is not a Complex Singleline Text.", true);
+        => ValidateString(context, fieldName, value, StringValidation.ComplexSlTextRegex, "is not a Complex Singleline Text.", true);
 
     private void ValidateComplexMultilineText(ProtoValidationContext context, string fieldName, string value)
-        => ValidateString(context, fieldName, value, _complexMlTextRegex, "is not a Complex Multiline Text.", true);
+        => ValidateString(context, fieldName, value, StringValidation.ComplexMlTextRegex, "is not a Complex Multiline Text.", true);
 
     private void ValidateString(ProtoValidationContext context, string fieldName, string value, Regex regex, string validationMessage, bool requireTrimmed, bool reportInvalidChars = true)
     {
@@ -227,7 +196,7 @@ public class StringValidator : IProtoFieldValidator
 
     private void EnsureNoUntrimmedWhitespace(ProtoValidationContext context, string fieldName, string value)
     {
-        if (_untrimmedRegex.Match(value).Success)
+        if (StringValidation.UntrimmedRegex.Match(value).Success)
         {
             context.Failures.Add(new ProtoValidationError(fieldName, "is not a trimmed Text, contains leading or trailing whitespace characters."));
         }

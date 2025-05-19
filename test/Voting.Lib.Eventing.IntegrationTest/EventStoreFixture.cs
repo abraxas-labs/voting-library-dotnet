@@ -45,7 +45,7 @@ public class EventStoreFixture : IAsyncLifetime
 
     protected virtual void ConfigureServices(IServiceCollection services)
     {
-        ConfigureEventing(services.AddVotingLibEventing(Configuration, typeof(TestEvent).Assembly));
+        ConfigureEventing(services.AddVotingLibEventing(Configuration, typeof(TestEvent).Assembly).AddMetadataDescriptorProvider<TestMetadataProvider>());
     }
 
     protected virtual void ConfigureEventing(IEventingServiceCollection eventing)

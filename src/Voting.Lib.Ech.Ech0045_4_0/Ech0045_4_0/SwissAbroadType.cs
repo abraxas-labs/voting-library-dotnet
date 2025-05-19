@@ -17,6 +17,7 @@ namespace Ech0045_4_0
     [System.Xml.Serialization.XmlTypeAttribute("swissAbroadType", Namespace="http://www.ech.ch/xmlns/eCH-0045/4")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("swissAbroadType", Namespace="http://www.ech.ch/xmlns/eCH-0045/4")]
     public partial class SwissAbroadType
     {
         

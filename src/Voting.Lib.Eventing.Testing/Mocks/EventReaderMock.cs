@@ -9,8 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.Client;
 using Google.Protobuf;
-using Google.Protobuf.Reflection;
-using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Read;
 
 namespace Voting.Lib.Eventing.Testing.Mocks;
@@ -21,21 +19,18 @@ namespace Voting.Lib.Eventing.Testing.Mocks;
 public class EventReaderMock : IEventReader
 {
     private readonly EventReaderMockStore _store;
-    private readonly IEventSerializer _serializer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EventReaderMock"/> class.
     /// </summary>
     /// <param name="store">The event reader mock store to read from.</param>
-    /// <param name="serializer">The event serializer.</param>
-    public EventReaderMock(EventReaderMockStore store, IEventSerializer serializer)
+    public EventReaderMock(EventReaderMockStore store)
     {
         _store = store;
-        _serializer = serializer;
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, Func<IMessage, IDescriptor>? metadataDescriptorProvider = null, bool ignoreUnknownEvents = true)
+    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, bool ignoreUnknownEvents = true)
     {
         if (!_store.TryGetEvents(stream, out var events))
         {
@@ -44,16 +39,16 @@ public class EventReaderMock : IEventReader
 
         foreach (var ev in await Task.FromResult(events))
         {
-            yield return MapToEventReadResult((stream, ev), metadataDescriptorProvider);
+            yield return MapToEventReadResult((stream, ev));
         }
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(Position startPositionExclusive, Func<EventReadResult, bool> endCondition, Func<IMessage, IDescriptor>? metadataDescriptorProvider = null, bool ignoreUnknownEvents = true)
+    public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(Position startPositionExclusive, Func<EventReadResult, bool> endCondition, bool ignoreUnknownEvents = true)
     {
         foreach (var ev in await Task.FromResult(_store.GetEvents(startPositionExclusive)))
         {
-            var eventReadResult = MapToEventReadResult(ev, metadataDescriptorProvider);
+            var eventReadResult = MapToEventReadResult(ev);
 
             yield return eventReadResult;
 
@@ -68,12 +63,11 @@ public class EventReaderMock : IEventReader
     public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         IReadOnlyCollection<Type> eventTypes,
-        Func<EventReadResult, bool> endCondition,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null)
+        Func<EventReadResult, bool> endCondition)
     {
         foreach (var ev in await Task.FromResult(_store.GetEvents(startPositionExclusive)))
         {
-            var eventReadResult = MapToEventReadResult(ev, metadataDescriptorProvider);
+            var eventReadResult = MapToEventReadResult(ev);
 
             if (!eventTypes.Contains(eventReadResult.Data.GetType()))
             {
@@ -121,16 +115,9 @@ public class EventReaderMock : IEventReader
     public async Task<Position?> GetLatestEventPosition(string stream, CancellationToken ct = default)
         => (await GetLatestEvent(stream, ct))?.Position;
 
-    private EventReadResult MapToEventReadResult((string Stream, EventReaderMockStoreData StoreData) data, Func<IMessage, IDescriptor>? metadataTypeFunc)
+    private EventReadResult MapToEventReadResult((string Stream, EventReaderMockStoreData StoreData) data)
     {
         var metadata = data.StoreData.Event.Metadata;
-
-        if (data.StoreData.Event.Metadata != null && metadataTypeFunc != null)
-        {
-            var metadataSerialized = _serializer.Serialize(data.StoreData.Event.Metadata);
-            metadata = _serializer.Deserialize(metadataSerialized, metadataTypeFunc(data.StoreData.Event.Data).FullName);
-        }
-
         return new EventReadResult(
             data.StoreData.Event.Id,
             data.StoreData.Event.Data,

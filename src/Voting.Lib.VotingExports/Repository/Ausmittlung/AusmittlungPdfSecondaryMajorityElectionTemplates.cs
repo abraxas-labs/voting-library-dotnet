@@ -84,11 +84,41 @@ public static class AusmittlungPdfSecondaryMajorityElectionTemplates
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
 
+    /// <summary>
+    /// Gets the end result detail protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EndResultDetailProtocol = new TemplateModel
+    {
+        Key = SecondaryMajorityElectionTemplateKeyPrefix + "majority_election_end_result_detail_protocol",
+        Filename = "Majorz_Detailergebnisse_{0}_{1}",
+        Description = "Detailergebnisse",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.SecondaryMajorityElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
+    /// Gets the end result detail protocol export template.
+    /// </summary>
+    public static readonly TemplateModel EndResultDetailWithoutEmptyAndInvalidVotesProtocol = new TemplateModel
+    {
+        Key = SecondaryMajorityElectionTemplateKeyPrefix + "majority_election_end_result_detail_without_empty_and_invalid_votes_protocol",
+        Filename = "Majorz_Detailergebnisse_exkl_{0}_{1}",
+        Description = "Detailergebnisse_exkl",
+        Format = ExportFileFormat.Pdf,
+        EntityType = EntityType.SecondaryMajorityElection,
+        ResultType = ResultType.PoliticalBusinessResult,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         CountingCircleProtocol,
         CountingCircleEVotingProtocol,
         EndResultProtocol,
         EndResultEVotingProtocol,
+        EndResultDetailProtocol,
+        EndResultDetailWithoutEmptyAndInvalidVotesProtocol,
     };
 }

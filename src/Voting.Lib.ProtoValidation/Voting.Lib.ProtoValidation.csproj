@@ -5,4 +5,8 @@
     <PackageReference Include="Voting.Lib.Validation.Proto" Version="$(VotingLibValidationProtoVersion)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Validation\Voting.Lib.Validation.csproj" />
+  </ItemGroup>
+
 </Project>

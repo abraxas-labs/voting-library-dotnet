@@ -27,7 +27,7 @@ public class EventReaderTest : IClassFixture<EventStoreSampleDataFixture>
     [Fact]
     public async Task ReadEventsShouldReturnEvents()
     {
-        var events = await _eventReader.ReadEvents(MockEvents.TestStream1, _ => TestEventMetadata.Descriptor).ToListAsync();
+        var events = await _eventReader.ReadEvents(MockEvents.TestStream1).ToListAsync();
         events.Should().HaveCount(100);
         ((TestEvent2)events[0].Data).TestValue2.Should().Be(0);
         ((TestEvent)events[1].Data).TestValue.Should().Be(1);
@@ -37,7 +37,7 @@ public class EventReaderTest : IClassFixture<EventStoreSampleDataFixture>
     [Fact]
     public async Task ReadEventsWithUnknownsShouldReturnKnownEvents()
     {
-        var events = await _eventReader.ReadEvents(MockEvents.UnknownEventsStream1, _ => TestEventMetadata.Descriptor).ToListAsync();
+        var events = await _eventReader.ReadEvents(MockEvents.UnknownEventsStream1).ToListAsync();
         events.Should().HaveCount(20);
         ((TestEvent2)events[0].Data).TestValue2.Should().Be(0);
         ((TestEvent)events[1].Data).TestValue.Should().Be(1);
@@ -47,7 +47,7 @@ public class EventReaderTest : IClassFixture<EventStoreSampleDataFixture>
     [Fact]
     public Task ReadEventsWithUnknownsNotIgnoringUnknownsShouldThrow()
     {
-        return Assert.ThrowsAsync<UnknownEventException>(async () => await _eventReader.ReadEvents(MockEvents.UnknownEventsStream1, _ => TestEventMetadata.Descriptor, false).ToListAsync());
+        return Assert.ThrowsAsync<UnknownEventException>(async () => await _eventReader.ReadEvents(MockEvents.UnknownEventsStream1, false).ToListAsync());
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class EventReaderTest : IClassFixture<EventStoreSampleDataFixture>
     [Fact]
     public Task ReadEventsFromAllShouldThrowOnUnknown()
     {
-        return Assert.ThrowsAsync<UnknownEventException>(async () => await _eventReader.ReadEventsFromAll(Position.Start, _ => false, null, false).ToListAsync());
+        return Assert.ThrowsAsync<UnknownEventException>(async () => await _eventReader.ReadEventsFromAll(Position.Start, _ => false, false).ToListAsync());
     }
 
     [Fact]

@@ -79,6 +79,18 @@ public static class ServiceCollectionExtensions
         => services.RemoveAll<IHostedService>();
 
     /// <summary>
+    /// Replaces the clock and system time provider with a <see cref="FakeTimeProvider"/>.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection instance.</returns>
+    public static IServiceCollection AddMockedClock(this IServiceCollection services)
+    {
+        return services
+            .AddMock<IClock, MockedClock>()
+            .AddMock<TimeProvider, FakeTimeProvider>(MockedClock.CreateFakeTimeProvider());
+    }
+
+    /// <summary>
     /// Replaces the system time provider with a <see cref="FakeTimeProvider"/>.
     /// </summary>
     /// <param name="services">The service collection.</param>
@@ -86,7 +98,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddMockedTimeProvider(this IServiceCollection services)
     {
         return services
-            .AddMock<IClock, MockedClock>()
             .AddMock<TimeProvider, FakeTimeProvider>(MockedClock.CreateFakeTimeProvider());
     }
 }

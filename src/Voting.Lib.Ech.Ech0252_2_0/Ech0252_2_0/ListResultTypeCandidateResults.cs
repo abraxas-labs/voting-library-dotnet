@@ -86,10 +86,10 @@ namespace Ech0252_2_0
         public uint CountOfVotesFromUnchangedBallots { get; set; }
         
         /// <summary>
-        /// <para>element is delivered afterwards, when decided from the sender and the receiver. As soon as it is delivered, it must be always delivered</para>
+        /// <para>The element is only transmitted if this has been agreed by the sender and recipient. Once it has been used, it must always be transmitted.</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("element is delivered afterwards, when decided from the sender and the receiver. A" +
-            "s soon as it is delivered, it must be always delivered")]
+        [System.ComponentModel.DescriptionAttribute("The element is only transmitted if this has been agreed by the sender and recipie" +
+            "nt. Once it has been used, it must always be transmitted.")]
         [System.Xml.Serialization.XmlElementAttribute("candidateListResultsInfo", Order=4)]
         public ListResultTypeCandidateResultsCandidateListResultsInfo CandidateListResultsInfo { get; set; }
         

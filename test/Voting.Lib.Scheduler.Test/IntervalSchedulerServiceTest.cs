@@ -111,7 +111,7 @@ public class IntervalSchedulerServiceTest
         sc.AddLogging();
         sc.AddSingleton<JobStore>();
         sc.AddScheduledJob<MockJob>(interval, runOnStart);
-        sc.AddMockedTimeProvider();
+        sc.AddMockedClock();
         var services = sc.BuildServiceProvider();
         var schedulerService = services.GetRequiredService<IHostedService>();
         var store = services.GetRequiredService<JobStore>();

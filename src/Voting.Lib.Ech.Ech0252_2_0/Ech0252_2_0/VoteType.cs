@@ -74,6 +74,7 @@ namespace Ech0252_2_0
         {
             this._otherIdentification = new System.Collections.Generic.List<NamedIdType>();
             this._voteTitleInformation = new System.Collections.Generic.List<VoteTitleInformationType>();
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
         }
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
@@ -161,5 +162,33 @@ namespace Ech0252_2_0
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
         [System.Xml.Serialization.XmlElementAttribute("grouping", Order=10)]
         public string Grouping { get; set; }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<NamedElementType> _namedElement;
+        
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=11)]
+        public System.Collections.Generic.List<NamedElementType> NamedElement
+        {
+            get
+            {
+                return _namedElement;
+            }
+            set
+            {
+                _namedElement = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the NamedElement collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NamedElementSpecified
+        {
+            get
+            {
+                return (this.NamedElement != null);
+            }
+        }
     }
 }

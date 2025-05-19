@@ -135,11 +135,20 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.Xml.Serialization.XmlElementAttribute("callName", Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute("politicalLastname", Order=5)]
+        public string PoliticalLastname { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Minimum length: 1.</para>
+        /// <para xml:lang="en">Maximum length: 100.</para>
+        /// </summary>
+        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
+        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
+        [System.Xml.Serialization.XmlElementAttribute("callName", Order=6)]
         public string CallName { get; set; }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("dateOfBirth", Order=6, DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute("dateOfBirth", Order=7, DataType="date")]
         public System.DateTime DateOfBirthValue { get; set; }
         
         /// <summary>
@@ -171,7 +180,7 @@ namespace Ech0252_2_0
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("sex", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute("sex", Order=8)]
         public Ech0044_4_1.SexType SexValue { get; set; }
         
         /// <summary>
@@ -202,10 +211,42 @@ namespace Ech0252_2_0
             }
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.Xml.Serialization.XmlElementAttribute("incumbentYesNo", Order=9)]
+        public bool IncumbentYesNoValue { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the IncumbentYesNo property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public bool IncumbentYesNoValueSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public System.Nullable<bool> IncumbentYesNo
+        {
+            get
+            {
+                if (this.IncumbentYesNoValueSpecified)
+                {
+                    return this.IncumbentYesNoValue;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                this.IncumbentYesNoValue = value.GetValueOrDefault();
+                this.IncumbentYesNoValueSpecified = value.HasValue;
+            }
+        }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<Ech0155_5_1.OccupationalTitleInformationTypeOccupationalTitleInfo> _occupationalTitle;
         
-        [System.Xml.Serialization.XmlArrayAttribute("occupationalTitle", Order=8)]
+        [System.Xml.Serialization.XmlArrayAttribute("occupationalTitle", Order=10)]
         [System.Xml.Serialization.XmlArrayItemAttribute("occupationalTitleInfo", Namespace="http://www.ech.ch/xmlns/eCH-0155/5")]
         public System.Collections.Generic.List<Ech0155_5_1.OccupationalTitleInformationTypeOccupationalTitleInfo> OccupationalTitle
         {
@@ -241,19 +282,19 @@ namespace Ech0252_2_0
             this._partyAffiliation = new System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo>();
         }
         
-        [System.Xml.Serialization.XmlElementAttribute("contactAddress", Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute("contactAddress", Order=11)]
         public Ech0010_6_0.PersonMailAddressType ContactAddress { get; set; }
         
-        [System.Xml.Serialization.XmlElementAttribute("politicalAddress", Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute("politicalAddress", Order=12)]
         public Ech0155_5_1.PoliticalAddressInfoType PoliticalAddress { get; set; }
         
-        [System.Xml.Serialization.XmlElementAttribute("dwellingAddress", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute("dwellingAddress", Order=13)]
         public Ech0010_6_0.AddressInformationType DwellingAddress { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<string> _swiss;
         
-        [System.Xml.Serialization.XmlArrayAttribute("swiss", Order=12)]
+        [System.Xml.Serialization.XmlArrayAttribute("swiss", Order=14)]
         [System.Xml.Serialization.XmlArrayItemAttribute("origin", Namespace="http://www.ech.ch/xmlns/eCH-0252/2")]
         public System.Collections.Generic.List<string> Swiss
         {
@@ -279,11 +320,11 @@ namespace Ech0252_2_0
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute("foreigner", Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute("foreigner", Order=15)]
         public WriteInCandidateTypeForeigner Foreigner { get; set; }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("mrMrs", Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute("mrMrs", Order=16)]
         public Ech0010_6_0.MrMrsType MrMrsValue { get; set; }
         
         /// <summary>
@@ -318,13 +359,13 @@ namespace Ech0252_2_0
         /// <para xml:lang="en">Maximum length: 50.</para>
         /// </summary>
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.Xml.Serialization.XmlElementAttribute("title", Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute("title", Order=17)]
         public string Title { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo> _partyAffiliation;
         
-        [System.Xml.Serialization.XmlArrayAttribute("partyAffiliation", Order=16)]
+        [System.Xml.Serialization.XmlArrayAttribute("partyAffiliation", Order=18)]
         [System.Xml.Serialization.XmlArrayItemAttribute("partyAffiliationInfo", Namespace="http://www.ech.ch/xmlns/eCH-0155/5")]
         public System.Collections.Generic.List<Ech0155_5_1.PartyAffiliationInformationTypePartyAffiliationInfo> PartyAffiliation
         {

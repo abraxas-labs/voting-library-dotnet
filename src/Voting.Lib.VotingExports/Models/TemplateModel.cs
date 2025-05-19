@@ -66,6 +66,19 @@ public record TemplateModel
     public bool PerDomainOfInfluenceType { get; init; }
 
     /// <summary>
+    /// Gets a value indicating whether this template is specific per domain of influence.
+    /// </summary>
+    public bool PerDomainOfInfluence { get; init; }
+
+    /// <summary>
+    /// Whether this template model is available for a provided <see cref="DomainOfInfluenceTypes"/>.
+    /// </summary>
+    /// <param name="t">The type of the domain of influence.</param>
+    /// <returns>Whether this template model is available for the provided argument.</returns>
+    public bool MatchesDomainOfInfluenceType(DomainOfInfluenceType t)
+        => DomainOfInfluenceTypes?.Contains(t) != false;
+
+    /// <summary>
     /// Validates this template model.
     /// </summary>
     /// <exception cref="ValidationException">Thrown when this template model is invalid.</exception>
@@ -76,13 +89,11 @@ public record TemplateModel
         {
             throw new ValidationException($"{PerDomainOfInfluenceType} can only be true for multiple business exports");
         }
-    }
 
-    /// <summary>
-    /// Whether this template model is available for a provided <see cref="DomainOfInfluenceTypes"/>.
-    /// </summary>
-    /// <param name="t">The type of the domain of influence.</param>
-    /// <returns>Whether this template model is available for the provided argument.</returns>
-    public bool MatchesDomainOfInfluenceType(DomainOfInfluenceType t)
-        => DomainOfInfluenceTypes?.Contains(t) != false;
+        if (PerDomainOfInfluence
+            && ResultType is not Models.ResultType.MultiplePoliticalBusinessesResult and not Models.ResultType.MultiplePoliticalBusinessesCountingCircleResult)
+        {
+            throw new ValidationException($"{PerDomainOfInfluence} can only be true for multiple business exports");
+        }
+    }
 }

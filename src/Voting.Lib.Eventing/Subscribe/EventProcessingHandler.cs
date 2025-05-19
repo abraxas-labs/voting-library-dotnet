@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Voting.Lib.Eventing.Persistence;
 
 namespace Voting.Lib.Eventing.Subscribe;
 
@@ -19,6 +20,7 @@ public class EventProcessingHandler<TScope>
 {
     private readonly ILogger<EventProcessingHandler<TScope>> _logger;
     private readonly EventProcessorAdapterRegistry<TScope> _processorRegistry;
+    private readonly IEventSerializer _serializer;
     private readonly IServiceScopeFactory _scopeFactory;
 
     /// <summary>
@@ -26,14 +28,17 @@ public class EventProcessingHandler<TScope>
     /// </summary>
     /// <param name="processorRegistry">The event processor registry.</param>
     /// <param name="logger">The logger.</param>
+    /// <param name="serializer">The event serializer.</param>
     /// <param name="scopeFactory">The service scope factory.</param>
     public EventProcessingHandler(
         EventProcessorAdapterRegistry<TScope> processorRegistry,
         ILogger<EventProcessingHandler<TScope>> logger,
+        IEventSerializer serializer,
         IServiceScopeFactory scopeFactory)
     {
         _processorRegistry = processorRegistry;
         _logger = logger;
+        _serializer = serializer;
         _scopeFactory = scopeFactory;
     }
 
@@ -68,9 +73,14 @@ public class EventProcessingHandler<TScope>
                 return false;
             }
 
+            var eventWithMetadata = _serializer.DeserializeWithMetadata(eventData.Event);
+
+            var contextAccessor = scope.ServiceProvider.GetRequiredService<EventProcessorContextAccessor>();
+            contextAccessor.SetContext(new EventProcessorContext(subscription.IsCatchUp, eventWithMetadata));
+
             var eventProcessingScope = scope.ServiceProvider.GetRequiredService<TScope>();
             await eventProcessingScope.Begin(eventData.OriginalEvent.Position, eventData.OriginalEventNumber).ConfigureAwait(false);
-            await processor.Process(eventData.Event.Data, subscription.IsCatchUp).ConfigureAwait(false);
+            await processor.Process(eventWithMetadata, subscription.IsCatchUp).ConfigureAwait(false);
             await eventProcessingScope.Complete(eventData.OriginalEvent.Position, eventData.OriginalEventNumber).ConfigureAwait(false);
             return true;
         }

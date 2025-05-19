@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.Client;
-using Google.Protobuf;
-using Google.Protobuf.Reflection;
 
 namespace Voting.Lib.Eventing.Read;
 
@@ -20,12 +18,10 @@ public interface IEventReader
     /// Reads all events with metadata from a stream.
     /// </summary>
     /// <param name="stream">The stream name.</param>
-    /// <param name="metadataDescriptorProvider">The meta data type descriptor provider by the event data.</param>
     /// <param name="ignoreUnknownEvents">If true, unknown events (events for which no deserializer is available) are ignored.</param>
     /// <returns>All events in the specified stream.</returns>
     IAsyncEnumerable<EventReadResult> ReadEvents(
         string stream,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null,
         bool ignoreUnknownEvents = true);
 
     /// <summary>
@@ -33,13 +29,11 @@ public interface IEventReader
     /// </summary>
     /// <param name="startPositionExclusive">The stream name.</param>
     /// <param name="endCondition">A condition which will end the read including the event for which the condition is met.</param>
-    /// <param name="metadataDescriptorProvider">The meta data type descriptor provider by the event data.</param>
     /// <param name="ignoreUnknownEvents">If true, unknown events (events for which no deserializer is available) are ignored.</param>
     /// <returns>All events in the specified stream.</returns>
     IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         Func<EventReadResult, bool> endCondition,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null,
         bool ignoreUnknownEvents = true);
 
     /// <summary>
@@ -48,13 +42,11 @@ public interface IEventReader
     /// <param name="startPositionExclusive">The stream name.</param>
     /// <param name="eventTypes">Event types to read.</param>
     /// <param name="endCondition">A condition which will end the read including the event for which the condition is met.</param>
-    /// <param name="metadataDescriptorProvider">The meta data type descriptor provider by the event data.</param>
     /// <returns>All events in the specified stream.</returns>
     IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         IReadOnlyCollection<Type> eventTypes,
-        Func<EventReadResult, bool> endCondition,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null);
+        Func<EventReadResult, bool> endCondition);
 
     /// <summary>
     /// Fetches the latest event of a stream.

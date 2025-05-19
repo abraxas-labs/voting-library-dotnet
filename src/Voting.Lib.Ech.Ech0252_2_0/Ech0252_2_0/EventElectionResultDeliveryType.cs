@@ -36,7 +36,6 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<EventElectionResultDeliveryTypeElectionGroupResult> _electionGroupResult;
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("electionGroupResult", Order=2)]
         public System.Collections.Generic.List<EventElectionResultDeliveryTypeElectionGroupResult> ElectionGroupResult
         {
@@ -51,6 +50,18 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the ElectionGroupResult collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ElectionGroupResultSpecified
+        {
+            get
+            {
+                return (this.ElectionGroupResult != null);
+            }
+        }
+        
+        /// <summary>
         /// <para xml:lang="en">Initializes a new instance of the <see cref="EventElectionResultDeliveryType" /> class.</para>
         /// </summary>
         public EventElectionResultDeliveryType()
@@ -59,10 +70,8 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 1.</para>
         /// <para xml:lang="en">Maximum inclusive value: 999.</para>
         /// </summary>
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(ushort), "1", "999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("numberOfEntries", Order=3)]
         public ushort NumberOfEntries { get; set; }

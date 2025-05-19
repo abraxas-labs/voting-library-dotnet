@@ -10,8 +10,6 @@ using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using EventStore.Client;
-using Google.Protobuf;
-using Google.Protobuf.Reflection;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Eventing.Exceptions;
 using Voting.Lib.Eventing.Persistence;
@@ -43,7 +41,7 @@ public class EventReader : IEventReader
     }
 
     /// <inheritdoc />
-    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, Func<IMessage, IDescriptor>? metadataDescriptorProvider = null, bool ignoreUnknownEvents = true)
+    public async IAsyncEnumerable<EventReadResult> ReadEvents(string stream, bool ignoreUnknownEvents = true)
     {
         await using var reader = _client.ReadStreamAsync(Direction.Forwards, stream, StreamPosition.Start);
         var state = await reader.ReadState;
@@ -54,7 +52,7 @@ public class EventReader : IEventReader
 
         await foreach (var eventData in reader)
         {
-            if (TryDeserialize(eventData, metadataDescriptorProvider, out var eventReadResult))
+            if (TryDeserialize(eventData, out var eventReadResult))
             {
                 yield return eventReadResult;
                 continue;
@@ -76,12 +74,11 @@ public class EventReader : IEventReader
     public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         Func<EventReadResult, bool> endCondition,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null,
         bool ignoreUnknownEvents = true)
     {
         await foreach (var eventData in _client.ReadAllAsync(Direction.Forwards, startPositionExclusive))
         {
-            if (!TryDeserialize(eventData, metadataDescriptorProvider, out var eventReadResult))
+            if (!TryDeserialize(eventData, out var eventReadResult))
             {
                 if (!ignoreUnknownEvents)
                 {
@@ -109,8 +106,7 @@ public class EventReader : IEventReader
     public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         IReadOnlyCollection<Type> eventTypes,
-        Func<EventReadResult, bool> endCondition,
-        Func<IMessage, IDescriptor>? metadataDescriptorProvider = null)
+        Func<EventReadResult, bool> endCondition)
     {
         // we need to get the end position to know when the $all subscription has catched up.
         var endPosition = await GetLatestEventPosition(WellKnownStreams.All);
@@ -122,7 +118,7 @@ public class EventReader : IEventReader
             startPositionExclusive,
             (_, data, _) =>
             {
-                if (!TryDeserialize(data, metadataDescriptorProvider, out var eventReadResult))
+                if (!TryDeserialize(data, out var eventReadResult))
                 {
                     throw new UnknownEventException(data);
                 }
@@ -212,9 +208,9 @@ public class EventReader : IEventReader
         }
     }
 
-    private bool TryDeserialize(ResolvedEvent resolvedEvent, Func<IMessage, IDescriptor>? metadataDescriptorProvider, [NotNullWhen(true)] out EventReadResult? eventReadResult)
+    private bool TryDeserialize(ResolvedEvent resolvedEvent, [NotNullWhen(true)] out EventReadResult? eventReadResult)
     {
-        if (!_serializer.TryDeserialize(resolvedEvent.Event, metadataDescriptorProvider, out var eventWithMetadata))
+        if (!_serializer.TryDeserialize(resolvedEvent.Event, out var eventWithMetadata))
         {
             eventReadResult = null;
             return false;

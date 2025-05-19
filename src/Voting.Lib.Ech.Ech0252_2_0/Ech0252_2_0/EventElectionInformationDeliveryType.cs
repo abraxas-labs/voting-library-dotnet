@@ -74,11 +74,10 @@ namespace Ech0252_2_0
         private System.Collections.Generic.List<ElectionGroupInfoType> _electionGroupInfo;
         
         /// <summary>
-        /// <para>There is always an electionGroup, if it is not needed to keep several elections together, there is only one election under it</para>
+        /// <para>The electionGroup is always used. If it is not required to group several elections, it only contains a single election.</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("There is always an electionGroup, if it is not needed to keep several elections t" +
-            "ogether, there is only one election under it")]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DescriptionAttribute("The electionGroup is always used. If it is not required to group several election" +
+            "s, it only contains a single election.")]
         [System.Xml.Serialization.XmlElementAttribute("electionGroupInfo", Order=3)]
         public System.Collections.Generic.List<ElectionGroupInfoType> ElectionGroupInfo
         {
@@ -93,10 +92,20 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 1.</para>
+        /// <para xml:lang="en">Gets a value indicating whether the ElectionGroupInfo collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool ElectionGroupInfoSpecified
+        {
+            get
+            {
+                return (this.ElectionGroupInfo != null);
+            }
+        }
+        
+        /// <summary>
         /// <para xml:lang="en">Maximum inclusive value: 999.</para>
         /// </summary>
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(ushort), "1", "999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("numberOfEntries", Order=4)]
         public ushort NumberOfEntries { get; set; }
