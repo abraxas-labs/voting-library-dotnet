@@ -26,7 +26,7 @@ namespace Ech0110_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("candidateIdentification", Order=0)]
         public string CandidateIdentification { get; set; }
         
@@ -36,7 +36,7 @@ namespace Ech0110_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(10)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("candidateReference", Order=1)]
         public string CandidateReference { get; set; }
         
@@ -46,7 +46,7 @@ namespace Ech0110_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("familyName", Order=2)]
         public string FamilyName { get; set; }
         
@@ -65,7 +65,7 @@ namespace Ech0110_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("callName", Order=4)]
         public string CallName { get; set; }
         

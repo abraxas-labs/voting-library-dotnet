@@ -141,6 +141,29 @@ public class ProtoValidatorTest
         ShouldThrowWithErrorMessage(msg, "'Translations[x].key' has Length 1, but the MinLength is 2\n'Translations[x].value' has Length 22, but the MaxLength is 6\n'Description' has Length 0, but the MinLength is 4\n'Description' is not a Complex Singleline Text.");
     }
 
+    [Fact]
+    public void OneOfShouldWork()
+    {
+        var msg = new OneOf { Number1 = 2 };
+        _validator.Validate(msg);
+    }
+
+    [Fact]
+    public void OneOfOtherCaseShouldWork()
+    {
+        var msg = new OneOf();
+        msg.Number1 = -1; // invalid value
+        msg.Number2 = 2; // valid value, unsets Number1
+        _validator.Validate(msg);
+    }
+
+    [Fact]
+    public void OneOfWithInvalidValueShouldThrow()
+    {
+        var msg = new OneOf { Number1 = -1 };
+        ShouldThrowWithErrorMessage(msg, "'Number1' is smaller than the MinValue 1");
+    }
+
     private Complex NewValidComplexObject(Action<Complex>? action = null)
     {
         var complex = new Complex

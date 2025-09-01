@@ -64,8 +64,8 @@ namespace Ech0045_4_0
         /// <para xml:lang="en">Pattern: [A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*@[A-Za-zäöüÄÖÜ0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*.</para>
         /// </summary>
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.ComponentModel.DataAnnotations.RegularExpressionAttribute("[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+(\\.[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+)*@[A-Za-z" +
-            "äöüÄÖÜ0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+(\\.[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+)*")]
+        [System.ComponentModel.DataAnnotations.RegularExpressionAttribute(("[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+(\\.[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+)*@[A-Za-z" +
+            "äöüÄÖÜ0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+(\\.[A-Za-z0-9!#-\'\\*\\+\\-/=\\?\\^_`\\{-~]+)*"))]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("emailAddress", Order=2)]
         public string EmailAddress { get; set; }

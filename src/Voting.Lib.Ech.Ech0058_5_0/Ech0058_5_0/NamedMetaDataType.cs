@@ -26,7 +26,7 @@ namespace Ech0058_5_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(20)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("metaDataName", Order=0)]
         public string MetaDataName { get; set; }
         
@@ -36,7 +36,7 @@ namespace Ech0058_5_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("metaDataValue", Order=1)]
         public string MetaDataValue { get; set; }
     }

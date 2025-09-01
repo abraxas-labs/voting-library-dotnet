@@ -26,7 +26,7 @@ namespace Ech0155_5_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(2)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(2)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("language", Order=0)]
         public string Language { get; set; }
         
@@ -36,7 +36,7 @@ namespace Ech0155_5_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(100)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("contestDescription", Order=1)]
         public string ContestDescription { get; set; }
     }

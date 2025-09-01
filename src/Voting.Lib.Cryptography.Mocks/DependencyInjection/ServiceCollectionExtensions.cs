@@ -2,7 +2,7 @@
 // For license information see LICENSE file
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Voting.Lib.Cryptography.Asymmetric;
+using Voting.Lib.Cryptography;
 using Voting.Lib.Cryptography.Mocks;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -17,11 +17,11 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddVotingLibPkcs11Mock(this IServiceCollection services)
+    public static IServiceCollection AddVotingLibCryptoProviderMock(this IServiceCollection services)
     {
         return services
-            .RemoveAll<IPkcs11DeviceAdapter>()
-            .AddSingleton<Pkcs11DeviceAdapterMock>()
-            .AddSingleton<IPkcs11DeviceAdapter>(sp => sp.GetRequiredService<Pkcs11DeviceAdapterMock>());
+            .RemoveAll<ICryptoProvider>()
+            .AddSingleton<CryptoProviderMock>()
+            .AddSingleton<ICryptoProvider>(sp => sp.GetRequiredService<CryptoProviderMock>());
     }
 }

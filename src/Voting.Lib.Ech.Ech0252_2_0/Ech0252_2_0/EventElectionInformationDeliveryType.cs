@@ -76,8 +76,8 @@ namespace Ech0252_2_0
         /// <summary>
         /// <para>The electionGroup is always used. If it is not required to group several elections, it only contains a single election.</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("The electionGroup is always used. If it is not required to group several election" +
-            "s, it only contains a single election.")]
+        [System.ComponentModel.DescriptionAttribute(("The electionGroup is always used. If it is not required to group several election" +
+            "s, it only contains a single election."))]
         [System.Xml.Serialization.XmlElementAttribute("electionGroupInfo", Order=3)]
         public System.Collections.Generic.List<ElectionGroupInfoType> ElectionGroupInfo
         {

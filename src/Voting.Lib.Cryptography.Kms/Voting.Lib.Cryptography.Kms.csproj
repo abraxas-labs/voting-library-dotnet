@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Cryptography\Voting.Lib.Cryptography.csproj" />
+  </ItemGroup>
+</Project>

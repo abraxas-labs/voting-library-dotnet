@@ -30,7 +30,7 @@ public class MagickImageProcessor : IImageProcessor
     }
 
     /// <inheritdoc />
-    public byte[] Resize(byte[] data, int width, int height, bool maintainAspectRatio)
+    public byte[] Resize(byte[] data, uint width, uint height, bool maintainAspectRatio)
     {
         using var image = new MagickImage(data);
 

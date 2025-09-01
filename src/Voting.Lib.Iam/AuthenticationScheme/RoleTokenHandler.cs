@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -25,6 +26,7 @@ namespace Voting.Lib.Iam.AuthenticationScheme;
 /// </summary>
 internal class RoleTokenHandler : IRoleTokenHandler
 {
+    private const string RoleTokenSubjectEndpointPath = "/token/roles/subject";
     private readonly IOptionsMonitor<SecureConnectOptions> _options;
     private readonly ILogger<RoleTokenHandler> _logger;
     private readonly HttpClient _httpClient;
@@ -42,14 +44,14 @@ internal class RoleTokenHandler : IRoleTokenHandler
     private SecureConnectOptions Options => _options.Get(SecureConnectDefaults.AuthenticationScheme);
 
     /// <inheritdoc cref="IRoleTokenHandler"/>
-    public async Task<IReadOnlyCollection<string>> GetRoles(string subjectToken, string tenantId, IEnumerable<string>? apps = null)
+    public async Task<IReadOnlyCollection<string>> GetRoles(string subjectToken, string subject, string tenantId, IEnumerable<string>? apps = null)
     {
         _logger.LogDebug(SecurityLogging.SecurityEventId, "Get roles for tenant {TenantId}.", tenantId);
 
         if ((Options.ConfigurationManager == null && Options.Configuration == null) || Options.Audience == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "Failed getting roles because of missing Configuration and ConfigurationManager or Audience on the JwtBearerOptions");
-            return Array.Empty<string>();
+            return [];
         }
 
         var hasApps = Options.RoleTokenApps?.Count > 0;
@@ -59,7 +61,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
             if (apps == null)
             {
                 _logger.LogWarning(SecurityLogging.SecurityEventId, "Roles limited to app header and no apps provided");
-                return Array.Empty<string>();
+                return [];
             }
 
             appShortcuts = appShortcuts.Intersect(apps).ToList();
@@ -69,32 +71,35 @@ internal class RoleTokenHandler : IRoleTokenHandler
         _logger.LogDebug(SecurityLogging.SecurityEventId, "Get role token for apps {Apps}", string.Join(',', appShortcuts));
         var request = new RoleTokenRequestModel(subjectToken, appShortcuts);
         var config = await GetConfiguration().ConfigureAwait(false);
-        using var response = await _httpClient.PostAsJsonAsync(config.TokenEndpoint, request, SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
+
+        var tokenEndpoint = GetRoleTokenEndpoint(config);
+        using var response = await _httpClient.PostAsJsonAsync(tokenEndpoint, request, SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "The download of the role-token returned status-code {Status}", response.StatusCode);
-            return Array.Empty<string>();
+            return [];
         }
 
-        var roleTokenResponse = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
+        var roleTokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>(SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
         if (roleTokenResponse == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "Role token response was null.");
-            return Array.Empty<string>();
+            return [];
         }
 
-        var roleTokenIdentity = await ValidateToken(roleTokenResponse.AccessToken, true, subjectToken).ConfigureAwait(false);
+        var token = roleTokenResponse.Token ?? throw new SecurityException("No token received");
+        var roleTokenIdentity = await ValidateToken(subject, token, true).ConfigureAwait(false);
         if (roleTokenIdentity == null)
         {
             // already logged.
-            return Array.Empty<string>();
+            return [];
         }
 
         var roles = roleTokenIdentity.Claims.FirstOrDefault(c => c.Type == Options.RoleClaimName)?.Value;
         if (roles == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "No roles in role token found.");
-            return Array.Empty<string>();
+            return [];
         }
 
         _logger.LogDebug(SecurityLogging.SecurityEventId, "Roles {Roles} in role token found.", roles);
@@ -104,7 +109,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
         if (permissions == null)
         {
             _logger.LogError(SecurityLogging.SecurityEventId, "No permissions in roles found.");
-            return Array.Empty<string>();
+            return [];
         }
 
         return appShortcuts
@@ -112,7 +117,10 @@ internal class RoleTokenHandler : IRoleTokenHandler
             .ToList();
     }
 
-    private async Task<ClaimsIdentity?> ValidateToken(string token, bool refreshOnKeyNotFound, string subjectToken)
+    private async Task<ClaimsIdentity?> ValidateToken(
+        string subject,
+        string token,
+        bool refreshOnKeyNotFound)
     {
         try
         {
@@ -130,20 +138,18 @@ internal class RoleTokenHandler : IRoleTokenHandler
             if (!tokenValidationResult.IsValid)
             {
                 if (tokenValidationResult.Exception is SecurityTokenSignatureKeyNotFoundException &&
-                    refreshOnKeyNotFound && Options.RefreshOnIssuerKeyNotFound &&
-                    Options.ConfigurationManager != null)
+                    refreshOnKeyNotFound &&
+                    Options is { RefreshOnIssuerKeyNotFound: true, ConfigurationManager: not null })
                 {
                     _logger.LogError(SecurityLogging.SecurityEventId, "Role token key not found, retrying with refreshed keys.");
                     Options.ConfigurationManager.RequestRefresh();
-                    return await ValidateToken(token, false, subjectToken);
+                    return await ValidateToken(subject, token, false);
                 }
 
                 throw new SecurityTokenValidationException("Role token validation failed.", tokenValidationResult.Exception);
             }
 
-            var subject = ExtractSubject(subjectToken);
-
-            if (subject?.Equals((tokenValidationResult.SecurityToken as JsonWebToken)?.Subject) != true)
+            if (!subject.Equals((tokenValidationResult.SecurityToken as JsonWebToken)?.Subject))
             {
                 throw new SecurityTokenValidationException("Subject of role token is not valid.");
             }
@@ -160,7 +166,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
     private async Task<OpenIdConnectConfiguration> GetConfiguration()
     {
         // either Configuration or ConfigurationManager is not null since this is already validated
-        return Options.Configuration ?? await Options.ConfigurationManager!.GetConfigurationAsync(default).ConfigureAwait(false);
+        return Options.Configuration ?? await Options.ConfigurationManager!.GetConfigurationAsync(CancellationToken.None).ConfigureAwait(false);
     }
 
     private IEnumerable<string> ExtractRoles(
@@ -171,12 +177,12 @@ internal class RoleTokenHandler : IRoleTokenHandler
     {
         if (!permissions.TryGetValue(app, out var appPermissions))
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
         if (!appPermissions.TryGetValue(tenantId, out var roles))
         {
-            return Enumerable.Empty<string>();
+            return [];
         }
 
         return addAppPrefix
@@ -184,35 +190,16 @@ internal class RoleTokenHandler : IRoleTokenHandler
             : roles;
     }
 
-    private string ExtractSubject(string subjectToken)
-    {
-        var jwtSubjectToken = new JwtSecurityTokenHandler().ReadJwtToken(subjectToken);
-        var subjectTokenType = jwtSubjectToken.Claims.FirstOrDefault(e => e.Type.Equals(SecureConnectTokenClaimTypes.TokenType))?.Value;
-        if (string.IsNullOrWhiteSpace(subjectTokenType))
-        {
-            throw new SecurityTokenValidationException("Subject token has no token type defined");
-        }
-
-        string? subject = null;
-        if (subjectTokenType == SecureConnectTokenTypes.AccessToken)
-        {
-            subject = jwtSubjectToken.Subject;
-        }
-        else if (subjectTokenType == SecureConnectTokenTypes.OnBehalfOfToken)
-        {
-            var actor = jwtSubjectToken.Claims.FirstOrDefault(t => t.Type == SecureConnectTokenClaimTypes.Actor)?.Value;
-            subject = actor == null ? null : JsonDocument.Parse(actor).RootElement.GetProperty("sub").GetString();
-        }
-        else
-        {
-            throw new SecurityTokenValidationException("Unknown subject token type");
-        }
-
-        if (string.IsNullOrWhiteSpace(subject))
-        {
-            throw new SecurityTokenValidationException("Subject claim for subject token is not set");
-        }
-
-        return subject;
-    }
+    /// <summary>
+    /// Returns the endpoint used to exchange a subject token for a role token.
+    /// Currently, only <c>/token/roles/subject</c> is used, since all current use cases resolve
+    /// the roles of the subject.
+    /// An alternate endpoint, <c>/token/roles/actor</c>, exists to resolve the roles
+    /// of the actor (if present) in the subject token, but is not currently required
+    /// by any use case.
+    /// </summary>
+    /// <param name="config">The configuration.</param>
+    /// <returns>The endpoint to resolve the role token.</returns>
+    private string GetRoleTokenEndpoint(OpenIdConnectConfiguration config)
+        => config.Issuer.TrimEnd('/') + RoleTokenSubjectEndpointPath;
 }

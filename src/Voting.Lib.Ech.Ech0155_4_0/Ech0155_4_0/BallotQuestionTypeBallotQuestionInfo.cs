@@ -26,7 +26,7 @@ namespace Ech0155_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(2)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(2)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("language", Order=0)]
         public string Language { get; set; }
         
@@ -45,7 +45,7 @@ namespace Ech0155_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(700)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("ballotQuestion", Order=2)]
         public string BallotQuestion { get; set; }
     }

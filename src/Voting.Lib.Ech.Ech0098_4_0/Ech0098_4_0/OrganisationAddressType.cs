@@ -285,7 +285,7 @@ namespace Ech0098_4_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(2)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(2)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("countryIdISO2", Order=14)]
         public string CountryIdIso2 { get; set; }
     }

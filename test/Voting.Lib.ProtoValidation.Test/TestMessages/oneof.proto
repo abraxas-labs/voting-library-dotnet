@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package test.messages;
+
+import "rules/rules.proto";
+
+message OneOf {
+  oneof number_or_another_number {
+    int32 number1 = 1 [(abraxas.voting.validation.v1.rules).integer.min_value = 1];
+    int32 number2 = 2 [(abraxas.voting.validation.v1.rules).integer.min_value = 2];
+  }
+}

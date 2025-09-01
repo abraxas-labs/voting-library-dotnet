@@ -26,7 +26,7 @@ namespace Ech0228_1_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(2)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(2)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("language", Order=0)]
         public string Language { get; set; }
         
@@ -45,7 +45,7 @@ namespace Ech0228_1_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(30)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("answerText", Order=2)]
         public string AnswerText { get; set; }
     }

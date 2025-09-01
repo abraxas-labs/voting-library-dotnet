@@ -26,7 +26,7 @@ namespace Ech0252_2_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("candidateIdentification", Order=0)]
         public string CandidateIdentification { get; set; }
         
@@ -88,8 +88,8 @@ namespace Ech0252_2_0
         /// <summary>
         /// <para>The element is only transmitted if this has been agreed by the sender and recipient. Once it has been used, it must always be transmitted.</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("The element is only transmitted if this has been agreed by the sender and recipie" +
-            "nt. Once it has been used, it must always be transmitted.")]
+        [System.ComponentModel.DescriptionAttribute(("The element is only transmitted if this has been agreed by the sender and recipie" +
+            "nt. Once it has been used, it must always be transmitted."))]
         [System.Xml.Serialization.XmlElementAttribute("candidateListResultsInfo", Order=4)]
         public ListResultTypeCandidateResultsCandidateListResultsInfo CandidateListResultsInfo { get; set; }
         

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Ech\Voting.Lib.Ech.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0011_9_0\Voting.Lib.Ech.Ech0011_9_0.csproj"/>
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0021_8_0\Voting.Lib.Ech.Ech0021_8_0.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\*.xsd" />
+  </ItemGroup>
+
+</Project>

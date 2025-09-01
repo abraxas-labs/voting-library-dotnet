@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Cryptography.Pkcs11\Voting.Lib.Cryptography.Pkcs11.csproj" />
+    <ProjectReference Include="..\..\src\Voting.Lib.Cryptography\Voting.Lib.Cryptography.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="cs_pkcs11_R3.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="cs_pkcs11_R3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="libcs_pkcs11_R3.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

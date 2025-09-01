@@ -3,9 +3,12 @@
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Voting.Lib.Iam.Services;
-using Voting.Lib.Iam.ServiceTokenHandling;
 using Voting.Lib.Iam.Testing.Mocks;
-using Voting.Lib.Iam.Testing.ServiceTokenHandling;
+using Voting.Lib.Iam.Testing.TokenHandling.OnBehalfToken;
+using Voting.Lib.Iam.Testing.TokenHandling.ServiceToken;
+using Voting.Lib.Iam.TokenHandling;
+using Voting.Lib.Iam.TokenHandling.OnBehalfToken;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -23,8 +26,12 @@ public static class ServiceCollectionExtensions
         => services
             .RemoveAll<IServiceTokenHandlerFactory>()
             .AddSingleton<IServiceTokenHandlerFactory, ServiceTokenHandlerFactoryMock>()
-            .RemoveAll<IServiceTokenHandler>()
-            .AddSingleton<IServiceTokenHandler, ServiceTokenHandlerMock>()
+            .RemoveAll<ITokenHandler>()
+            .AddSingleton<ITokenHandler, ServiceTokenHandlerMock>()
+            .RemoveAll<IOnBehalfTokenHandlerFactory>()
+            .AddSingleton<IOnBehalfTokenHandlerFactory, OnBehalfTokenHandlerFactoryMock>()
+            .RemoveAll<ITokenHandler>()
+            .AddSingleton<ITokenHandler, OnBehalfTokenHandlerMock>()
             .RemoveAll<ITenantService>()
             .AddSingleton<ITenantService, TenantServiceMock>()
             .RemoveAll<IUserService>()

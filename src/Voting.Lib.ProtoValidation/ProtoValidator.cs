@@ -55,6 +55,16 @@ public class ProtoValidator
 
         foreach (var fieldDescriptor in descriptor.Fields.InFieldNumberOrder())
         {
+            // Only validate if not part of a OneOf, or if it is the selected OneOf case
+            if (fieldDescriptor.ContainingOneof != null)
+            {
+                var selectedCase = fieldDescriptor.ContainingOneof.Accessor.GetCaseFieldDescriptor(message);
+                if (selectedCase != fieldDescriptor)
+                {
+                    continue;
+                }
+            }
+
             ValidateField(context, GetRules(fieldDescriptor), fieldDescriptor.Accessor.GetValue(message), fieldDescriptor.PropertyName);
         }
     }

@@ -20,6 +20,12 @@ public class SecureConnectApiOptions
     /// </summary>
     public TimeSpan? RoleTokenExpirationTime { get; set; } = TimeSpan.FromMinutes(5);
 
+    /// <summary>
+    /// Gets or sets the timeout for calling the SecureConnect API.
+    /// Defaults to 100 seconds (the .NET HttpClient default).
+    /// </summary>
+    public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(100);
+
     internal Uri IdentityUrl => BuildUri("identity");
 
     internal Uri PermissionUrl => BuildUri("permission");

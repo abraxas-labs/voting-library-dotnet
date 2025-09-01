@@ -37,6 +37,11 @@ public static class SecureConnectTestDefaults
     public const string ServiceToken = "this-is-a-very-secret-token";
 
     /// <summary>
+    /// The default on behalf token.
+    /// </summary>
+    public const string OnBehalfToken = "this-is-a-very-secret-on-behalf-token";
+
+    /// <summary>
     /// The default mocked tenant.
     /// </summary>
     public static readonly Tenant MockedTenantDefault = new Tenant

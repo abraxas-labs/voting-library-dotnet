@@ -82,10 +82,10 @@ public class SecureConnectHandlerTest : IAsyncDisposable
 
         var roleTokenHandlerMock = new Mock<IRoleTokenHandler>();
         roleTokenHandlerMock
-            .Setup(x => x.GetRoles("subject-token", "Tenant1", It.IsAny<IEnumerable<string>>()))
+            .Setup(x => x.GetRoles("subject-token", "User1", "Tenant1", It.IsAny<IEnumerable<string>>()))
             .Returns(Task.FromResult<IReadOnlyCollection<string>>(new[] { "Role1", "Role2" }));
         roleTokenHandlerMock
-            .Setup(x => x.GetRoles("subject-token-no-roles", "Tenant1", It.IsAny<IEnumerable<string>>()))
+            .Setup(x => x.GetRoles("subject-token-no-roles", "User1", "Tenant1", It.IsAny<IEnumerable<string>>()))
             .Returns(Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>()));
 
         _secureConnectHandler = new SecureConnectHandler(
@@ -206,7 +206,7 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         _options.FetchRoleToken = true;
         _options.AnyRoleRequired = false;
 
-        _jwtBearerHandler.ClearClaims();
+        _jwtBearerHandler.RemoveSubject();
 
         await Init("subject-token", "Tenant1");
         var result = await _secureConnectHandler.AuthenticateAsync();
@@ -224,6 +224,51 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         var result = await _secureConnectHandler.AuthenticateAsync();
         result.Succeeded.Should().BeFalse();
         result.Failure!.Message.Should().Be("jwt expected failure");
+    }
+
+    [Fact]
+    public async Task AccessTokenDisallowedShouldFail()
+    {
+        _options.AllowAccessToken = false;
+        _options.AnyRoleRequired = false;
+
+        await Init();
+        var result = await _secureConnectHandler.AuthenticateAsync();
+        result.Succeeded.Should().BeFalse();
+        result.Failure!.Message.Should().Be("Token type is not allowed.");
+    }
+
+    [Fact]
+    public async Task OnBehalfTokenDisallowedShouldFail()
+    {
+        _jwtBearerHandler.SetTokenType(SecureConnectTokenTypes.OnBehalfOfToken);
+
+        await Init();
+        var result = await _secureConnectHandler.AuthenticateAsync();
+        result.Succeeded.Should().BeFalse();
+        result.Failure!.Message.Should().Be("Token type is not allowed.");
+    }
+
+    [Fact]
+    public async Task UnknownTokenTypeShouldFail()
+    {
+        _jwtBearerHandler.SetTokenType("fooBar");
+
+        await Init();
+        var result = await _secureConnectHandler.AuthenticateAsync();
+        result.Succeeded.Should().BeFalse();
+        result.Failure!.Message.Should().Be("Token type is not allowed.");
+    }
+
+    [Fact]
+    public async Task OnBehalfTokenAllowedShouldWork()
+    {
+        _options.AllowOnBehalfToken = true;
+        _jwtBearerHandler.SetTokenType(SecureConnectTokenTypes.OnBehalfOfToken);
+
+        await Init();
+        var result = await _secureConnectHandler.AuthenticateAsync();
+        result.Succeeded.Should().BeTrue();
     }
 
     private void ShouldHaveRoles(params string[] roles)
@@ -268,13 +313,24 @@ public class SecureConnectHandlerTest : IAsyncDisposable
         {
         }
 
-        internal ClaimsIdentity Identity { get; private set; } = new(claims: new[] { new Claim(ClaimTypes.NameIdentifier, "User1") });
+        internal ClaimsIdentity Identity { get; private set; } = new(claims: [
+            new Claim(ClaimTypes.NameIdentifier, "User1"),
+            new Claim(SecureConnectTokenClaimTypes.TokenType, SecureConnectTokenTypes.AccessToken),
+        ]);
 
         internal bool ShouldFail { get; set; }
 
-        internal void ClearClaims()
+        internal void RemoveSubject()
         {
-            Identity = new();
+            Identity = new(claims: Identity.Claims.Where(x => x.Type != ClaimTypes.NameIdentifier));
+        }
+
+        internal void SetTokenType(string tokenType)
+        {
+            var claims = Identity.Claims
+                .Where(x => x.Type != SecureConnectTokenClaimTypes.TokenType)
+                .Append(new Claim(SecureConnectTokenClaimTypes.TokenType, tokenType));
+            Identity = new(claims: claims);
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()

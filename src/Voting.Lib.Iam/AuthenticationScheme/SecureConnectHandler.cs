@@ -153,6 +153,12 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
             return result;
         }
 
+        if (!IsTokenTypeAllowed(result.Principal))
+        {
+            Logger.LogInformation(SecurityLogging.SecurityEventId, "Token type is not allowed");
+            return AuthenticateResult.Fail("Token type is not allowed.");
+        }
+
         if (!Options.FetchRoleToken
             || string.IsNullOrWhiteSpace(Tenant)
             || result.Principal?.Identity is not ClaimsIdentity roleIdentity)
@@ -172,7 +178,7 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
         if (userRoles == null)
         {
             Logger.LogDebug(SecurityLogging.SecurityEventId, "Fetching role token for user from IAM");
-            var roles = await RoleTokenHandler.GetRoles(SubjectToken, Tenant, Apps).ConfigureAwait(false);
+            var roles = await RoleTokenHandler.GetRoles(SubjectToken, sub, Tenant, Apps).ConfigureAwait(false);
             userRoles = new UserRoles(roles);
             if (roles.Count > 0)
             {
@@ -250,5 +256,21 @@ public class SecureConnectHandler : AuthenticationHandler<SecureConnectOptions>
             authTime,
             Tenant ?? string.Empty,
             string.Join('-', Apps)));
+    }
+
+    private bool IsTokenTypeAllowed(ClaimsPrincipal? principal)
+    {
+        if (principal == null)
+        {
+            return false;
+        }
+
+        var tokenType = principal.Claims.FirstOrDefault(e => e.Type.Equals(SecureConnectTokenClaimTypes.TokenType))?.Value;
+        return tokenType switch
+        {
+            SecureConnectTokenTypes.AccessToken => Options.AllowAccessToken,
+            SecureConnectTokenTypes.OnBehalfOfToken => Options.AllowOnBehalfToken,
+            _ => false,
+        };
     }
 }

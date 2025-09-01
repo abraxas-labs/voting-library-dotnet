@@ -76,7 +76,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.RoleTokenApps = new[] { "App1", "App2" };
 
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1" });
         roles.Should().BeEquivalentTo("App1::Role1", "App1::Role2");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -89,7 +89,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.RoleTokenApps = new[] { "App1", "App2" };
 
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1" });
         roles.Should().BeEquivalentTo("App1_Role1", "App1_Role2");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -101,7 +101,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.RoleTokenApps = new[] { "App1", "App2" };
 
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1", "App2" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1", "App2" });
         roles.Should().BeEquivalentTo("App1::Role1", "App1::Role2", "App2::Role5");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -113,7 +113,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.RoleTokenApps = new[] { "App1", "App2" };
 
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("App1::Role1", "App1::Role2", "App2::Role5");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -126,7 +126,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.Audience = "App1";
 
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("Role1", "Role2");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -137,7 +137,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.LimitRolesToAppHeaderApps = true;
         _options.RoleTokenApps = null;
 
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEmpty();
     }
 
@@ -148,7 +148,7 @@ public class RoleTokenHandlerTest : IDisposable
         _options.RoleTokenApps = null;
         _options.Audience = null;
 
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEmpty();
     }
 
@@ -158,9 +158,9 @@ public class RoleTokenHandlerTest : IDisposable
         _options.LimitRolesToAppHeaderApps = false;
 
         _httpHandlerMock
-            .Expect("/token")
+            .Expect("/token/roles/subject")
             .Respond(HttpStatusCode.BadRequest);
-        var roles = await _roleTokenHandler.GetRoles("fail", "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEmpty();
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -171,7 +171,7 @@ public class RoleTokenHandlerTest : IDisposable
         using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var securityKey = new ECDsaSecurityKey(key) { KeyId = "foo-bar-key" };
         ExpectTokenFetch(t => t.SigningCredentials = new(securityKey, SecurityAlgorithms.EcdsaSha256));
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1" });
         roles.Should().BeEmpty();
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -181,7 +181,7 @@ public class RoleTokenHandlerTest : IDisposable
     {
         var securityKey = new ECDsaSecurityKey(_key) { KeyId = "foo-bar-key-unknown" };
         ExpectTokenFetch(t => t.SigningCredentials = new(securityKey, SecurityAlgorithms.EcdsaSha256));
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1" });
         roles.Should().BeEmpty();
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -198,7 +198,7 @@ public class RoleTokenHandlerTest : IDisposable
 
         // call GetRoles to ensure existing keys are loaded
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("Role1", "Role2");
 
         // await refresh interval
@@ -213,7 +213,7 @@ public class RoleTokenHandlerTest : IDisposable
 
         // call GetRoles again
         ExpectTokenFetch(t => t.SigningCredentials = new(securityKey, SecurityAlgorithms.EcdsaSha256));
-        roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1");
+        roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("Role1", "Role2");
 
         _httpHandlerMock.VerifyNoOutstandingExpectation();
@@ -223,7 +223,7 @@ public class RoleTokenHandlerTest : IDisposable
     public async Task GetRolesWithExpiredTokenShouldReturnEmpty()
     {
         ExpectTokenFetch(t => t.Expires = DateTime.UtcNow.AddMinutes(-1));
-        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1", new[] { "App1" });
         roles.Should().BeEmpty();
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
@@ -231,42 +231,24 @@ public class RoleTokenHandlerTest : IDisposable
     [Fact]
     public async Task GetRolesWithInvalidSubjectShouldReturnEmpty()
     {
-        _options.RoleTokenApps = new[] { "App1", "App2" };
+        _options.RoleTokenApps = ["App1", "App2"];
 
-        var subjectToken = CreateSubjectToken(t => t.Subject = new ClaimsIdentity(new[] { new Claim("sub", "99999") }));
+        var subjectToken = CreateSubjectToken();
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "9999", "Tenant1", ["App1"]);
         roles.Should().BeEmpty();
     }
 
     [Fact]
     public async Task GetRolesWithMissingTokenTypeShouldReturnEmpty()
     {
-        var subjectToken = CreateSubjectToken(t => t.Subject = new ClaimsIdentity(new[] { new Claim("sub", "99999") }));
+        var subjectToken = CreateSubjectToken(t =>
+        {
+            t.Claims.Clear();
+            t.Subject = new ClaimsIdentity([new Claim("sub", "99999")]);
+        });
         ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
-        roles.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetRolesWithUndefinedTokenTypeShouldReturnEmpty()
-    {
-        _options.RoleTokenApps = new[] { "App1", "App2" };
-
-        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = string.Empty);
-        ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
-        roles.Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task GetRolesWithUnknownTokenTypeShouldReturnEmpty()
-    {
-        _options.RoleTokenApps = new[] { "App1", "App2" };
-
-        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = "non_existing_type");
-        ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "12345", "Tenant1", ["App1"]);
         roles.Should().BeEmpty();
     }
 
@@ -274,42 +256,27 @@ public class RoleTokenHandlerTest : IDisposable
     public async Task GetRolesLimitedToSingleAppShouldWorkWhenUsingOnBehalfOfToken()
     {
         _options.LimitRolesToAppHeaderApps = true;
-        _options.RoleTokenApps = new[] { "App1", "App2" };
+        _options.RoleTokenApps = ["App1", "App2"];
 
         var subjectToken = CreateSubjectToken(t =>
         {
             t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken;
-            t.Subject = new ClaimsIdentity(new[] { new Claim(SecureConnectTokenClaimTypes.Actor, @"{""sub"": ""12345""}") });
+            t.Claims[ClaimTypes.Actor] = """{"act": {"sub": "999"}}""";
         });
-        ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        ExpectTokenFetch(onBehalfToken: true);
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "12345", "Tenant1", ["App1"]);
         roles.Should().BeEquivalentTo("App1::Role1", "App1::Role2");
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
 
     [Fact]
-    public async Task GetRolesWithMissingActorShouldReturnEmptyWhenUsingOnBehalfOfToken()
-    {
-        _options.RoleTokenApps = new[] { "App1", "App2" };
-
-        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken);
-        ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
-        roles.Should().BeEmpty();
-    }
-
-    [Fact]
     public async Task GetRolesWithInvalidSubjectShouldReturnEmptyWhenUsingOnBehalfOfToken()
     {
-        _options.RoleTokenApps = new[] { "App1", "App2" };
+        _options.RoleTokenApps = ["App1", "App2"];
 
-        var subjectToken = CreateSubjectToken(t =>
-        {
-            t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken;
-            t.Subject = new ClaimsIdentity(new[] { new Claim(SecureConnectTokenClaimTypes.Actor, @"{""sub"": ""99999""}") });
-        });
-        ExpectTokenFetch();
-        var roles = await _roleTokenHandler.GetRoles(subjectToken, "Tenant1", new[] { "App1" });
+        var subjectToken = CreateSubjectToken(t => t.Claims[SecureConnectTokenClaimTypes.TokenType] = SecureConnectTokenTypes.OnBehalfOfToken);
+        ExpectTokenFetch(onBehalfToken: true);
+        var roles = await _roleTokenHandler.GetRoles(subjectToken, "9999", "Tenant1", ["App1"]);
         roles.Should().BeEmpty();
     }
 
@@ -320,7 +287,7 @@ public class RoleTokenHandlerTest : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void ExpectTokenFetch(Action<SecurityTokenDescriptor>? modifier = null)
+    private void ExpectTokenFetch(Action<SecurityTokenDescriptor>? modifier = null, bool onBehalfToken = false)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -360,8 +327,8 @@ public class RoleTokenHandlerTest : IDisposable
         modifier?.Invoke(tokenDescriptor);
         var token = jwtHandler.CreateJwtSecurityToken(tokenDescriptor);
         _httpHandlerMock
-            .Expect(HttpMethod.Post, "/token")
-            .Respond(JsonContent.Create(new AccessTokenResponse { ExpiresIn = 60, AccessToken = token.RawData }, options: SecureConnectDefaults.JsonOptions));
+            .Expect(HttpMethod.Post, "/token/roles/subject")
+            .Respond(JsonContent.Create(new TokenResponse { ExpiresIn = 60, Token = token.RawData }, options: SecureConnectDefaults.JsonOptions));
     }
 
     private void AddMockedBackends()

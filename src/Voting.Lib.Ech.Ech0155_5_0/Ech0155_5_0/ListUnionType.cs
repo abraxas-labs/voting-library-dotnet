@@ -26,7 +26,7 @@ namespace Ech0155_5_0
         /// </summary>
         [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(50)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("listUnionIdentification", Order=0)]
         public string ListUnionIdentification { get; set; }
         
@@ -64,7 +64,7 @@ namespace Ech0155_5_0
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<string> _referencedList;
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
         [System.Xml.Serialization.XmlElementAttribute("referencedList", Order=3)]
         public System.Collections.Generic.List<string> ReferencedList
         {

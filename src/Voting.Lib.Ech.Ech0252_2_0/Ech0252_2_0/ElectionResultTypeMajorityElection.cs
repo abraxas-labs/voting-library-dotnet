@@ -26,10 +26,10 @@ namespace Ech0252_2_0
         /// <summary>
         /// <para>The element is always delivered for all candidates that are known at the current time. All elements in candidate must therefore be contained in candidateResult. Addidional write-in candidates must be added in the structure, at the time they are known</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute("The element is always delivered for all candidates that are known at the current " +
+        [System.ComponentModel.DescriptionAttribute(("The element is always delivered for all candidates that are known at the current " +
             "time. All elements in candidate must therefore be contained in candidateResult. " +
             "Addidional write-in candidates must be added in the structure, at the time they " +
-            "are known")]
+            "are known"))]
         [System.Xml.Serialization.XmlElementAttribute("candidateResult", Order=0)]
         public System.Collections.Generic.List<CandidateResultType> CandidateResult
         {

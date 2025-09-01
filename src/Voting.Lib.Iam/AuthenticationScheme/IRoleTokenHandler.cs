@@ -15,6 +15,7 @@ public interface IRoleTokenHandler
     /// Returns a list of roles for the provided subject/tenantId.
     /// </summary>
     /// <param name="subjectToken">The token of the user.</param>
+    /// <param name="subject">The subject of the user ("sub" claim of the <paramref name="subjectToken"/>).</param>
     /// <param name="tenantId">The id of the tenant for which the roles should be loaded.</param>
     /// <param name="apps">
     /// The shortcuts of the apps for which the roles should be loaded.
@@ -22,5 +23,5 @@ public interface IRoleTokenHandler
     /// This has an affect only if <see cref="SecureConnectOptions.LimitRolesToAppHeaderApps"/> is true.
     /// </param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    Task<IReadOnlyCollection<string>> GetRoles(string subjectToken, string tenantId, IEnumerable<string>? apps = null);
+    Task<IReadOnlyCollection<string>> GetRoles(string subjectToken, string subject, string tenantId, IEnumerable<string>? apps = null);
 }

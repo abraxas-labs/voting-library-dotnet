@@ -40,6 +40,20 @@ public static class AusmittlungXmlContestTemplates
     };
 
     /// <summary>
+    /// Gets the eCH-0252 proportional election result export template with candidate list results info (Panaschierstatistik).
+    /// </summary>
+    public static readonly TemplateModel ProportionalElectionResultsWithCandidateListResultsInfoEch0252 = new()
+    {
+        Key = "proportional_election_result_with_candidate_list_results_info_ech_0252",
+        Filename = "eCH-0252_proportional-election-result-delivery_with_info_{0}",
+        Description = "Proporzwahlresultate inkl. Panaschierstatistik (eCH-0252 Result Delivery)",
+        Format = ExportFileFormat.Xml,
+        EntityType = EntityType.Contest,
+        ResultType = ResultType.Contest,
+        GeneratedBy = VotingApp.VotingAusmittlung,
+    };
+
+    /// <summary>
     /// Gets the eCH-0252 vote result export template.
     /// </summary>
     public static readonly TemplateModel VoteResultsEch0252 = new()
@@ -87,6 +101,7 @@ public static class AusmittlungXmlContestTemplates
         ProportionalElectionInfosEch0252,
         MajorityElectionResultsEch0252,
         ProportionalElectionResultsEch0252,
+        ProportionalElectionResultsWithCandidateListResultsInfoEch0252,
         VoteResultsEch0252,
     };
 }

@@ -1,4 +1,4 @@
-# ✨ Changelog (`v15.3.0`)
+# ✨ Changelog (`v19.0.2`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,192 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v15.3.0
-Previous version ---- v12.24.0
+This version -------- v19.0.2
+Previous version ---- v15.3.0
 Initial version ----- v7.7.37
-Total commits ------- 23
+Total commits ------- 29
 ```
+
+## [v19.0.2] - 2025-08-27
+
+### 🔄 Changed
+
+- fix ImageMagick vulnerability (CVE-2025-53015)
+
+## [v19.0.1] - 2025-08-14
+
+### 🔄 Changed
+
+- switching malware scanner to https without proxy interceptor
+
+## [v19.0.0] - 2025-08-13
+
+- add configuration to allow token types
+- by default ob-tokens are not accepted, unless explicitly allowed
+- use single /token/roles/subject endpoint to resolve roles, remove configuration
+
+BREAKING CHANGE: on behalf tokens are not accepted by default
+BREAKING CHANGE: on behalf token endpoint is not configurable anymore
+
+## [v18.2.0] - 2025-08-08
+
+### 🔄 Changed
+
+- add eCH ABX-VOTING 1-5
+
+## [v18.1.2] - 2025-08-06
+
+### 🔄 Changed
+
+- validate that onbehalf options resource is set
+
+## [v18.1.1] - 2025-08-05
+
+### 🔄 Changed
+
+- check subject on returned role token
+
+## [v18.1.0] - 2025-07-15
+
+### 🔄 Changed
+
+- add on behalf token handling
+
+## [v18.0.0] - 2025-07-09
+
+BREAKING CHANGE: `Page<T>` extends `PageInfo` now and all members except for the `Items` are moved to `PageInfo`. The ctor now accepts and exposes a list directly instead of the `IEnumerable`.
+
+## [v17.2.1] - 2025-07-07
+
+### 🔄 Changed
+
+- improve kms exception content
+
+## [v17.2.0] - 2025-07-03
+
+### 🔄 Changed
+
+- add basis eCH contest e-voting only export
+
+## [v17.1.0] - 2025-07-02
+
+### 🔄 Changed
+
+- add eCH-0252 proportional election with info export
+
+## [v17.0.0] - 2025-06-30
+
+BREAKING CHANGE: removes unneeded pkcs#11 crypto provider config keys. If needed by the application, the app should subclass the config.
+
+## [v16.2.1] - 2025-06-27
+
+### 🔄 Changed
+
+- bump pkcs11 driver from 4.45 to 4.51.0.1
+
+## [v16.2.0] - 2025-06-27
+
+### 🔄 Changed
+
+- crypto mock: support private public keypairs
+
+## [v16.1.0] - 2025-06-26
+
+### 🔄 Changed
+
+- add key labels to kms client
+
+## [v16.0.0] - 2025-06-25
+
+### 🆕 Added
+
+- feat(VOTING-5934): implement kms
+
+Breaking Change:
+- this abstracts crypto operations into new abstractions
+- the PKCS11 implementation is moved to `Voting.Lib.Cryptography.Pkcs11`
+- the `IHsmDeviceAdapter` is renamed to `ICryptoProvider`
+- all methods of `ICryptoProvider` now expect the `string keyId` as a last parameter. This is the CKA label for PKCS#11.
+- all methods of `ICryptoProvider` are now async.
+- The key is removed from the config to better separate it.
+- `GenerateGenericSecretKey` is renamed to `GenerateMacSecretKey`
+- `DeleteSecretKey` is split up into `DeleteMacSecretKey` and `DeleteAesSecretKey`
+- `AddPkcs11HealthCheck` is renamed to `AddCryptoProviderHealthCheck`
+- The name of the health check is adjusted from `Pkcs11` to `CryptoProvider`. The first parameter of `AddCryptoProviderHealthCheck` can be used to use the old name.
+
+BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to Voting.Lib.Cryptography.Pkcs11
+
+## [v15.13.1] - 2025-06-06
+
+### 🔄 Changed
+
+- extend complex single-/multiline validator with paragraph sign (§)
+
+## [v15.13.0] - 2025-06-06
+
+### 🆕 Added
+
+- add HSM generic user type to support key management users
+
+## [v15.12.0] - 2025-06-04
+
+### 🔄 Changed
+
+- hsm mock: derive key from key label
+
+## [v15.11.0] - 2025-05-28
+
+### 🔄 Changed
+
+- add for update ef core helper
+
+## [v15.10.0] - 2025-05-26
+
+### 🔄 Changed
+
+- support oneof in proto validators
+
+## [v15.9.0] - 2025-05-26
+
+### 🔄 Changed
+
+- add long validator
+
+## [v15.8.0] - 2025-05-23
+
+### 🔄 Changed
+
+- add separate service token handling
+
+## [v15.7.0] - 2025-05-23
+
+### Added
+
+- added Ech0157v5 and Ech0159v5
+
+## [v15.6.0] - 2025-05-22
+
+### 🔄 Changed
+
+- add timeout to secure connect options
+
+## [v15.5.0] - 2025-05-22
+
+### 🔄 Changed
+
+- add additional http headers option
+
+## [v15.4.1] - 2025-05-21
+
+### 🔄 Changed
+
+- allow " in complex ml texts
+
+## [v15.4.0] - 2025-05-20
+
+### 🔄 Changed
+
+- add hsm secret key management and hmac sha support
 
 ## [v15.3.0] - 2025-05-15
 
@@ -115,176 +296,42 @@ BREAKING CHANGE: event serializer public api changes, see previous commit
 
 ## [v13.0.0] - 2025-02-27
 
-BREAKING CHANGE: Renamed Abx_Voting_1_0 to ABX_Voting_1_0 to match casing of other generated classes
+- add configuration to allow token types
+- by default ob-tokens are not accepted, unless explicitly allowed
+- use single /token/roles/subject endpoint to resolve roles, remove configuration
 
-## [v12.25.0] - 2025-02-12
+BREAKING CHANGE: on behalf tokens are not accepted by default
+BREAKING CHANGE: on behalf token endpoint is not configurable anymore
 
-### 🔄 Changed
+BREAKING CHANGE: `Page<T>` extends `PageInfo` now and all members except for the `Items` are moved to `PageInfo`. The ctor now accepts and exposes a list directly instead of the `IEnumerable`.
 
-- add XmlValidationOnWriteStream
-
-## [v12.24.1] - 2025-01-28
-
-### 🔄 Changed
-
-- introduce a max command text length configuration for db query monitoring
-- truncate command text for logging when limit exeeded
-
-## [v12.24.0] - 2025-01-28
+BREAKING CHANGE: removes unneeded pkcs#11 crypto provider config keys. If needed by the application, the app should subclass the config.
 
 ### 🆕 Added
 
-- add person extension for householder in ech-0045
+- feat(VOTING-5934): implement kms
 
-## [v12.23.0] - 2025-01-20
+Breaking Change:
+- this abstracts crypto operations into new abstractions
+- the PKCS11 implementation is moved to `Voting.Lib.Cryptography.Pkcs11`
+- the `IHsmDeviceAdapter` is renamed to `ICryptoProvider`
+- all methods of `ICryptoProvider` now expect the `string keyId` as a last parameter. This is the CKA label for PKCS#11.
+- all methods of `ICryptoProvider` are now async.
+- The key is removed from the config to better separate it.
+- `GenerateGenericSecretKey` is renamed to `GenerateMacSecretKey`
+- `DeleteSecretKey` is split up into `DeleteMacSecretKey` and `DeleteAesSecretKey`
+- `AddPkcs11HealthCheck` is renamed to `AddCryptoProviderHealthCheck`
+- The name of the health check is adjusted from `Pkcs11` to `CryptoProvider`. The first parameter of `AddCryptoProviderHealthCheck` can be used to use the old name.
 
-### 🆕 Added
-
-- add HSM integration tests based on the cryptoserver simulator docker image.
-- add integration tests for all cryptographic operations provided by the HSM adapter.
-
-### ❌ Removed
-
-- remove public key retrieval in HSM health check to decouple from specific application use cases.
-
-## [v12.22.3] - 2025-01-10
-
-### 🔄 Changed
-
-- update Pkcs11Interop library from 5.1.2 to 5.2.0.
-- refer to GitHub release notes [Pkcs11Interop 5.2.0](https://github.com/Pkcs11Interop/Pkcs11Interop/releases/tag/v5.2.0)
-
-## [v12.22.2] - 2024-12-20
-
-### 🔄 Changed
-
-- extend dmdoc lib for selection of active bricks
-
-## [v12.22.1] - 2024-12-19
-
-### 🔄 Changed
-
-- add x-vrsg-tenant query parameter to be able to update a user
-
-## [v12.22.0] - 2024-12-18
-
-### 🔄 Changed
-
-- update minio lib and testcontainer according to latest operated version
-
-## [v12.21.0] - 2024-12-16
-
-### 🔄 Changed
-
-- update eCH-0252-2-0 version
-
-## [v12.20.0] - 2024-12-13
+BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to Voting.Lib.Cryptography.Pkcs11
 
 ### 🆕 Added
 
-- introduced a setting which allows to include the user id in the log output
+- add HSM generic user type to support key management users
 
-## [v12.19.1] - 2024-12-12
+### Added
 
-### 🔄 Changed
-
-- enable e-voting reports for municipality political businesses
-
-## [v12.19.0] - 2024-12-12
-
-### 🔄 Changed
-
-- snapshotting of bricks
-
-## [v12.18.0] - 2024-12-09
-
-### 🔄 Changed
-
-- fix flaky tests by using fake time provider
-
-## [v12.17.2] - 2024-12-08
-
-### 🔄 Changed
-
-- upgrade test containers and use minio provided container, fixes flaky wait condition
-
-## [v12.17.1] - 2024-12-04
-
-### 🔄 Changed
-
-- add end result detail protocol for multiple counting circle results
-
-## [v12.17.0] - 2024-12-03
-
-### 🔄 Changed
-
-- add secondary majority election protocols
-
-## [v12.16.3] - 2024-12-03
-
-### 🔄 Changed
-
-- remove vote temporary end result protocol
-
-## [v12.16.2] - 2024-11-28
-
-### 🔄 Changed
-
-- support publish large amount of events
-
-## [v12.16.1] - 2024-11-27
-
-### 🔄 Changed
-
-- disable e-voting reports for municipality
-
-## [v12.16.0] - 2024-11-08
-
-### 🔄 Changed
-
-- add event sourcing read stream version api
-
-## [v12.15.5] - 2024-10-30
-
-### :arrows_counterclockwise: Changed
-
-- update xscgen and add serializeEmptyCollections option
-
-## [v12.15.4] - 2024-10-23
-
-### 🔄 Changed
-
-- init eventing meter histogram to avoid no data alerts
-
-### 🔒 Security
-
-- update Microsoft.Extensions.Caching.Memory to close vulnerability
-
-## [v12.15.3] - 2024-10-08
-
-### 🔄 Changed
-
-- remove domain of influence types for result protocol and counting circle protocol
-
-## [v12.15.2] - 2024-10-08
-
-### 🔄 Changed
-
-- eCH-0045 delivery header deserializer
-
-## [v12.15.1] - 2024-09-27
-
-### ⚠️ Deprecated
-
-- remove deprecated second factor code, instead use jwts as primary codes
-
-## [v12.15.0] - 2024-09-26
-
-### 🔄 Changed
-
-- add comment to delivery header provider
-
-## [v12.14.0] - 2024-09-10
+- added Ech0157v5 and Ech0159v5
 
 ### 🔄 Changed
 
@@ -297,52 +344,3 @@ BREAKING CHANGE: Renamed Abx_Voting_1_0 to ABX_Voting_1_0 to match casing of oth
 BREAKING CHANGE: AddMockedTimeProvider is renamed to AddMockedClock to align regular method names.
 
 BREAKING CHANGE: event serializer public api changes, see previous commit
-
-BREAKING CHANGE: Renamed Abx_Voting_1_0 to ABX_Voting_1_0 to match casing of other generated classes
-
-### 🔄 Changed
-
-- introduce a max command text length configuration for db query monitoring
-- truncate command text for logging when limit exeeded
-
-### 🆕 Added
-
-- add person extension for householder in ech-0045
-
-### 🆕 Added
-
-- add HSM integration tests based on the cryptoserver simulator docker image.
-- add integration tests for all cryptographic operations provided by the HSM adapter.
-
-### ❌ Removed
-
-- remove public key retrieval in HSM health check to decouple from specific application use cases.
-
-### 🔄 Changed
-
-- update Pkcs11Interop library from 5.1.2 to 5.2.0.
-- refer to GitHub release notes [Pkcs11Interop 5.2.0](https://github.com/Pkcs11Interop/Pkcs11Interop/releases/tag/v5.2.0)
-
-### 🔄 Changed
-
-- update minio lib and testcontainer according to latest operated version
-
-### 🆕 Added
-
-- introduced a setting which allows to include the user id in the log output
-
-### :arrows_counterclockwise: Changed
-
-- update xscgen and add serializeEmptyCollections option
-
-### 🔄 Changed
-
-- init eventing meter histogram to avoid no data alerts
-
-### 🔒 Security
-
-- update Microsoft.Extensions.Caching.Memory to close vulnerability
-
-### ⚠️ Deprecated
-
-- remove deprecated second factor code, instead use jwts as primary codes

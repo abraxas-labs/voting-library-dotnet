@@ -16,7 +16,7 @@ public interface IImageProcessor
     /// <param name="height">New height.</param>
     /// <param name="maintainAspectRatio">Whether the original aspect ratio should be maintained.</param>
     /// <returns>The bytes of the processed image.</returns>
-    byte[] Resize(byte[] data, int width, int height, bool maintainAspectRatio);
+    byte[] Resize(byte[] data, uint width, uint height, bool maintainAspectRatio);
 
     /// <summary>
     /// Converts the image to a new format.

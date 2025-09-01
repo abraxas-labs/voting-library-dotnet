@@ -18,7 +18,7 @@ public class EcdsaPublicKey : IPublicKey
     /// </summary>
     /// <param name="ecdsa">The system ECDSA implementation.</param>
     /// <param name="id">The public key ID. Will be generated if not provided.</param>
-    internal EcdsaPublicKey(ECDsa ecdsa, string? id = null)
+    public EcdsaPublicKey(ECDsa ecdsa, string? id = null)
     {
         AsymmetricAlgorithm = ecdsa;
         PublicKey = ecdsa.ExportSubjectPublicKeyInfo();

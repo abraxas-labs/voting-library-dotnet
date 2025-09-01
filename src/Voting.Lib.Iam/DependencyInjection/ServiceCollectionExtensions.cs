@@ -4,7 +4,6 @@
 using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.Authorization;
@@ -13,8 +12,9 @@ using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Services.ApiClient.Identity;
 using Voting.Lib.Iam.Services.ApiClient.Permission;
-using Voting.Lib.Iam.ServiceTokenHandling;
 using Voting.Lib.Iam.Store;
+using Voting.Lib.Iam.TokenHandling;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -39,15 +39,21 @@ public static class ServiceCollectionExtensions
         return services
             .AddSingleton(sp => sp.GetRequiredService<IOptionsMonitor<SecureConnectServiceAccountOptions>>().CurrentValue)
             .AddSingleton<IPostConfigureOptions<SecureConnectOptions>, SecureConnectPostConfigureOptions>()
-            .AddSingleton<IPostConfigureOptions<SecureConnectServiceAccountOptions>, SecureConnectServiceAccountPostConfigureOptions>()
-            .AddSingleton<IServiceTokenHandlerFactory, DefaultServiceTokenHandlerFactory>()
-            .AddTransient<IServiceTokenHandler, ServiceTokenHandler>()
-            .AddTransient<ServiceTokenHttpMessageHandler>()
-            .AddHttpClient<IRoleTokenHandler, RoleTokenHandler>().AddDefaultSecureConnectServiceToken().Services
+            .AddSecureConnectServiceTokenHandling()
+            .AddTransient<TokenHttpMessageHandler>()
+            .AddHttpClient<IRoleTokenHandler, RoleTokenHandler>(opts => opts.Timeout = config.Timeout).AddDefaultSecureConnectServiceToken().Services
             .AddSingleton<IUserService, UserService>()
             .AddSingleton<ITenantService, TenantService>()
-            .AddHttpClient<ISecureConnectPermissionServiceClient, SecureConnectPermissionServiceClient>(x => x.BaseAddress = config.PermissionUrl).AddDefaultSecureConnectServiceToken().Services
-            .AddHttpClient<ISecureConnectIdentityServiceClient, SecureConnectIdentityServiceClient>(x => x.BaseAddress = config.IdentityUrl).AddDefaultSecureConnectServiceToken().Services
+            .AddHttpClient<ISecureConnectPermissionServiceClient, SecureConnectPermissionServiceClient>(x =>
+            {
+                x.Timeout = config.Timeout;
+                x.BaseAddress = config.PermissionUrl;
+            }).AddDefaultSecureConnectServiceToken().Services
+            .AddHttpClient<ISecureConnectIdentityServiceClient, SecureConnectIdentityServiceClient>(x =>
+            {
+                x.Timeout = config.Timeout;
+                x.BaseAddress = config.IdentityUrl;
+            }).AddDefaultSecureConnectServiceToken().Services
             .AddSingleton(authStoreConfig)
             .AddForwardRefScoped<IAuth, AuthStore>()
             .AddForwardRefScoped<IAuthStore, AuthStore>()
@@ -78,45 +84,6 @@ public static class ServiceCollectionExtensions
         => services
             .AddSingleton(config)
             .AddScoped<SecureConnectAppHandler>();
-
-    /// <summary>
-    /// Configures a service account based on a <see cref="IConfiguration"/>.
-    /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="name">The name of the config.</param>
-    /// <param name="options">The options builder.</param>
-    /// <returns>The same service collection.</returns>
-    public static IServiceCollection AddSecureConnectServiceAccount(
-        this IServiceCollection services,
-        string name,
-        Action<SecureConnectServiceAccountOptions> options)
-        => services.Configure(name, options);
-
-    /// <summary>
-    /// Configures a service account based on a <see cref="SecureConnectServiceAccountOptions"/> object.
-    /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="name">The name of the config.</param>
-    /// <param name="options">The options.</param>
-    /// <returns>The same service collection.</returns>
-    public static IServiceCollection AddSecureConnectServiceAccount(
-        this IServiceCollection services,
-        string name,
-        SecureConnectServiceAccountOptions options)
-        => services.Configure<SecureConnectServiceAccountOptions>(name, o => o.ApplyFrom(options));
-
-    /// <summary>
-    /// Configures a service account based on a <see cref="IConfiguration"/>.
-    /// </summary>
-    /// <param name="services">The services.</param>
-    /// <param name="name">The name of the config.</param>
-    /// <param name="config">The config.</param>
-    /// <returns>The same service collection.</returns>
-    public static IServiceCollection AddSecureConnectServiceAccount(
-        this IServiceCollection services,
-        string name,
-        IConfiguration config)
-        => services.Configure<SecureConnectServiceAccountOptions>(name, config);
 
     /// <summary>
     /// Adds the secure connect authentication scheme to the authentication builder.

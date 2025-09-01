@@ -7,4 +7,5 @@ internal static class SecureConnectGrantTypes
 {
     internal const string GrantTypeClientCredentials = "client_credentials";
     internal const string GrantTypeRoleToken = "urn:abraxas:iam:grant_type:role_token";
+    internal const string GrantTypeOnBehalfToken = "urn:abraxas:iam:grant_type:ob_token";
 }

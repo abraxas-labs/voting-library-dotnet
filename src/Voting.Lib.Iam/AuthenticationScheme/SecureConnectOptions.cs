@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Voting.Lib.Iam.ServiceTokenHandling;
+using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Voting.Lib.Iam.AuthenticationScheme;
 
@@ -97,4 +97,14 @@ public class SecureConnectOptions : JwtBearerOptions
     /// <see cref="SecureConnectServiceAccountOptions.RefreshBeforeExpiration"/>.
     /// </summary>
     public TimeSpan ServiceTokenRefreshBeforeExpiration { get; set; } = TimeSpan.FromMinutes(2);
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the access token is allowed.
+    /// </summary>
+    public bool AllowAccessToken { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the on-behalf-of token is allowed.
+    /// </summary>
+    public bool AllowOnBehalfToken { get; set; }
 }

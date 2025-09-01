@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (http://www.altova.com) by Martin Stingelin (Stingelin Informatik GmbH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eCH-0135="http://www.ech.ch/xmlns/eCH-0135/2" xmlns:eCH-0007="http://www.ech.ch/xmlns/eCH-0007/6" targetNamespace="http://www.ech.ch/xmlns/eCH-0135/2" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0">
+	<xs:annotation>
+		<xs:documentation>Ausgabedatum: 10.03.2023</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.ech.ch/xmlns/eCH-0007/6" schemaLocation="http://www.ech.ch/xmlns/eCH-0007/6/eCH-0007-6-0.xsd"/>
+	<xs:simpleType name="placeOfOriginIdType">
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	<xs:simpleType name="successorIdType">
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	<xs:simpleType name="placeOfOriginNameType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="300"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="placeOfOriginType">
+		<xs:sequence>
+			<xs:element name="validFrom" type="xs:date" minOccurs="0"/>
+			<xs:element name="validTo" type="xs:date" minOccurs="0"/>
+			<xs:element name="placeOfOriginId" type="eCH-0135:placeOfOriginIdType"/>
+			<xs:element name="historyMunicipalityId" type="eCH-0007:historyMunicipalityId" minOccurs="0"/>
+			<xs:element name="placeOfOriginName" type="eCH-0135:placeOfOriginNameType"/>
+			<xs:element name="cantonAbbreviation" type="eCH-0007:cantonAbbreviationType"/>
+			<xs:element name="successorId" type="eCH-0135:successorIdType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="placeOfOriginNomenclature">
+		<xs:annotation>
+			<xs:documentation>Heimatorte in Infostar</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="placeOfOrigins">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="placeOfOrigin" type="eCH-0135:placeOfOriginType" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

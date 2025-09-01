@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,14 +32,16 @@ public class BaseTestApplicationFactory<TStartup> : WebApplicationFactory<TStart
     /// <param name="tenant">The tenant id to be used.</param>
     /// <param name="userId">The user id to be used.</param>
     /// <param name="roles">The roles, which should be assigned to this session/user.</param>
+    /// <param name="additionalHeaders">Additional headers.</param>
     /// <returns>The created grpc channel.</returns>
     public GrpcChannel CreateGrpcChannel(
         bool authorize,
         string? tenant,
         string? userId,
-        string[] roles)
+        string[] roles,
+        IEnumerable<(string, string)>? additionalHeaders = null)
     {
-        var httpClient = CreateHttpClient(authorize, tenant, userId, roles);
+        var httpClient = CreateHttpClient(authorize, tenant, userId, roles, additionalHeaders);
 
         return GrpcChannel.ForAddress(
             $"http://localhost:{_port}",
@@ -52,12 +55,14 @@ public class BaseTestApplicationFactory<TStartup> : WebApplicationFactory<TStart
     /// <param name="tenant">The tenant id to be used.</param>
     /// <param name="userId">The user id to be used.</param>
     /// <param name="roles">The roles, which should be assigned to this session/user.</param>
+    /// <param name="additionalHeaders">Additional headers.</param>
     /// <returns>The created http client.</returns>
     public virtual HttpClient CreateHttpClient(
         bool authorize,
         string? tenant,
         string? userId,
-        string[]? roles)
+        string[]? roles,
+        IEnumerable<(string, string)>? additionalHeaders = null)
     {
         // The ResponseVersionHandler class is needed because of the test server not being
         // able to deliver http2: https://github.com/grpc/grpc-dotnet/issues/648
@@ -81,6 +86,14 @@ public class BaseTestApplicationFactory<TStartup> : WebApplicationFactory<TStart
         if (roles != null)
         {
             httpClient.DefaultRequestHeaders.Add(SecureConnectTestDefaults.RolesHeader, roles);
+        }
+
+        if (additionalHeaders != null)
+        {
+            foreach (var (name, value) in additionalHeaders)
+            {
+                httpClient.DefaultRequestHeaders.Add(name, value);
+            }
         }
 
         return httpClient;

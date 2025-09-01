@@ -18,7 +18,7 @@ public static class RandomStringUtil
     private static readonly char[] AlphanumericWhitespace = [.. Alphanumeric, ' '];
     private static readonly char[] SimpleSingleLineText = [.. AlphanumericWhitespace, '-', '\''];
     private static readonly char[] SimpleMultiLineText = [.. SimpleSingleLineText, '\r', '\n'];
-    private static readonly char[] ComplexSingleLineText = [.. SimpleSingleLineText, .. "!?+@,.:()/".ToCharArray()];
+    private static readonly char[] ComplexSingleLineText = [.. SimpleSingleLineText, .. "!?+@,.:()/\"".ToCharArray()];
     private static readonly char[] ComplexMultiLineText = [.. ComplexSingleLineText, '\r', '\n'];
 
     /// <summary>

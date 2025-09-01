@@ -18,6 +18,11 @@ public class NpgsqlLockCommandInterceptor : DbCommandInterceptor
     /// </summary>
     internal const string LockForUpdateSkipLockedAnnotation = "<vo-lib-lock-for-update-skip-locked />";
 
+    /// <summary>
+    /// The tag to mark queries as for update.
+    /// </summary>
+    internal const string LockForUpdateAnnotation = "<vo-lib-lock-for-update />";
+
     /// <inheritdoc />
     public override InterceptionResult<DbDataReader> ReaderExecuting(
         DbCommand command,
@@ -41,11 +46,16 @@ public class NpgsqlLockCommandInterceptor : DbCommandInterceptor
 
     private static void AdjustCommand(DbCommand command)
     {
-        if (!command.CommandText.Contains(LockForUpdateSkipLockedAnnotation))
+        if (command.CommandText.Contains(LockForUpdateSkipLockedAnnotation))
         {
+            command.CommandText += " FOR UPDATE SKIP LOCKED";
             return;
         }
 
-        command.CommandText += " FOR UPDATE SKIP LOCKED";
+        if (command.CommandText.Contains(LockForUpdateAnnotation))
+        {
+            command.CommandText += " FOR UPDATE";
+            return;
+        }
     }
 }
