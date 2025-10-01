@@ -29,6 +29,11 @@ public class User
     public string? Servicename { get; set; }
 
     /// <summary>
+    /// Gets or sets the primary email or the first email if no primary is set.
+    /// </summary>
+    public string? PrimaryOrFirstEmail { get; set; }
+
+    /// <summary>
     /// Gets or sets the user name.
     /// </summary>
     public string Username { get; set; } = string.Empty;

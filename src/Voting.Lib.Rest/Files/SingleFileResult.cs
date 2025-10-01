@@ -9,6 +9,7 @@ using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Voting.Lib.Common.Files;
 
 namespace Voting.Lib.Rest.Files;
 
@@ -36,7 +37,7 @@ public static class SingleFileResult
             using var archive = new ZipArchive(bodyWriter.AsStream(), ZipArchiveMode.Create, true);
             await foreach (var fileModel in files.WithCancellation(ct).ConfigureAwait(false))
             {
-                var zipEntry = archive.CreateEntry(fileModel.Filename);
+                var zipEntry = archive.CreateEntry(fileModel.FileName);
                 if (zipEntryLastWriteTime.HasValue)
                 {
                     zipEntry.LastWriteTime = zipEntryLastWriteTime.Value;
@@ -58,7 +59,7 @@ public static class SingleFileResult
     /// <returns>Returns a file result for a single file.</returns>
     public static FileResult Create(IFile file, CancellationToken ct = default)
     {
-        return new FileCallbackResult(file.MimeType, file.Filename, writer => file.Write(writer, ct));
+        return new FileCallbackResult(file.MimeType, file.FileName, writer => file.Write(writer, ct));
     }
 
     /// <summary>

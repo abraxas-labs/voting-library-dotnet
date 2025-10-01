@@ -117,6 +117,7 @@ public static class SecureConnectTestDefaults
         Firstname = "default user firstname",
         Lastname = "default user lastname",
         Username = "default username",
+        PrimaryOrFirstEmail = "default-user@example.com",
     };
 
     /// <summary>
@@ -129,6 +130,7 @@ public static class SecureConnectTestDefaults
         Lastname = null,
         Username = "service-user",
         Servicename = "service-name",
+        PrimaryOrFirstEmail = "service-user@example.com",
     };
 
     /// <summary>

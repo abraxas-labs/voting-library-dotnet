@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The services.</param>
     /// <returns>The service collection instance.</returns>
-    public static IServiceCollection AddEch0045(this IServiceCollection services)
+    public static IServiceCollection AddEch0045V4(this IServiceCollection services)
     {
         return services
             .AddSingleton<Ech0045Serializer>()

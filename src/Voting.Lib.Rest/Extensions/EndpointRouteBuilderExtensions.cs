@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Voting.Lib.Common.HealthChecks;
 
@@ -51,6 +52,12 @@ public static class EndpointRouteBuilderExtensions
         endpoints.MapHealthChecks("/readiness", new HealthCheckOptions
         {
             Predicate = IsReadinessHealthCheck,
+            ResultStatusCodes =
+            {
+                [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                [HealthStatus.Degraded] = StatusCodes.Status503ServiceUnavailable,
+                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+            },
         }).AllowAnonymous();
 
         return endpoints;

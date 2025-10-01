@@ -164,6 +164,12 @@ public class Pkcs11CryptoProvider : ICryptoProvider, IDisposable
     }
 
     /// <inheritdoc />
+    public Task<IReadOnlyList<byte[]>> BulkEncryptAesGcm(IEnumerable<byte[]> bulkPlainText, string keyId)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
     public Task<byte[]> DecryptAesGcm(byte[] cipherText, string keyId)
     {
         try

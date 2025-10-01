@@ -31,6 +31,7 @@ declare -a namespaces=(
     "http://www.ech.ch/xmlns/eCH-0021/8=Ech0021_8_0" \
     "http://www.ech.ch/xmlns/eCH-0044/4=Ech0044_4_1" \
     "http://www.ech.ch/xmlns/eCH-0045/4=Ech0045_4_0" \
+    "http://www.ech.ch/xmlns/eCH-0045/6=Ech0045_6_0" \
     "http://www.ech.ch/xmlns/eCH-0046/4=Ech0046_4_0" \
     "http://www.ech.ch/xmlns/eCH-0058/5=Ech0058_5_0" \
     "http://www.ech.ch/xmlns/eCH-0097/4=Ech0097_4_0" \
@@ -79,6 +80,7 @@ generate() {
 generate "AbxVoting_1_0" "ABX-Voting-1-0.xsd" -n http://www.abraxas.ch/xmlns/ABX-Voting/1=AbxVoting_1_0
 generate "AbxVoting_1_5" "ABX-Voting-1-5.xsd" -n http://www.abraxas.ch/xmlns/ABX-Voting/1=AbxVoting_1_5
 generate "Ech0045_4_0" "eCH-0045-4-0.xsd"  -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
+generate "Ech0045_6_0" "eCH-0045-6-0.xsd"  -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0110_4_0" "eCH-0110-4-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0157_4_0" "eCH-0157-4-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0157_5_1" "eCH-0157-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1

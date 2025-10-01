@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Voting.Lib.Common.Files;
 using Voting.Lib.Rest.Files;
 using Voting.Lib.Testing.Mocks;
 using Xunit;
@@ -117,16 +118,16 @@ public class SingleFileResultTest
     {
         public File(string filename)
         {
-            Filename = filename;
+            FileName = filename;
         }
 
-        public string Filename { get; }
+        public string FileName { get; }
 
         public string MimeType => "plain/text";
 
         public async Task Write(PipeWriter writer, CancellationToken ct = default)
         {
-            await writer.WriteAsync(Encoding.UTF8.GetBytes("Content of " + Filename), ct);
+            await writer.WriteAsync(Encoding.UTF8.GetBytes("Content of " + FileName), ct);
         }
     }
 }

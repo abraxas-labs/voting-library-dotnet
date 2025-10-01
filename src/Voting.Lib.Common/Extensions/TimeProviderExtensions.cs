@@ -33,6 +33,14 @@ public static class TimeProviderExtensions
         => timeProvider.GetUtcNow().Date;
 
     /// <summary>
+    /// Returns the current date in UTC.
+    /// </summary>
+    /// <param name="timeProvider">The time provider.</param>
+    /// <returns>The <see cref="DateTime"/>.</returns>
+    public static DateOnly GetUtcTodayDateOnly(this TimeProvider timeProvider)
+        => DateOnly.FromDateTime(timeProvider.GetUtcToday());
+
+    /// <summary>
     /// Returns the current date in local time.
     /// </summary>
     /// <param name="timeProvider">The time provider.</param>

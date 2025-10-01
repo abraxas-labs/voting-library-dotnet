@@ -2,6 +2,7 @@
 // For license information see LICENSE file
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -45,6 +46,8 @@ public class UserService : IUserService
                 Lastname = user.Lastname,
                 Loginid = user.Loginid,
                 Servicename = user.Servicename,
+                PrimaryOrFirstEmail = user.Emails?.FirstOrDefault(e => e.Primary == true)?.Email
+                                      ?? user.Emails?.FirstOrDefault()?.Email,
             };
         }
         catch (ApiException e) when (e.StatusCode == StatusCodes.Status404NotFound)

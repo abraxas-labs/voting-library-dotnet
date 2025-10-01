@@ -63,10 +63,18 @@ public interface ICryptoProvider
     /// <summary>
     /// Encrypts <paramref name="plainText"/> per AES-GCM with the configured AES MAC private/secret key which is stored in the device.
     /// </summary>
-    /// <param name="plainText">The cipher to encrypt.</param>
+    /// <param name="plainText">The plain text to encrypt.</param>
     /// <param name="keyId">The id of the key to use for this operation.</param>
-    /// <returns>The encrypted cipher represented as a concenation of the tag, cipher text and nonce.</returns>
+    /// <returns>The encrypted cipher represented as a concatenation of the tag, cipher text and nonce.</returns>
     Task<byte[]> EncryptAesGcm(byte[] plainText, string keyId);
+
+    /// <summary>
+    /// Encrypts each element in <paramref name="bulkPlainText"/> per AES-GCM with the configured AES MAC private/secret key which is stored in the device.
+    /// </summary>
+    /// <param name="bulkPlainText">The bulk plain text to encrypt.</param>
+    /// <param name="keyId">The id of the key to use for this operation.</param>
+    /// <returns>The encrypted ciphers represented as a concatenation of the tag, cipher text and nonce.</returns>
+    Task<IReadOnlyList<byte[]>> BulkEncryptAesGcm(IEnumerable<byte[]> bulkPlainText, string keyId);
 
     /// <summary>
     /// Decrypts <paramref name="cipherText"/> per AES-GCM with the configured AES MAC private/secret key which is stored in the device.

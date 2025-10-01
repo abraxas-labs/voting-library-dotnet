@@ -220,6 +220,7 @@ public class EventReader : IEventReader
             resolvedEvent.Event.EventId.ToGuid(),
             eventWithMetadata.Data,
             eventWithMetadata.Metadata,
+            resolvedEvent.Event.Data,
             resolvedEvent.Event.Position,
             resolvedEvent.Event.Created,
             resolvedEvent.Event.EventStreamId);

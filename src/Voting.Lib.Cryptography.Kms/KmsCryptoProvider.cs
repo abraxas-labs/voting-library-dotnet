@@ -92,9 +92,10 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
-    public Task<IReadOnlyList<byte[]>> BulkCreateHmacSha256(IEnumerable<byte[]> bulkData, string keyId)
+    public async Task<IReadOnlyList<byte[]>> BulkCreateHmacSha256(IEnumerable<byte[]> bulkData, string keyId)
     {
-        throw new NotImplementedException();
+        var tasks = bulkData.Select(x => CreateHmacSha256(x, keyId));
+        return await Task.WhenAll(tasks);
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
@@ -123,6 +124,13 @@ public class KmsCryptoProvider : ICryptoProvider
         Buffer.BlockCopy(cipherText, 0, result, iv.Length, cipherText.Length);
         Buffer.BlockCopy(tag, 0, result, iv.Length + cipherText.Length, tag.Length);
         return result;
+    }
+
+    /// <inheritdoc cref="ICryptoProvider"/>
+    public async Task<IReadOnlyList<byte[]>> BulkEncryptAesGcm(IEnumerable<byte[]> bulkPlainText, string keyId)
+    {
+        var tasks = bulkPlainText.Select(x => EncryptAesGcm(x, keyId));
+        return await Task.WhenAll(tasks);
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
@@ -193,9 +201,7 @@ public class KmsCryptoProvider : ICryptoProvider
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public Task DeleteAesSecretKey(string keyId)
-    {
-        throw new NotImplementedException();
-    }
+        => _http.DeleteAsync($"v1/vault/keys2/{WebUtility.UrlEncode(keyId)}");
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public async Task<string> GenerateMacSecretKey(string keyLabel)
@@ -228,9 +234,7 @@ public class KmsCryptoProvider : ICryptoProvider
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public Task DeleteMacSecretKey(string keyId)
-    {
-        throw new NotImplementedException();
-    }
+        => _http.DeleteAsync($"v1/vault/keys2/{WebUtility.UrlEncode(keyId)}");
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public async Task<bool> IsHealthy(string? keyId = null)

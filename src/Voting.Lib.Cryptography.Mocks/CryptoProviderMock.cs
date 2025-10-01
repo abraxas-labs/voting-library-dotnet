@@ -73,6 +73,12 @@ public class CryptoProviderMock : ICryptoProvider
         => Task.FromResult(AesGcmEncryptionMock.Encrypt(plainText, keyId));
 
     /// <inheritdoc />
+    public Task<IReadOnlyList<byte[]>> BulkEncryptAesGcm(IEnumerable<byte[]> bulkPlainText, string keyId)
+    {
+        return Task.FromResult<IReadOnlyList<byte[]>>(bulkPlainText.Select(plainText => AesGcmEncryptionMock.Encrypt(plainText, keyId)).ToList());
+    }
+
+    /// <inheritdoc />
     public Task<byte[]> DecryptAesGcm(byte[] cipherText, string keyId)
         => Task.FromResult(AesGcmEncryptionMock.Decrypt(cipherText, keyId));
 

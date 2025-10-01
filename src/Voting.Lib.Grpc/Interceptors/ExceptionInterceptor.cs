@@ -159,7 +159,12 @@ public abstract class ExceptionInterceptor : Interceptor
     /// <returns>Whether the exception message should be exposed.</returns>
     protected virtual bool ExposeExceptionMessage(Exception ex) => false;
 
-    private Status SetContextStatus(ServerCallContext context, Exception ex)
+    /// <summary>
+    /// Builds the status from the exception.
+    /// </summary>
+    /// <param name="ex">The exception.</param>
+    /// <returns>The status.</returns>
+    protected Status BuildStatus(Exception ex)
     {
         var statusCode = MapExceptionToStatusCode(ex);
 
@@ -182,6 +187,9 @@ public abstract class ExceptionInterceptor : Interceptor
             msg += ": " + ex.Message;
         }
 
-        return context.Status = new Status(statusCode, msg);
+        return new Status(statusCode, msg);
     }
+
+    private Status SetContextStatus(ServerCallContext context, Exception ex)
+        => context.Status = BuildStatus(ex);
 }

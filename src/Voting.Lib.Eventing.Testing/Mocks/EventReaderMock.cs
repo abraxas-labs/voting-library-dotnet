@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.Client;
 using Google.Protobuf;
+using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Read;
 
 namespace Voting.Lib.Eventing.Testing.Mocks;
@@ -19,14 +20,17 @@ namespace Voting.Lib.Eventing.Testing.Mocks;
 public class EventReaderMock : IEventReader
 {
     private readonly EventReaderMockStore _store;
+    private readonly IEventSerializer _eventSerializer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EventReaderMock"/> class.
     /// </summary>
     /// <param name="store">The event reader mock store to read from.</param>
-    public EventReaderMock(EventReaderMockStore store)
+    /// <param name="eventSerializer">The event serializer.</param>
+    public EventReaderMock(EventReaderMockStore store, IEventSerializer eventSerializer)
     {
         _store = store;
+        _eventSerializer = eventSerializer;
     }
 
     /// <inheritdoc />
@@ -121,7 +125,8 @@ public class EventReaderMock : IEventReader
         return new EventReadResult(
             data.StoreData.Event.Id,
             data.StoreData.Event.Data,
-            metadata,
+            data.StoreData.Event.Metadata,
+            _eventSerializer.Serialize(data.StoreData.Event.Data),
             data.StoreData.Position,
             data.StoreData.Created,
             data.Stream);

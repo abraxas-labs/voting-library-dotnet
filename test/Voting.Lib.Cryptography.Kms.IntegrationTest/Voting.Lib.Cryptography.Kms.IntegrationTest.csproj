@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>07281bdd-ad58-4566-8e1d-32ac2e5d6f7d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Cryptography.Kms\Voting.Lib.Cryptography.Kms.csproj" />
+  </ItemGroup>
+
+</Project>

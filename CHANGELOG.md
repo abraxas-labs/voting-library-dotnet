@@ -1,4 +1,4 @@
-# ✨ Changelog (`v19.0.2`)
+# ✨ Changelog (`v20.5.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v19.0.2
-Previous version ---- v15.3.0
+This version -------- v20.5.0
+Previous version ---- v19.0.2
 Initial version ----- v7.7.37
-Total commits ------- 29
+Total commits ------- 16
 ```
+
+## [v20.5.0] - 2025-10-01
+
+### 🔄 Changed
+
+- base64url encoding and url security tokens
+
+## [v20.4.0] - 2025-09-30
+
+### 🔄 Changed
+
+- return 503 service unavailable when readiness endpoint returns degraded
+
+### 🆕 Added
+
+- add configurability of property naming policy for dmDOC JSON data serialization
+
+## [v20.3.1] - 2025-09-25
+
+### 🔄 Changed
+
+- expose build status method from grpc exception interceptor
+
+## [v20.3.0] - 2025-09-25
+
+### 🔄 Changed
+
+- add eCH-0045 v6
+
+## [v20.2.0] - 2025-09-25
+
+### 🔄 Changed
+
+- add piped file
+
+## [v20.1.1] - 2025-09-24
+
+### 🔄 Changed
+
+- extend complex string validator to support square brackets
+
+## [v20.1.0] - 2025-09-24
+
+### 🔄 Changed
+
+- expose user email
+
+## [v20.0.0] - 2025-09-23
+
+### 🆕 Added
+
+- feat(VOTING-5993): add user notification attachements and zip files
+
+BREAKING CHANGE: IFIle moved to common and renamed Filename to FileName.
+
+## [v19.3.0] - 2025-09-22
+
+### 🔄 Changed
+
+- 2fa nevis communication
+
+## [v19.2.0] - 2025-09-17
+
+### 🔄 Changed
+
+- add kms bulk create hmac and bulk encrypt
+
+## [v19.1.0] - 2025-09-09
+
+### 🔄 Changed
+
+- kms integration tests
 
 ## [v19.0.2] - 2025-08-27
 
@@ -223,78 +295,17 @@ BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to 
 
 ### 🔄 Changed
 
-- add smtp user notifications sender
-- Implements optimistic locking for PostgreSQL.
+- return 503 service unavailable when readiness endpoint returns degraded
 
-## [v15.0.3] - 2025-04-04
+### 🆕 Added
 
-### 🔄 Changed
+- add configurability of property naming policy for dmDOC JSON data serialization
 
-- add byte[] method to malware scanner
+### 🆕 Added
 
-## [v15.0.2] - 2025-04-02
+- feat(VOTING-5993): add user notification attachements and zip files
 
-### 🔄 Changed
-
-- compare lists by identifier and not by order
-
-## [v15.0.1] - 2025-04-02
-
-### 🔒 Security
-
-- harden regex to prevent potential DoS vulnerability caused by super-linear runtime due to excessive backtracking.
-
-## [v15.0.0] - 2025-03-20
-
-BREAKING CHANGE: AddMockedTimeProvider is renamed to AddMockedClock to align regular method names.
-
-## [v14.0.3] - 2025-03-17
-
-### 🔄 Changed
-
-- update eCH-0252 schema in eCH-0252 project
-
-## [v14.0.2] - 2025-03-17
-
-### 🔄 Changed
-
-- update eCH-0252 version
-
-## [v14.0.1] - 2025-03-17
-
-### 🔄 Changed
-
-- update eCH-0252 version
-
-## [v14.0.0] - 2025-03-11
-
-BREAKING CHANGE: event serializer public api changes, see previous commit
-
-## [v13.4.0] - 2025-03-06
-
-### 🔄 Changed
-
-- add PerDomainOfInfluence to report template model
-
-## [v13.3.0] - 2025-03-06
-
-### 🔄 Changed
-
-- move getconsumers method to hub for backward compatibility
-
-## [v13.2.0] - 2025-03-05
-
-### 🔄 Changed
-
-- add event processing context
-
-## [v13.1.0] - 2025-02-27
-
-### 🔄 Changed
-
-- improved messaging
-
-## [v13.0.0] - 2025-02-27
+BREAKING CHANGE: IFIle moved to common and renamed Filename to FileName.
 
 - add configuration to allow token types
 - by default ob-tokens are not accepted, unless explicitly allowed
@@ -332,15 +343,3 @@ BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to 
 ### Added
 
 - added Ech0157v5 and Ech0159v5
-
-### 🔄 Changed
-
-- compare lists by identifier and not by order
-
-### 🔒 Security
-
-- harden regex to prevent potential DoS vulnerability caused by super-linear runtime due to excessive backtracking.
-
-BREAKING CHANGE: AddMockedTimeProvider is renamed to AddMockedClock to align regular method names.
-
-BREAKING CHANGE: event serializer public api changes, see previous commit

@@ -18,14 +18,16 @@ public class EventReadResult
     /// <param name="id">The event ID.</param>
     /// <param name="data">The event data.</param>
     /// <param name="metadata">The event metadata.</param>
+    /// <param name="rawByteData">The event raw byte data (as written in the event store).</param>
     /// <param name="position">The event position.</param>
     /// <param name="created">The creation time of the event.</param>
     /// <param name="streamId">The event stream ID.</param>
-    public EventReadResult(Guid id, IMessage data, IMessage? metadata, Position position, DateTime created, string streamId)
+    public EventReadResult(Guid id, IMessage data, IMessage? metadata, ReadOnlyMemory<byte> rawByteData, Position position, DateTime created, string streamId)
     {
         Id = id;
         Data = data;
         Metadata = metadata;
+        RawByteData = rawByteData;
         Position = position;
         Created = created;
         StreamId = streamId;
@@ -45,6 +47,11 @@ public class EventReadResult
     /// Gets the event metadata.
     /// </summary>
     public IMessage? Metadata { get; }
+
+    /// <summary>
+    /// Gets the event raw byte data (as written in the event store).
+    /// </summary>
+    public ReadOnlyMemory<byte> RawByteData { get; }
 
     /// <summary>
     /// Gets the position in the $all stream.

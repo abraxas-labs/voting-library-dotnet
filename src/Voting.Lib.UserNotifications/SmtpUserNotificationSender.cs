@@ -3,6 +3,7 @@
 
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,12 +35,25 @@ public class SmtpUserNotificationSender : IUserNotificationSender
             client.Credentials = new NetworkCredential(_config.Username, _config.Password);
         }
 
-        var mailMessage = new MailMessage();
+        using var mailMessage = new MailMessage();
         mailMessage.To.Add(notification.RecipientEmail);
         mailMessage.From = new MailAddress(_config.FromAddress);
         mailMessage.Subject = notification.Subject;
         mailMessage.Body = notification.HtmlBody;
         mailMessage.IsBodyHtml = true;
+
+        // Attach optional attachments if provided
+        if (notification.Attachments != null)
+        {
+            foreach (var att in notification.Attachments)
+            {
+                var mediaType = string.IsNullOrWhiteSpace(att.MimeType) ? MediaTypeNames.Application.Octet : att.MimeType;
+                var attachment = new Attachment(att.AsStream(cancellationToken), att.FileName, mediaType);
+
+                // The MailMessage will dispose the attachment (and its stream) when disposed.
+                mailMessage.Attachments.Add(attachment);
+            }
+        }
 
         await client.SendMailAsync(mailMessage, cancellationToken);
     }

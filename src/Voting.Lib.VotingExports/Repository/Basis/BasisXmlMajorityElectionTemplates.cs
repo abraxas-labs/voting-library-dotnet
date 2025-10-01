@@ -12,7 +12,7 @@ namespace Voting.Lib.VotingExports.Repository.Basis;
 public static class BasisXmlMajorityElectionTemplates
 {
     /// <summary>
-    /// Gets the eCH-0157 proportional election export template.
+    /// Gets the eCH-0157 majority election export template.
     /// </summary>
     public static readonly TemplateModel Ech0157 = new TemplateModel
     {
