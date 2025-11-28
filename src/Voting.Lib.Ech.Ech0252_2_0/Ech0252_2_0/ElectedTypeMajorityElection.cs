@@ -61,10 +61,14 @@ namespace Ech0252_2_0
             }
         }
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.Xml.Serialization.XmlElementAttribute("isElectionResultComplete", Order=1)]
+        public bool IsElectionResultComplete { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<ElectedTypeMajorityElectionElectedCandidate> _electedCandidate;
         
-        [System.Xml.Serialization.XmlElementAttribute("electedCandidate", Order=1)]
+        [System.Xml.Serialization.XmlElementAttribute("electedCandidate", Order=2)]
         public System.Collections.Generic.List<ElectedTypeMajorityElectionElectedCandidate> ElectedCandidate
         {
             get

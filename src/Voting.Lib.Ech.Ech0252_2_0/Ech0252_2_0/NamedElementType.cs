@@ -124,5 +124,37 @@ namespace Ech0252_2_0
         [System.ComponentModel.DataAnnotations.MaxLengthAttribute(500)]
         [System.Xml.Serialization.XmlElementAttribute("text", Order=3)]
         public string Text { get; set; }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        [System.Xml.Serialization.XmlElementAttribute("decimal", Order=4)]
+        public decimal DecimalValue { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the Decimal property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public bool DecimalValueSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public System.Nullable<decimal> Decimal
+        {
+            get
+            {
+                if (this.DecimalValueSpecified)
+                {
+                    return this.DecimalValue;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                this.DecimalValue = value.GetValueOrDefault();
+                this.DecimalValueSpecified = value.HasValue;
+            }
+        }
     }
 }

@@ -26,8 +26,8 @@ public class TemplateRepositoryTest
     [Fact]
     public void GetByKeyShouldWork()
     {
-        var template = TemplateRepository.GetByKey(BasisXmlContestTemplates.Ech0157And0159.Key);
-        template.Key.Should().Be(BasisXmlContestTemplates.Ech0157And0159.Key);
+        var template = TemplateRepository.GetByKey(BasisXmlContestTemplates.Ech0157And0159_4_0.Key);
+        template.Key.Should().Be(BasisXmlContestTemplates.Ech0157And0159_4_0.Key);
         template.ShouldMatchSnapshot();
     }
 

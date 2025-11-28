@@ -48,5 +48,8 @@ namespace Ech0252_2_0
         {
             this._countingCircleInfo = new System.Collections.Generic.List<CountingCircleInfoType>();
         }
+        
+        [System.Xml.Serialization.XmlElementAttribute("voteResultData", Order=2)]
+        public VoteResultDataType VoteResultData { get; set; }
     }
 }

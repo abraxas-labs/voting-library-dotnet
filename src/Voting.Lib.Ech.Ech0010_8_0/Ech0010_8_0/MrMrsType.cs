@@ -15,6 +15,7 @@ namespace Ech0010_8_0
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("mrMrsType", Namespace="http://www.ech.ch/xmlns/eCH-0010/8")]
+    [System.Xml.Serialization.XmlRootAttribute("mrMrsType", Namespace="http://www.ech.ch/xmlns/eCH-0010/8")]
     public enum MrMrsType
     {
         

@@ -17,6 +17,7 @@ namespace Ech0011_9_0
     [System.Xml.Serialization.XmlTypeAttribute("personType", Namespace="http://www.ech.ch/xmlns/eCH-0011/9")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("personType", Namespace="http://www.ech.ch/xmlns/eCH-0011/9")]
     public partial class PersonType
     {
         

@@ -17,6 +17,7 @@ namespace Ech0010_8_0
     [System.Xml.Serialization.XmlTypeAttribute("organisationMailAddressInfoType", Namespace="http://www.ech.ch/xmlns/eCH-0010/8")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("organisationMailAddressInfoType", Namespace="http://www.ech.ch/xmlns/eCH-0010/8")]
     public partial class OrganisationMailAddressInfoType
     {
         

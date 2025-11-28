@@ -40,7 +40,7 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Xml.Serialization.XmlElementAttribute("domainOfInfluenceType", Order=2)]
-        public Ech0155_5_1.DomainOfInfluenceTypeType DomainOfInfluenceTypeValue { get; set; }
+        public Ech0155_5_2.DomainOfInfluenceTypeType DomainOfInfluenceTypeValue { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Gets or sets a value indicating whether the DomainOfInfluenceType property is specified.</para>
@@ -50,7 +50,7 @@ namespace Ech0252_2_0
         public bool DomainOfInfluenceTypeValueSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<Ech0155_5_1.DomainOfInfluenceTypeType> DomainOfInfluenceType
+        public System.Nullable<Ech0155_5_2.DomainOfInfluenceTypeType> DomainOfInfluenceType
         {
             get
             {

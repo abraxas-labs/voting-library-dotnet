@@ -15,6 +15,7 @@ namespace Ech0006_3_0
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("residencePermitDetailedType", Namespace="http://www.ech.ch/xmlns/eCH-0006/3")]
+    [System.Xml.Serialization.XmlRootAttribute("residencePermitDetailedType", Namespace="http://www.ech.ch/xmlns/eCH-0006/3")]
     public enum ResidencePermitDetailedType
     {
         

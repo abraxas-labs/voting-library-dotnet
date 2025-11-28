@@ -19,4 +19,10 @@ public class DokConnectorConfig
     /// Gets or sets the endpoint.
     /// </summary>
     public Uri Endpoint { get; set; } = new("http://localhost:3000");
+
+    /// <summary>
+    /// Gets or sets the timeout used for DOK CONNECTOR calls.
+    /// Use <c>null</c> for no timeout.
+    /// </summary>
+    public TimeSpan? Timeout { get; set; }
 }

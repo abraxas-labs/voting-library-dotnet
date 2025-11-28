@@ -70,13 +70,15 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 999.</para>
         /// </summary>
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(ushort), "0", "999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("numberOfEntries", Order=3)]
         public ushort NumberOfEntries { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("extension", Order=4)]
-        public Ech0155_5_1.ExtensionType Extension { get; set; }
+        public Ech0155_5_2.ExtensionType Extension { get; set; }
     }
 }

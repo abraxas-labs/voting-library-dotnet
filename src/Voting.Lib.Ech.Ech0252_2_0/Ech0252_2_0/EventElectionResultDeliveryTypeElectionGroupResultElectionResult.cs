@@ -64,44 +64,15 @@ namespace Ech0252_2_0
         public EventElectionResultDeliveryTypeElectionGroupResultElectionResult()
         {
             this._otherIdentification = new System.Collections.Generic.List<NamedIdType>();
-            this._candidate = new System.Collections.Generic.List<CandidateType>();
             this._countingCircleResult = new System.Collections.Generic.List<CountingCircleResultType>();
             this._namedElement = new System.Collections.Generic.List<NamedElementType>();
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<CandidateType> _candidate;
-        
-        [System.Xml.Serialization.XmlElementAttribute("candidate", Order=2)]
-        public System.Collections.Generic.List<CandidateType> Candidate
-        {
-            get
-            {
-                return _candidate;
-            }
-            set
-            {
-                _candidate = value;
-            }
-        }
-        
-        /// <summary>
-        /// <para xml:lang="en">Gets a value indicating whether the Candidate collection is empty.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool CandidateSpecified
-        {
-            get
-            {
-                return (this.Candidate != null);
-            }
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<CountingCircleResultType> _countingCircleResult;
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
-        [System.Xml.Serialization.XmlElementAttribute("countingCircleResult", Order=3)]
+        [System.Xml.Serialization.XmlElementAttribute("countingCircleResult", Order=2)]
         public System.Collections.Generic.List<CountingCircleResultType> CountingCircleResult
         {
             get
@@ -114,16 +85,16 @@ namespace Ech0252_2_0
             }
         }
         
-        [System.Xml.Serialization.XmlElementAttribute("elected", Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute("elected", Order=3)]
         public ElectedType Elected { get; set; }
         
-        [System.Xml.Serialization.XmlElementAttribute("drawElection", Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute("drawElection", Order=4)]
         public DrawElectionType DrawElection { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedElementType> _namedElement;
         
-        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=5)]
         public System.Collections.Generic.List<NamedElementType> NamedElement
         {
             get

@@ -235,6 +235,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Iam.SecondFactor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0045_6_0", "src\Voting.Lib.Ech.Ech0045_6_0\Voting.Lib.Ech.Ech0045_6_0.csproj", "{6FE6A713-5B95-255C-35D7-01C256501966}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0155_5_2", "src\Voting.Lib.Ech.Ech0155_5_2\Voting.Lib.Ech.Ech0155_5_2.csproj", "{C3070D04-B76D-4271-9D6E-A1D4214687D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -866,6 +868,12 @@ Global
 		{6FE6A713-5B95-255C-35D7-01C256501966}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
 		{6FE6A713-5B95-255C-35D7-01C256501966}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FE6A713-5B95-255C-35D7-01C256501966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -976,6 +984,7 @@ Global
 		{EB278B41-3BE3-4356-AE91-C57A27EDD9F3} = {352F6EBB-2D6D-4B5E-B83E-C0F978E926BA}
 		{FBE769AF-4702-4A71-8832-24CDFA0F9575} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
 		{6FE6A713-5B95-255C-35D7-01C256501966} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
+		{C3070D04-B76D-4271-9D6E-A1D4214687D9} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77CC4E7B-CE12-47E2-8B45-298D167EDDE1}

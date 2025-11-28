@@ -89,10 +89,7 @@ generate "Ech0159_5_1" "eCH-0159-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=
 generate "Ech0228_1_0" "eCH-0228-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0222_3_0" "eCH-0222-3-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0252_1_0" "eCH-0252-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_0
-generate "Ech0252_2_0" "eCH-0252-2-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
-
-# eCH-0252-2-0 references eCH-0155-5-1, but because CandidateType of eCH-0252-2-0 extends eCH-0155-5-1, we need to generate it seperately to remove automatically generated code which leads to a circular reference
-generate "Ech0155_5_1" "eCH-0155-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
+generate "Ech0252_2_0" "eCH-0252-2-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2
 
 echo "Copying files into C# projects"
 for dir in "$models_dir"/*/; do

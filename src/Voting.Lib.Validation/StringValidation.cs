@@ -54,12 +54,12 @@ public static partial class StringValidation
     /// <summary>
     /// Gets the pattern for validating complex single line text.
     /// </summary>
-    public const string ComplexSlTextPattern = @"^[\p{L}\p{M}\p{Nd}\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]]+\z";
+    public const string ComplexSlTextPattern = @"^[\p{L}\p{M}\p{Nd}\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]±]+\z";
 
     /// <summary>
     /// Gets the pattern for validating complex multiline text.
     /// </summary>
-    public const string ComplexMlTextPattern = @"^[\p{L}\p{M}\p{Nd}\r\n\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]]+\z";
+    public const string ComplexMlTextPattern = @"^[\p{L}\p{M}\p{Nd}\r\n\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]±]+\z";
 
     /// <summary>
     /// Gets the pattern for validating untrimmed text.

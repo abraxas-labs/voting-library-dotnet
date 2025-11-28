@@ -39,6 +39,6 @@ namespace Ech0252_2_0
         public string CandidateReference { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("writeInCandidate", Order=2)]
-        public WriteInCandidateType WriteInCandidate { get; set; }
+        public Ech0155_5_2.CandidateType WriteInCandidate { get; set; }
     }
 }

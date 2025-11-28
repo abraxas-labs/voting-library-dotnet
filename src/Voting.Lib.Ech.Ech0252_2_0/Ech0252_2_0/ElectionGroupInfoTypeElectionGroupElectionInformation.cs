@@ -22,7 +22,7 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("election", Order=0)]
-        public Ech0155_5_1.ElectionType Election { get; set; }
+        public Ech0155_5_2.ElectionType Election { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<NamedIdType> _otherIdentification;
@@ -58,9 +58,9 @@ namespace Ech0252_2_0
         public ElectionGroupInfoTypeElectionGroupElectionInformation()
         {
             this._otherIdentification = new System.Collections.Generic.List<NamedIdType>();
-            this._candidate = new System.Collections.Generic.List<CandidateType>();
-            this._list = new System.Collections.Generic.List<Ech0155_5_1.ListType>();
-            this._listUnion = new System.Collections.Generic.List<Ech0155_5_1.ListUnionType>();
+            this._candidate = new System.Collections.Generic.List<Ech0155_5_2.CandidateType>();
+            this._list = new System.Collections.Generic.List<Ech0155_5_2.ListType>();
+            this._listUnion = new System.Collections.Generic.List<Ech0155_5_2.ListUnionType>();
             this._namedElement = new System.Collections.Generic.List<NamedElementType>();
         }
         
@@ -119,10 +119,10 @@ namespace Ech0252_2_0
         public string ReferencedElectionAssociationId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<CandidateType> _candidate;
+        private System.Collections.Generic.List<Ech0155_5_2.CandidateType> _candidate;
         
         [System.Xml.Serialization.XmlElementAttribute("candidate", Order=4)]
-        public System.Collections.Generic.List<CandidateType> Candidate
+        public System.Collections.Generic.List<Ech0155_5_2.CandidateType> Candidate
         {
             get
             {
@@ -147,10 +147,10 @@ namespace Ech0252_2_0
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<Ech0155_5_1.ListType> _list;
+        private System.Collections.Generic.List<Ech0155_5_2.ListType> _list;
         
         [System.Xml.Serialization.XmlElementAttribute("list", Order=5)]
-        public System.Collections.Generic.List<Ech0155_5_1.ListType> List
+        public System.Collections.Generic.List<Ech0155_5_2.ListType> List
         {
             get
             {
@@ -175,10 +175,10 @@ namespace Ech0252_2_0
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.Generic.List<Ech0155_5_1.ListUnionType> _listUnion;
+        private System.Collections.Generic.List<Ech0155_5_2.ListUnionType> _listUnion;
         
         [System.Xml.Serialization.XmlElementAttribute("listUnion", Order=6)]
-        public System.Collections.Generic.List<Ech0155_5_1.ListUnionType> ListUnion
+        public System.Collections.Generic.List<Ech0155_5_2.ListUnionType> ListUnion
         {
             get
             {

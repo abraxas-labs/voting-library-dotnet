@@ -30,15 +30,31 @@ namespace Ech0252_2_0
         [System.Xml.Serialization.XmlElementAttribute("electionAssociationId", Order=0)]
         public string ElectionAssociationId { get; set; }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<ElectionAssociationDescriptionInformationType> _electionAssociationDescription;
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.Xml.Serialization.XmlElementAttribute("electionAssociationDescription", Order=1)]
+        public System.Collections.Generic.List<ElectionAssociationDescriptionInformationType> ElectionAssociationDescription
+        {
+            get
+            {
+                return _electionAssociationDescription;
+            }
+            set
+            {
+                _electionAssociationDescription = value;
+            }
+        }
+        
         /// <summary>
-        /// <para xml:lang="en">Minimum length: 1.</para>
-        /// <para xml:lang="en">Maximum length: 255.</para>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="ElectionAssociationType" /> class.</para>
         /// </summary>
-        [System.ComponentModel.DataAnnotations.MinLengthAttribute(1)]
-        [System.ComponentModel.DataAnnotations.MaxLengthAttribute(255)]
-        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=false)]
-        [System.Xml.Serialization.XmlElementAttribute("electionAssociationName", Order=1)]
-        public string ElectionAssociationName { get; set; }
+        public ElectionAssociationType()
+        {
+            this._electionAssociationDescription = new System.Collections.Generic.List<ElectionAssociationDescriptionInformationType>();
+            this._namedElement = new System.Collections.Generic.List<NamedElementType>();
+        }
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.00.</para>
@@ -82,6 +98,34 @@ namespace Ech0252_2_0
             {
                 this.QuorumValue = value.GetValueOrDefault();
                 this.QuorumValueSpecified = value.HasValue;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.Generic.List<NamedElementType> _namedElement;
+        
+        [System.Xml.Serialization.XmlElementAttribute("namedElement", Order=3)]
+        public System.Collections.Generic.List<NamedElementType> NamedElement
+        {
+            get
+            {
+                return _namedElement;
+            }
+            set
+            {
+                _namedElement = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the NamedElement collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool NamedElementSpecified
+        {
+            get
+            {
+                return (this.NamedElement != null);
             }
         }
     }

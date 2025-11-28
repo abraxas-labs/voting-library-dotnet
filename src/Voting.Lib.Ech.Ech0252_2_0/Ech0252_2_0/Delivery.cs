@@ -33,8 +33,5 @@ namespace Ech0252_2_0
         
         [System.Xml.Serialization.XmlElementAttribute("electionResultDelivery", Order=3)]
         public EventElectionResultDeliveryType ElectionResultDelivery { get; set; }
-        
-        [System.Xml.Serialization.XmlAttributeAttribute("minorVersion", Namespace="http://www.ech.ch/xmlns/eCH-0252/2", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
-        public string MinorVersion { get; set; }
     }
 }

@@ -74,10 +74,10 @@ namespace Ech0252_2_0
         private System.Collections.Generic.List<ElectionGroupInfoType> _electionGroupInfo;
         
         /// <summary>
-        /// <para>The electionGroup is always used. If it is not required to group several elections, it only contains a single election.</para>
+        /// <para>The electionGroup is always used, if there is an election. If it is not required to group several elections, it only contains a single election.</para>
         /// </summary>
-        [System.ComponentModel.DescriptionAttribute(("The electionGroup is always used. If it is not required to group several election" +
-            "s, it only contains a single election."))]
+        [System.ComponentModel.DescriptionAttribute(("The electionGroup is always used, if there is an election. If it is not required " +
+            "to group several elections, it only contains a single election."))]
         [System.Xml.Serialization.XmlElementAttribute("electionGroupInfo", Order=3)]
         public System.Collections.Generic.List<ElectionGroupInfoType> ElectionGroupInfo
         {
@@ -104,13 +104,15 @@ namespace Ech0252_2_0
         }
         
         /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 999.</para>
         /// </summary>
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(ushort), "0", "999", ConvertValueInInvariantCulture=true)]
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
         [System.Xml.Serialization.XmlElementAttribute("numberOfEntries", Order=4)]
         public ushort NumberOfEntries { get; set; }
         
         [System.Xml.Serialization.XmlElementAttribute("extension", Order=5)]
-        public Ech0155_5_1.ExtensionType Extension { get; set; }
+        public Ech0155_5_2.ExtensionType Extension { get; set; }
     }
 }

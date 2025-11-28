@@ -20,11 +20,15 @@ namespace Ech0252_2_0
     public partial class ElectedTypeProportionalElection
     {
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
+        [System.Xml.Serialization.XmlElementAttribute("isElectionResultComplete", Order=0)]
+        public bool IsElectionResultComplete { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.Generic.List<ElectedTypeProportionalElectionList> _list;
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute(AllowEmptyStrings=true)]
-        [System.Xml.Serialization.XmlElementAttribute("list", Order=0)]
+        [System.Xml.Serialization.XmlElementAttribute("list", Order=1)]
         public System.Collections.Generic.List<ElectedTypeProportionalElectionList> List
         {
             get

@@ -31,7 +31,7 @@ namespace Ech0252_2_0
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Xml.Serialization.XmlElementAttribute("voterType", Order=1)]
-        public Ech0155_5_1.VoterTypeType VoterTypeValue { get; set; }
+        public Ech0155_5_2.VoterTypeType VoterTypeValue { get; set; }
         
         /// <summary>
         /// <para xml:lang="en">Gets or sets a value indicating whether the VoterType property is specified.</para>
@@ -41,7 +41,7 @@ namespace Ech0252_2_0
         public bool VoterTypeValueSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<Ech0155_5_1.VoterTypeType> VoterType
+        public System.Nullable<Ech0155_5_2.VoterTypeType> VoterType
         {
             get
             {

@@ -1,6 +1,7 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Voting.Lib.DokConnector.Configuration;
 using Voting.Lib.DokConnector.Service;
@@ -22,6 +23,10 @@ public static class ServiceCollectionExtensions
     public static IHttpClientBuilder AddEaiDokConnector(this IServiceCollection services, DokConnectorConfig config)
     {
         services.TryAddSingleton(config);
-        return services.AddHttpClient<IDokConnector, EaiDokConnector>(x => x.BaseAddress = config.Endpoint);
+        return services.AddHttpClient<IDokConnector, EaiDokConnector>(httpClient =>
+        {
+            httpClient.BaseAddress = config.Endpoint;
+            httpClient.Timeout = config.Timeout ?? Timeout.InfiniteTimeSpan;
+        });
     }
 }

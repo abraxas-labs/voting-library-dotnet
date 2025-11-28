@@ -1,4 +1,4 @@
-# ✨ Changelog (`v20.5.0`)
+# ✨ Changelog (`v20.8.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v20.5.0
-Previous version ---- v19.0.2
+This version -------- v20.8.0
+Previous version ---- v20.5.0
 Initial version ----- v7.7.37
-Total commits ------- 16
+Total commits ------- 4
 ```
+
+## [v20.8.0] - 2025-10-15
+
+### 🆕 Added
+
+- add configurable timeout for dok connector calls
+
+## [v20.7.1] - 2025-10-14
+
+### 🔄 Changed
+
+- allow plus-minus sign in complex text validation ruleset
+
+## [v20.7.0] - 2025-10-06
+
+### 🔄 Changed
+
+- update eCH-0252-2 to most recent version
+
+## [v20.6.0] - 2025-10-01
+
+### 🔄 Changed
+
+- add eCH-0157 and 0159 v5.1 export templates
 
 ## [v20.5.0] - 2025-10-01
 
@@ -269,29 +293,9 @@ BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to 
 
 ## [v15.3.0] - 2025-05-15
 
-### 🔄 Changed
+### 🆕 Added
 
-- add random string util
-
-## [v15.2.2] - 2025-05-14
-
-### 🔄 Changed
-
-- add secondary election end result detail protocols
-
-## [v15.2.1] - 2025-05-12
-
-### 🔄 Changed
-
-- add tab character to complex text validation
-
-## [v15.2.0] - 2025-05-05
-
-### 🔄 Changed
-
-- extract validation regexes into separate project
-
-## [v15.1.0] - 2025-04-30
+- add configurable timeout for dok connector calls
 
 ### 🔄 Changed
 

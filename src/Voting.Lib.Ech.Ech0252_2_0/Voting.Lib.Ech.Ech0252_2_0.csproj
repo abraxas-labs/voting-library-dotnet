@@ -8,11 +8,15 @@
     <ProjectReference Include="..\Voting.Lib.Common\Voting.Lib.Common.csproj" />
     <ProjectReference Include="..\Voting.Lib.Ech.Ech0044_4_1\Voting.Lib.Ech.Ech0044_4_1.csproj" />
     <ProjectReference Include="..\Voting.Lib.Ech.Ech0058_5_0\Voting.Lib.Ech.Ech0058_5_0.csproj" />
-    <ProjectReference Include="..\Voting.Lib.Ech.Ech0155_5_1\Voting.Lib.Ech.Ech0155_5_1.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0155_5_2\Voting.Lib.Ech.Ech0155_5_2.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Schemas\*.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Ech0252_2_0\" />
   </ItemGroup>
 
 </Project>

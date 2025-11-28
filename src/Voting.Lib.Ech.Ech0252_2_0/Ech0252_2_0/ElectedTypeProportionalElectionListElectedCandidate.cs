@@ -68,24 +68,24 @@ namespace Ech0252_2_0
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        [System.Xml.Serialization.XmlElementAttribute("electedByDraw", Order=2)]
-        public bool ElectedByDrawValue { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("isElectedByDraw", Order=2)]
+        public bool IsElectedByDrawValue { get; set; }
         
         /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the ElectedByDraw property is specified.</para>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the IsElectedByDraw property is specified.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-        public bool ElectedByDrawValueSpecified { get; set; }
+        public bool IsElectedByDrawValueSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public System.Nullable<bool> ElectedByDraw
+        public System.Nullable<bool> IsElectedByDraw
         {
             get
             {
-                if (this.ElectedByDrawValueSpecified)
+                if (this.IsElectedByDrawValueSpecified)
                 {
-                    return this.ElectedByDrawValue;
+                    return this.IsElectedByDrawValue;
                 }
                 else
                 {
@@ -94,8 +94,8 @@ namespace Ech0252_2_0
             }
             set
             {
-                this.ElectedByDrawValue = value.GetValueOrDefault();
-                this.ElectedByDrawValueSpecified = value.HasValue;
+                this.IsElectedByDrawValue = value.GetValueOrDefault();
+                this.IsElectedByDrawValueSpecified = value.HasValue;
             }
         }
         
