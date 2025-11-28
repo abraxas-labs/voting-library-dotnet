@@ -212,7 +212,7 @@ public class DmDocService : IDmDocService
         int templateId,
         T templateData,
         string webhookEndpoint,
-        string? bulkRoot = null,
+        string? bulkRoot,
         CancellationToken ct = default)
         => StartAsyncPdfGeneration(templateId, null, templateData, webhookEndpoint, bulkRoot, ct);
 

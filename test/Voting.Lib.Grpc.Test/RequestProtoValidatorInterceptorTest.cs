@@ -39,7 +39,8 @@ public class RequestProtoValidatorInterceptorTest : IAsyncDisposable
     [Fact]
     public async Task ValidationServerStreamingShouldSucceed()
     {
-        await CallServerStreamingInterceptor(new TestRequest { RequiredString = "message" });
+        var exception = await Record.ExceptionAsync(() => CallServerStreamingInterceptor(new TestRequest { RequiredString = "message" }));
+        Assert.Null(exception);
     }
 
     [Fact]

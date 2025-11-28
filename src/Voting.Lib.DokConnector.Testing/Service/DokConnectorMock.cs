@@ -66,7 +66,7 @@ public class DokConnectorMock : IDokConnector
     /// <returns>Returns the uploaded mock data.</returns>
     public async Task<MockData> NextUpload(TimeSpan timeOut)
     {
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         cts.CancelAfter(timeOut);
         return await NextUpload(cts.Token).ConfigureAwait(false);
     }

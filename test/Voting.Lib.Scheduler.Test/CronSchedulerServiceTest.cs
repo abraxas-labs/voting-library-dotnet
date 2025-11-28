@@ -28,13 +28,21 @@ public class CronSchedulerServiceTest
     [Fact]
     public void StandardCronFormatShouldWork()
     {
-        BuildScheduler("* * * * *"); // every minute
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler("* * * * *"); // every minute
+        using var toDispose = disposable;
+        scheduler.Should().NotBeNull();
+        store.Should().NotBeNull();
+        timeProvider.Should().NotBeNull();
     }
 
     [Fact]
     public void CronFormatWithSecondsShouldWork()
     {
-        BuildScheduler("* * * * * *"); // every second
+        var (scheduler, store, timeProvider, disposable) = BuildScheduler("* * * * * *"); // every second
+        using var toDispose = disposable;
+        scheduler.Should().NotBeNull();
+        store.Should().NotBeNull();
+        timeProvider.Should().NotBeNull();
     }
 
     [Fact]

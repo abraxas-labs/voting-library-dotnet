@@ -1,4 +1,4 @@
-# ✨ Changelog (`v20.8.0`)
+# ✨ Changelog (`v20.8.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v20.8.0
-Previous version ---- v20.5.0
+This version -------- v20.8.1
+Previous version ---- v20.8.0
 Initial version ----- v7.7.37
-Total commits ------- 4
+Total commits ------- 2
 ```
+
+## [v20.8.1] - 2025-11-05
+
+### 🔄 Changed
+
+- add eCH-0072 scheme
 
 ## [v20.8.0] - 2025-10-15
 
@@ -280,18 +286,6 @@ BREAKING CHANGE: pkcs11 implementation is moved from Voting.Lib.Cryptography to 
 - add additional http headers option
 
 ## [v15.4.1] - 2025-05-21
-
-### 🔄 Changed
-
-- allow " in complex ml texts
-
-## [v15.4.0] - 2025-05-20
-
-### 🔄 Changed
-
-- add hsm secret key management and hmac sha support
-
-## [v15.3.0] - 2025-05-15
 
 ### 🆕 Added
 

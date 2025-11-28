@@ -237,6 +237,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0045_6_0"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0155_5_2", "src\Voting.Lib.Ech.Ech0155_5_2\Voting.Lib.Ech.Ech0155_5_2.csproj", "{C3070D04-B76D-4271-9D6E-A1D4214687D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voting.Lib.Ech.Ech0072_1_0", "src\Voting.Lib.Ech.Ech0072_1_0\Voting.Lib.Ech.Ech0072_1_0.csproj", "{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -874,6 +876,12 @@ Global
 		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
 		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3070D04-B76D-4271-9D6E-A1D4214687D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.DebugUpdateSnapshots|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.DebugUpdateSnapshots|Any CPU.Build.0 = Debug|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -985,6 +993,7 @@ Global
 		{FBE769AF-4702-4A71-8832-24CDFA0F9575} = {63854B9E-D08D-49FA-BAC2-BE6A4C19BFD0}
 		{6FE6A713-5B95-255C-35D7-01C256501966} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
 		{C3070D04-B76D-4271-9D6E-A1D4214687D9} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
+		{DF74B227-5CD7-EF2E-1A13-3ABB2A78BB7E} = {51A73E63-C1AE-4E9F-B369-B3B6574B05E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77CC4E7B-CE12-47E2-8B45-298D167EDDE1}
