@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Voting.Lib.Common;
 
 namespace Voting.Lib.Scheduler;
 
@@ -66,7 +67,7 @@ public static class SchedulerServiceCollectionExtensions
     public static IServiceCollection AddCronJob<TJob>(
         this IServiceCollection services,
         string cronSchedule,
-        string cronTimeZone = "Europe/Zurich")
+        string cronTimeZone = DateTimeConstants.EuropeZurichTimeZoneId)
         where TJob : class, IScheduledJob
     {
         return services.AddCronJob<TJob>(new CronJobConfig { CronSchedule = cronSchedule, CronTimeZone = cronTimeZone });

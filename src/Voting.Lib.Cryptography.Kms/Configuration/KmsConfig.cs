@@ -47,4 +47,9 @@ public class KmsConfig
     /// Gets or sets the labels which are set on created keys.
     /// </summary>
     public Dictionary<string, string> MacKeyLabels { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the labels which are set on created keys.
+    /// </summary>
+    public Dictionary<string, string> EcdsaSha384KeyLabels { get; set; } = [];
 }

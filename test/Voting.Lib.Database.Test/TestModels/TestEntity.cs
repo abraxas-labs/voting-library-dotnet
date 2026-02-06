@@ -12,6 +12,8 @@ public class TestEntity : BaseEntity
 
     public int Value { get; set; }
 
+    public DateTime? Date { get; set; }
+
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj))
@@ -28,7 +30,7 @@ public class TestEntity : BaseEntity
     }
 
     public override int GetHashCode()
-        => HashCode.Combine(Id, Name, Value);
+        => HashCode.Combine(Id, Name, Value, Date);
 
-    protected bool Equals(TestEntity other) => Id == other.Id && Name == other.Name && Value == other.Value;
+    protected bool Equals(TestEntity other) => Id == other.Id && Name == other.Name && Value == other.Value && Date == other.Date;
 }

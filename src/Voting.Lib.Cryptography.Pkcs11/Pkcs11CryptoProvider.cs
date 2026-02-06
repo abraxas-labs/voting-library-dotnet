@@ -71,7 +71,25 @@ public class Pkcs11CryptoProvider : ICryptoProvider, IDisposable
     }
 
     /// <inheritdoc />
+    public Task<string> GenerateEcdsaSha384SecretKey(string keyLabel)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
     public Task<string> GetAesSecretKeyId(string keyLabel) => Task.FromResult(keyLabel);
+
+    /// <inheritdoc />
+    public Task<string> GetEcdsaSha384SecretKeyId(string keyLabel)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public Task DeleteEcdsaSha384Key(string keyId)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <inheritdoc />
     public Task DeleteAesSecretKey(string keyId) => DeleteSecretKey(keyId);

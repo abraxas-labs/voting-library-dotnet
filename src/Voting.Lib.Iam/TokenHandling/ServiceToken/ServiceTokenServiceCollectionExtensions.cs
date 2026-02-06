@@ -5,7 +5,6 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Voting.Lib.Iam.TokenHandling;
 using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,6 @@ public static class ServiceTokenServiceCollectionExtensions
     {
         services.TryAddSingleton<IPostConfigureOptions<SecureConnectServiceAccountOptions>, SecureConnectServiceAccountPostConfigureOptions>();
         services.TryAddSingleton<IServiceTokenHandlerFactory, DefaultServiceTokenHandlerFactory>();
-        services.TryAddTransient<ITokenHandler, ServiceTokenHandler>();
         return services;
     }
 

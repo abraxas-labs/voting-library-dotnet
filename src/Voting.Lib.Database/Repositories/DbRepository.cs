@@ -156,6 +156,13 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
 
         var entry = Context.Attach(new TEntity { Id = value.Id });
         entry.CurrentValues.SetValues(value);
+        foreach (var prop in entry.Properties.Where(x => !x.Metadata.IsPrimaryKey()))
+        {
+            // Mark all properties as modified so that EF Core includes them in the UPDATE,
+            // even if they have default values (0, false, null, etc.), while leaving navigations untouched.
+            prop.IsModified = true;
+        }
+
         await Context.SaveChangesAsync().ConfigureAwait(false);
     }
 
@@ -176,6 +183,12 @@ public class DbRepository<TDbContext, TKey, TEntity> : IDbRepository<TDbContext,
 
             var entry = Context.Attach(new TEntity { Id = value.Id });
             entry.CurrentValues.SetValues(value);
+            foreach (var prop in entry.Properties.Where(x => !x.Metadata.IsPrimaryKey()))
+            {
+                // Mark all properties as modified so that EF Core includes them in the UPDATE,
+                // even if they have default values (0, false, null, etc.), while leaving navigations untouched.
+                prop.IsModified = true;
+            }
         }
 
         await Context.SaveChangesAsync().ConfigureAwait(false);

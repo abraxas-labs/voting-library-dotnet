@@ -128,6 +128,18 @@ public class CryptoProviderMock : ICryptoProvider
     public Task DeleteMacSecretKey(string keyId) => Task.CompletedTask;
 
     /// <inheritdoc />
+    public Task<string> GenerateEcdsaSha384SecretKey(string keyLabel)
+        => Task.FromResult(keyLabel);
+
+    /// <inheritdoc />
+    public Task<string> GetEcdsaSha384SecretKeyId(string keyLabel)
+        => Task.FromResult(keyLabel);
+
+    /// <inheritdoc />
+    public Task DeleteEcdsaSha384Key(string keyId)
+        => Task.CompletedTask;
+
+    /// <inheritdoc />
     public Task<bool> IsHealthy(string? keyId = null) => Task.FromResult(true);
 
     private ECDsa BuildEcdsaPrivateKey(string keyLabel)

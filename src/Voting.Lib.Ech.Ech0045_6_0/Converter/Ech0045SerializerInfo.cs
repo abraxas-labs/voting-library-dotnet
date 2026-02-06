@@ -20,6 +20,6 @@ internal static class Ech0045SerializerInfo
         // works for the generated eCH classes, however it may not work with all edge cases correctly
         var importer = new XmlReflectionImporter();
         Voter = importer.GetElementName(typeof(VotingPersonType), typeof(VoterListType), nameof(VoterListType.Voter));
-        DeliveryHeader = importer.GetElementName(typeof(Ech0058_5_0.HeaderType), typeof(VoterDelivery), "DeliveryHeader", "http://www.ech.ch/xmlns/eCH-0045/4");
+        DeliveryHeader = importer.GetElementName(typeof(Ech0058_5_0.HeaderType), typeof(VoterDelivery), "DeliveryHeader", "http://www.ech.ch/xmlns/eCH-0045/6");
     }
 }

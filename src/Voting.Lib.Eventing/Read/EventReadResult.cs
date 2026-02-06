@@ -56,14 +56,14 @@ public class EventReadResult
     /// <summary>
     /// Gets the position in the $all stream.
     /// Has an invalid value when it is read from an other stream than $all stream.
-    /// https://jira.abraxas-tools.ch/jira/browse/VOTING-1856.
+    /// TODO: Ticket reference VOTING-1856.
     /// </summary>
     public Position Position { get; }
 
     /// <summary>
     /// Gets the event creation time.
     /// </summary>
-    // TODO: this should be removed with https://jira.abraxas-tools.ch/jira/browse/VOTING-1856.
+    // TODO: this should be removed with ticket VOTING-1856.
     public DateTime Created { get; }
 
     /// <summary>

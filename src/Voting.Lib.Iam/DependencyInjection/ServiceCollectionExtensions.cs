@@ -13,7 +13,6 @@ using Voting.Lib.Iam.Services;
 using Voting.Lib.Iam.Services.ApiClient.Identity;
 using Voting.Lib.Iam.Services.ApiClient.Permission;
 using Voting.Lib.Iam.Store;
-using Voting.Lib.Iam.TokenHandling;
 using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -40,7 +39,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton(sp => sp.GetRequiredService<IOptionsMonitor<SecureConnectServiceAccountOptions>>().CurrentValue)
             .AddSingleton<IPostConfigureOptions<SecureConnectOptions>, SecureConnectPostConfigureOptions>()
             .AddSecureConnectServiceTokenHandling()
-            .AddTransient<TokenHttpMessageHandler>()
             .AddHttpClient<IRoleTokenHandler, RoleTokenHandler>(opts => opts.Timeout = config.Timeout).AddDefaultSecureConnectServiceToken().Services
             .AddSingleton<IUserService, UserService>()
             .AddSingleton<ITenantService, TenantService>()

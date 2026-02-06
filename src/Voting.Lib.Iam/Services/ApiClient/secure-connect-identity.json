@@ -4,8 +4,7 @@
     "title": "Identity Service of SECURE Connect 2",
     "version": "1.0",
     "contact": {
-      "name": "Cloud Platform Services",
-      "url": "https://confluence.abraxas-tools.ch/confluence/display/IAM"
+      "name": "Cloud Platform Services"
     }
   },
   "schemes": [
@@ -3957,9 +3956,5 @@
         }
       }
     }
-  },
-  "externalDocs": {
-    "description": "Internal API Getting-Started Documentation (Confluence)",
-    "url": "https://confluence.abraxas-tools.ch/confluence/pages/viewpage.action?pageId=176725339"
   }
 }

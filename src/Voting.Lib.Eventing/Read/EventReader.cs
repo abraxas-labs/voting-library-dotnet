@@ -102,7 +102,7 @@ public class EventReader : IEventReader
     }
 
     /// <inheritdoc />
-    // TODO: not needed anymore with https://jira.abraxas-tools.ch/jira/browse/VOTING-1856.
+    // TODO: not needed anymore with ticket VOTING-1856.
     public async IAsyncEnumerable<EventReadResult> ReadEventsFromAll(
         Position startPositionExclusive,
         IReadOnlyCollection<Type> eventTypes,

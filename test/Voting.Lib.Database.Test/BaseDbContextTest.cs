@@ -1,6 +1,7 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Voting.Lib.Database.Test.Repositories;
@@ -37,7 +38,7 @@ public abstract class BaseDbContextTest<TContext>
         Context.Database.EnsureCreated();
         Context.TestEntities.AddRange(
             Enumerable.Range(0, 20)
-                .Select(x => new TestEntity { Value = x, Name = "X" + x }));
+                .Select(x => new TestEntity { Value = x, Name = "X" + x, Date = new DateTime(2000, 1, 1) }));
         Context.SaveChanges();
     }
 }

@@ -30,6 +30,6 @@ public interface IAggregateEventReader
     /// <param name="endTimestampInclusive">Reads from beginning to this timestamp (created timestamp).</param>
     /// <exception cref="Voting.Lib.Eventing.Exceptions.AggregateNotFoundException">Throws if the stream/aggregate can't be found.</exception>
     /// <returns>All events in the specified stream.</returns>
-    // TODO: change datetime to position with https://jira.abraxas-tools.ch/jira/browse/VOTING-1856.
+    // TODO: change datetime to position with ticket VOTING-1856.
     IAsyncEnumerable<IDomainEvent> ReadEvents(string stream, Guid aggregateId, DateTime? endTimestampInclusive = null);
 }

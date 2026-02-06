@@ -411,5 +411,30 @@ public class StringValidatorTest : ProtoValidatorBaseTest
         ShouldHaveNoFailures(BuildRules(new() { ComplexSlText = true }), input);
     }
 
+    [Theory]
+    [InlineData("http://example.com")]
+    [InlineData("ftp://example.com")]
+    [InlineData("just-a-string")]
+    [InlineData("./a-relative-url")]
+    [InlineData("https://")]
+    [InlineData("https://example.com:abc")]
+    public void HttpsUrlShouldFail(string input)
+    {
+        var failure = Validate(BuildRules(new() { HttpsUrl = true }), input).Single();
+        failure.ErrorMessage.Should().Be($"'{FieldName}' is not a valid HTTPS URL.");
+    }
+
+    [Theory]
+    [InlineData("https://example.com")]
+    [InlineData("https://www.example.com")]
+    [InlineData("https://example.com/path")]
+    [InlineData("https://example.com:8080/path?query=1#foo=bar")]
+    [InlineData("https://127.0.0.1")]
+    [InlineData("https://[::1]")]
+    public void HttpsUrlShouldPass(string input)
+    {
+        ShouldHaveNoFailures(BuildRules(new() { HttpsUrl = true }), input);
+    }
+
     private Rules BuildRules(StringRules rules) => new() { String = rules };
 }

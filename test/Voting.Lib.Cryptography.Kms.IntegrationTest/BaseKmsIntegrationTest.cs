@@ -15,6 +15,7 @@ public class BaseKmsIntegrationTest : IAsyncLifetime
     private readonly ServiceProvider _serviceProvider;
     private readonly List<string> _macKeys = new();
     private readonly List<string> _aesKeys = new();
+    private readonly List<string> _ecdsaSha384Keys = new();
 
     protected BaseKmsIntegrationTest()
     {
@@ -26,6 +27,7 @@ public class BaseKmsIntegrationTest : IAsyncLifetime
                 Password = Environment.GetEnvironmentVariable("KMS_PASSWORD") ?? throw new InvalidOperationException("KMS_PASSWORD not set"),
                 AesKeyLabels = new Dictionary<string, string> { { "name", KeyPrefix } },
                 MacKeyLabels = new Dictionary<string, string> { { "name", KeyPrefix } },
+                EcdsaSha384KeyLabels = new Dictionary<string, string> { { "name", KeyPrefix } },
             })
             .BuildServiceProvider();
         CryptoProvider = _serviceProvider.GetRequiredService<ICryptoProvider>();
@@ -45,6 +47,11 @@ public class BaseKmsIntegrationTest : IAsyncLifetime
         foreach (var keyId in _aesKeys)
         {
             await CryptoProvider.DeleteAesSecretKey(keyId);
+        }
+
+        foreach (var keyId in _ecdsaSha384Keys)
+        {
+            await CryptoProvider.DeleteEcdsaSha384Key(keyId);
         }
 
         await _serviceProvider.DisposeAsync();
@@ -87,6 +94,18 @@ public class BaseKmsIntegrationTest : IAsyncLifetime
         }
     }
 
+    protected async Task<string> GetOrCreateEcdsaSha384Key(string name, bool temp = false)
+    {
+        try
+        {
+            return await CreateEcdsaSha384Key(name, temp);
+        }
+        catch (KmsKeyAlreadyExistsException)
+        {
+            return await CryptoProvider.GetEcdsaSha384SecretKeyId(BuildKeyName(name, temp));
+        }
+    }
+
     protected async Task<string> CreateAesKey(string name, bool temp = true)
     {
         var keyName = BuildKeyName(name, temp);
@@ -95,6 +114,19 @@ public class BaseKmsIntegrationTest : IAsyncLifetime
         if (temp)
         {
             _aesKeys.Add(id);
+        }
+
+        return id;
+    }
+
+    protected async Task<string> CreateEcdsaSha384Key(string name, bool temp = true)
+    {
+        var keyName = BuildKeyName(name, temp);
+        var id = await CryptoProvider.GenerateEcdsaSha384SecretKey(keyName);
+
+        if (temp)
+        {
+            _ecdsaSha384Keys.Add(id);
         }
 
         return id;

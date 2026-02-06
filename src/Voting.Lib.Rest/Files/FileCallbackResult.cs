@@ -15,7 +15,7 @@ namespace Voting.Lib.Rest.Files;
 /// A file result that uses a callback to request the file contents.
 /// </summary>
 // https://blog.stephencleary.com/2016/11/streaming-zip-on-aspnet-core.html
-// https://jira.eia.abraxas.ch/jira/browse/VOTING-468
+// See ticket VOTING-468
 public class FileCallbackResult : FileResult
 {
     private readonly Func<PipeWriter, Task> _callback;

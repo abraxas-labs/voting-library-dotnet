@@ -110,6 +110,11 @@ public class StringValidator : IProtoFieldValidator
         {
             ValidateComplexMultilineText(context, fieldName, stringValue!);
         }
+
+        if (stringRules.HttpsUrl)
+        {
+            ValidateHttpsUrl(context, fieldName, stringValue!);
+        }
     }
 
     private void ValidateGuid(ProtoValidationContext context, string fieldName, string value)
@@ -168,6 +173,15 @@ public class StringValidator : IProtoFieldValidator
 
     private void ValidateComplexMultilineText(ProtoValidationContext context, string fieldName, string value)
         => ValidateString(context, fieldName, value, StringValidation.ComplexMlTextRegex, "is not a Complex Multiline Text.", true);
+
+    private void ValidateHttpsUrl(ProtoValidationContext context, string fieldName, string value)
+    {
+        if (!Uri.TryCreate(value, UriKind.Absolute, out var uriResult)
+            || !string.Equals(uriResult.Scheme, Uri.UriSchemeHttps, StringComparison.Ordinal))
+        {
+            context.Failures.Add(new ProtoValidationError(fieldName, "is not a valid HTTPS URL."));
+        }
+    }
 
     private void ValidateString(ProtoValidationContext context, string fieldName, string value, Regex regex, string validationMessage, bool requireTrimmed, bool reportInvalidChars = true)
     {

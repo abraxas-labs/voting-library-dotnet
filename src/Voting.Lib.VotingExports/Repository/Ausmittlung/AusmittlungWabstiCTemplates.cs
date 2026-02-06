@@ -9,7 +9,7 @@ namespace Voting.Lib.VotingExports.Repository.Ausmittlung;
 /// <summary>
 /// WabstiC Templates.
 /// We use german names here since the entire wabstiC domain is in german and there are no eCH definitions.
-/// See https://jira.eia.abraxas.ch/jira/browse/VOTING-647.
+/// See ticket VOTING-647.
 /// WM => all majority elections of a contest
 /// WP => all proportional elections of a contest
 /// SG => all votes of a contest.

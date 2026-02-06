@@ -78,7 +78,7 @@ public class MockedClock : TimeProvider, IClock
     public static FakeTimeProvider CreateFakeTimeProvider()
     {
         var mockedClock = new FakeTimeProvider(UtcNowOffset);
-        mockedClock.SetLocalTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Europe/Zurich"));
+        mockedClock.SetLocalTimeZone(DateTimeConstants.EuropeZurichTimeZoneInfo);
         return mockedClock;
     }
 

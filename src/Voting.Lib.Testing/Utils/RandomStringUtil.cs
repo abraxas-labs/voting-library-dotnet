@@ -101,6 +101,37 @@ public static class RandomStringUtil
         return GenerateTrimmedText(size, ComplexMultiLineText);
     }
 
+    /// <summary>
+    /// Generates a random https url.
+    /// </summary>
+    /// <param name="totalLength">The total length including the scheme.</param>
+    /// <returns>The built url.</returns>
+    public static string GenerateHttpsUrl(int totalLength)
+    {
+        var url = Uri.UriSchemeHttps + Uri.SchemeDelimiter;
+        totalLength -= url.Length;
+
+        if (totalLength <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(totalLength),
+                totalLength,
+                "Total length must be greater than scheme length");
+        }
+
+        const string tld = ".com";
+        const int hostnameMaxLength = 63;
+        var hostnameLength = Math.Min(totalLength - tld.Length, hostnameMaxLength - tld.Length);
+        url += GenerateAlphabetic(hostnameLength) + tld;
+        totalLength -= hostnameLength + tld.Length;
+        if (totalLength > 0)
+        {
+            url += "/" + GenerateAlphabetic(totalLength - 1);
+        }
+
+        return url;
+    }
+
     private static string Generate(int size, char[] chars)
     {
         var data = new byte[sizeof(int) * size];

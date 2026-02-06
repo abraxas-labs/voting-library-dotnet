@@ -12,4 +12,5 @@ internal record CreateKeyRequest(
     Dictionary<string, string>? Labels = null,
     int? Size = null,
     bool Unexportable = true,
-    bool AssignSelfAsOwner = true);
+    bool AssignSelfAsOwner = true,
+    string? CurveId = null);

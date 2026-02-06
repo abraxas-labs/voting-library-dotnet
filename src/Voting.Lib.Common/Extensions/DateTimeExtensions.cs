@@ -1,6 +1,8 @@
 ﻿// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using Voting.Lib.Common;
+
 namespace System;
 
 /// <summary>
@@ -8,8 +10,6 @@ namespace System;
 /// </summary>
 public static class DateTimeExtensions
 {
-    private static readonly TimeZoneInfo ChTimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Europe/Zurich");
-
     /// <summary>
     /// Returns a new Utc <see cref="DateTime"/> that takes place the next day at 00:00.
     /// If <paramref name="chTimeZone"/> is set to true, it will return a slightly lower utc time (22:00 or 23:00 depending on european summer time).
@@ -30,9 +30,9 @@ public static class DateTimeExtensions
             return dateTime.AddDays(1).Date;
         }
 
-        var chDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTime, ChTimeZoneInfo);
+        var chDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTime, DateTimeConstants.EuropeZurichTimeZoneInfo);
         var chNextDate = chDateTime.AddDays(1).Date;
-        return TimeZoneInfo.ConvertTimeToUtc(chNextDate, ChTimeZoneInfo);
+        return TimeZoneInfo.ConvertTimeToUtc(chNextDate, DateTimeConstants.EuropeZurichTimeZoneInfo);
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public static class DateTimeExtensions
             throw new ArgumentException($"DateTime must be of kind {DateTimeKind.Utc}");
         }
 
-        return TimeZoneInfo.ConvertTimeFromUtc(dateTime, ChTimeZoneInfo);
+        return TimeZoneInfo.ConvertTimeFromUtc(dateTime, DateTimeConstants.EuropeZurichTimeZoneInfo);
     }
 
     /// <summary>

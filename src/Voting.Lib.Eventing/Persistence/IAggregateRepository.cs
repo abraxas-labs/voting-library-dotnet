@@ -71,7 +71,7 @@ public interface IAggregateRepository
     /// <param name="endTimestampInclusive">Reads from beginning to this timestamp (created timestamp).</param>
     /// <returns>The loaded aggregate.</returns>
     /// <exception cref="AggregateNotFoundException">If the aggregate was not found.</exception>
-    // TODO: change datetime to position with https://jira.abraxas-tools.ch/jira/browse/VOTING-1856.
+    // TODO: change datetime to position with ticket VOTING-1856.
     Task<TAggregate> GetSnapshotById<TAggregate>(Guid id, DateTime endTimestampInclusive)
         where TAggregate : BaseEventSourcingAggregate;
 

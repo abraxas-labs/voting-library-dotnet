@@ -127,6 +127,13 @@ public interface ICryptoProvider
     Task<string> GenerateAesSecretKey(string keyLabel);
 
     /// <summary>
+    /// Generates an ECDSA SHA384 secret key and stores it in the crypto provider.
+    /// </summary>
+    /// <param name="keyLabel">The key id.</param>
+    /// <returns>The keyId generated.</returns>
+    Task<string> GenerateEcdsaSha384SecretKey(string keyLabel);
+
+    /// <summary>
     /// Resolves the keyId of a AES secret key.
     /// </summary>
     /// <param name="keyLabel">The label of the key.</param>
@@ -134,11 +141,25 @@ public interface ICryptoProvider
     Task<string> GetAesSecretKeyId(string keyLabel);
 
     /// <summary>
+    /// Resolves the keyId of a ECDSA SHA384 secret key.
+    /// </summary>
+    /// <param name="keyLabel">The label of the key.</param>
+    /// <returns>The keyId.</returns>
+    Task<string> GetEcdsaSha384SecretKeyId(string keyLabel);
+
+    /// <summary>
     /// Deletes a aes secret key in the crypto provider.
     /// </summary>
     /// <param name="keyId">The key id.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task DeleteAesSecretKey(string keyId);
+
+    /// <summary>
+    /// Deletes a ECDSA SHA384 secret key in the crypto provider.
+    /// </summary>
+    /// <param name="keyId">The key id.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task DeleteEcdsaSha384Key(string keyId);
 
     /// <summary>
     /// Generates a mac secret key and stores it in the crypto provider.

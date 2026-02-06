@@ -24,7 +24,7 @@ public class NQueryDetectorTest : BaseDbContextTest<NQueryDetectorTestContext>
         ex.ActualCount.Should().Be(2);
         ex.MaxCount.Should().Be(1);
         ex.Query.Replace("\r", string.Empty).Should().Be(
-            "SELECT \"t\".\"Id\", \"t\".\"Name\", \"t\".\"Value\"\nFROM \"TestEntities\" AS \"t\"\nWHERE \"t\".\"Value\" > 10");
+            "SELECT \"t\".\"Id\", \"t\".\"Date\", \"t\".\"Name\", \"t\".\"Value\"\nFROM \"TestEntities\" AS \"t\"\nWHERE \"t\".\"Value\" > 10");
     }
 
     [Fact]

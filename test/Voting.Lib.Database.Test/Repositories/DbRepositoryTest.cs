@@ -38,7 +38,7 @@ public class DbRepositoryTest : BaseDbContextTest
             .ToQueryString()
             .Replace("\r", string.Empty)
             .Should()
-            .Be("SELECT \"t\".\"Id\", \"t\".\"Name\", \"t\".\"Value\"\nFROM \"TestEntities\" AS \"t\"");
+            .Be("SELECT \"t\".\"Id\", \"t\".\"Date\", \"t\".\"Name\", \"t\".\"Value\"\nFROM \"TestEntities\" AS \"t\"");
     }
 
     [Fact]
@@ -176,6 +176,22 @@ public class DbRepositoryTest : BaseDbContextTest
     }
 
     [Fact]
+    public async Task UpdateIgnoreRelationsWithDefaultValuesShouldReturnOk()
+    {
+        var entity = await Repo.Query().FirstAsync(x => x.Name == "X1");
+        entity.Name = string.Empty;
+        entity.Value = 0;
+        entity.Date = null;
+        await Repo.UpdateIgnoreRelations(entity);
+
+        var entity2 = await Repo.GetByKey(entity.Id);
+        entity2.Should().NotBeNull();
+        entity2!.Name.Should().Be(string.Empty);
+        entity2.Value.Should().Be(0);
+        entity2.Date.Should().BeNull();
+    }
+
+    [Fact]
     public async Task UpdateIgnoreRelationsShouldThrowIfUnknown()
     {
         await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await Repo.UpdateIgnoreRelations(new TestEntity
@@ -200,6 +216,26 @@ public class DbRepositoryTest : BaseDbContextTest
         var ids = entities.ConvertAll(x => x.Id);
         var updatedEntities = await Repo.Query().Where(x => ids.Contains(x.Id)).ToListAsync();
         updatedEntities.All(x => x.Name.EndsWith("-updated", StringComparison.Ordinal) && x.Value >= 100)
+            .Should()
+            .BeTrue();
+    }
+
+    [Fact]
+    public async Task UpdateRangeIgnoreRelationsWithDefaultValuesShouldReturnOk()
+    {
+        var entities = await Repo.Query().Take(5).ToListAsync();
+        foreach (var entity in entities)
+        {
+            entity.Value = 0;
+            entity.Name = string.Empty;
+            entity.Date = null;
+        }
+
+        await Repo.UpdateRangeIgnoreRelations(entities);
+
+        var ids = entities.ConvertAll(x => x.Id);
+        var updatedEntities = await Repo.Query().Where(x => ids.Contains(x.Id)).ToListAsync();
+        updatedEntities.All(x => x.Name.Equals(string.Empty, StringComparison.Ordinal) && x is { Value: 0, Date: null })
             .Should()
             .BeTrue();
     }

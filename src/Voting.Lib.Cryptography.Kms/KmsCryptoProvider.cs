@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Cryptography.Asymmetric;
 using Voting.Lib.Cryptography.Kms.ApiModels;
@@ -28,8 +29,12 @@ public class KmsCryptoProvider : ICryptoProvider
 
     private const string AlgorithmNameAes = "aes";
     private const string AlgorithmNameHmacSha256 = "hmac-sha256";
+    private const string AlgorithmNameEc = "ec";
+    private const string AlgorithmNameEcSign = "ecdsa";
+    private const string AlgorithmNameSha384 = "sha-384";
 
     private const string ModeGcm = "gcm";
+    private const string CurveEcP384 = "secp384r1";
 
     private const string MediaTypeOctetStream = "application/octet-stream";
 
@@ -60,9 +65,24 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
-    public Task<byte[]> CreateEcdsaSha384Signature(byte[] data, string keyId)
+    public async Task<byte[]> CreateEcdsaSha384Signature(byte[] data, string keyId)
     {
-        throw new NotImplementedException();
+        using var content = new ByteArrayContent(data);
+        content.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeOctetStream);
+
+        var url = QueryHelpers.AddQueryString("v1/crypto/sign", new Dictionary<string, string?>
+        {
+            { "keyName", keyId },
+            { "signAlgo", AlgorithmNameEcSign },
+            { "hashAlgo", AlgorithmNameSha384 },
+        });
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, url);
+        req.Content = content;
+
+        using var resp = await _http.SendAsync(req);
+        var signResp = await resp.ReadResponse<SignResponse>();
+        return Convert.FromHexString(signResp.Data);
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
@@ -71,10 +91,10 @@ public class KmsCryptoProvider : ICryptoProvider
         using var content = new ByteArrayContent(data);
         content.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeOctetStream);
 
-        var req = new HttpRequestMessage(HttpMethod.Post, $"v1/crypto/mac?keyName={keyId}");
+        using var req = new HttpRequestMessage(HttpMethod.Post, $"v1/crypto/mac?keyName={keyId}");
         req.Content = content;
 
-        var resp = await _http.SendAsync(req);
+        using var resp = await _http.SendAsync(req);
         var macResp = await resp.ReadResponse<MacResponse>();
         return Convert.FromBase64String(macResp.Data);
     }
@@ -154,9 +174,28 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
-    public Task<bool> VerifyEcdsaSha384Signature(byte[] data, byte[] signature, string keyId)
+    public async Task<bool> VerifyEcdsaSha384Signature(byte[] data, byte[] signature, string keyId)
     {
-        throw new NotImplementedException();
+        using var content = new ByteArrayContent(data);
+        content.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeOctetStream);
+
+        var publicKeyName = $"{keyId}-pub";
+        var signatureHexEncoded = Convert.ToHexString(signature);
+
+        var url = QueryHelpers.AddQueryString("v1/crypto/signv", new Dictionary<string, string?>
+        {
+            { "keyName", publicKeyName },
+            { "signAlgo", AlgorithmNameEcSign },
+            { "hashAlgo", AlgorithmNameSha384 },
+            { "signature", signatureHexEncoded },
+        });
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, url);
+        req.Content = content;
+
+        using var resp = await _http.SendAsync(req);
+        var verifyResponse = await resp.ReadResponse<VerifyResponse>();
+        return verifyResponse.Verified;
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
@@ -193,6 +232,29 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
+    public async Task<string> GenerateEcdsaSha384SecretKey(string keyLabel)
+    {
+        try
+        {
+            var key = await _http.PostJson<CreateKeyRequest, KeyModel>(
+                "v1/vault/keys2",
+                new CreateKeyRequest(
+                    keyLabel,
+                    KeyUsageMask.SignAndVerify,
+                    AlgorithmNameEc,
+                    _config.EcdsaSha384KeyLabels,
+                    CurveId: CurveEcP384));
+
+            // sign calls use the name of the key instead of the id
+            return key.Name;
+        }
+        catch (KmsException e) when (e.Code == KmsKeyAlreadyExistsException.KmsErrorCode)
+        {
+            throw new KmsKeyAlreadyExistsException(keyLabel, e.Message);
+        }
+    }
+
+    /// <inheritdoc cref="ICryptoProvider"/>
     public async Task<string> GetAesSecretKeyId(string keyLabel)
     {
         var resp = await _http.GetJson<Page<KeyModel>>($"v1/vault/keys2?limit=1&name={WebUtility.UrlEncode(keyLabel)}");
@@ -200,8 +262,19 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
+    public Task<string> GetEcdsaSha384SecretKeyId(string keyLabel)
+    {
+        // sign calls use the name of the key instead of the id
+        return Task.FromResult(keyLabel);
+    }
+
+    /// <inheritdoc cref="ICryptoProvider"/>
     public Task DeleteAesSecretKey(string keyId)
-        => _http.DeleteAsync($"v1/vault/keys2/{WebUtility.UrlEncode(keyId)}");
+        => DeleteKey(keyId);
+
+    /// <inheritdoc cref="ICryptoProvider"/>
+    public Task DeleteEcdsaSha384Key(string keyId)
+        => DeleteKey(keyId);
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public async Task<string> GenerateMacSecretKey(string keyLabel)
@@ -234,7 +307,7 @@ public class KmsCryptoProvider : ICryptoProvider
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public Task DeleteMacSecretKey(string keyId)
-        => _http.DeleteAsync($"v1/vault/keys2/{WebUtility.UrlEncode(keyId)}");
+        => DeleteKey(keyId);
 
     /// <inheritdoc cref="ICryptoProvider"/>
     public async Task<bool> IsHealthy(string? keyId = null)
@@ -273,4 +346,7 @@ public class KmsCryptoProvider : ICryptoProvider
 
         return (iv, cipherText, tag);
     }
+
+    private Task DeleteKey(string keyId) =>
+        _http.DeleteAsync($"v1/vault/keys2/{WebUtility.UrlEncode(keyId)}");
 }
