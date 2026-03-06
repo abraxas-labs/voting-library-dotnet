@@ -174,7 +174,7 @@ public abstract class ExceptionInterceptor : Interceptor
         }
         else
         {
-            _logger.LogError(ex, "Uncaught exception mapped to status code: {StatusCode}", statusCode);
+            _logger.LogWarning(ex, "Uncaught exception mapped to status code: {StatusCode}", statusCode);
         }
 
         // the frontend extracts the part before the : to display a custom error message.

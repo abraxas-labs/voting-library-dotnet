@@ -1,6 +1,7 @@
 ﻿// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace Voting.Lib.Cryptography.Pkcs11.Test;
 [SuppressMessage("Design", "CA1001:Types that own disposable fields should be disposable", Justification = "Disposed in IAsyncLifeTime implementation.")]
 public class Pkcs11CryptoProviderTest : IAsyncLifetime
 {
+    private const string HsmSimulatorRegistryPathEnvironmentVariable = "HSM_SIMULATOR_REGISTRY_PATH";
+
     private readonly ITestOutputHelper _output;
 
     private Pkcs11CryptoProvider _testee = null!; // initialized during InitializeAsync
@@ -32,7 +35,9 @@ public class Pkcs11CryptoProviderTest : IAsyncLifetime
 
     public virtual async Task InitializeAsync()
     {
-        _hsmSimulatorContainer = await HsmSimulatorTestContainer.StartNew(new XUnitLogger<Pkcs11CryptoProviderTest>(_output));
+        var registryPath = Environment.GetEnvironmentVariable(HsmSimulatorRegistryPathEnvironmentVariable)
+            ?? throw new InvalidOperationException($"Environment variable '{HsmSimulatorRegistryPathEnvironmentVariable}' is not set.");
+        _hsmSimulatorContainer = await HsmSimulatorTestContainer.StartNew(registryPath, new XUnitLogger<Pkcs11CryptoProviderTest>(_output));
         _testee = new Pkcs11CryptoProvider(NullLogger<Pkcs11CryptoProvider>.Instance, Pkcs11Config.Instance);
     }
 

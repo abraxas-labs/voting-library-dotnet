@@ -71,6 +71,12 @@ public record TemplateModel
     public bool PerDomainOfInfluence { get; init; }
 
     /// <summary>
+    /// Gets the priority of the async job. The lower the value, the higher the priority.
+    /// If null, the default priority of the PDF service is used.
+    /// </summary>
+    public int? AsyncJobPriority { get; init; }
+
+    /// <summary>
     /// Whether this template model is available for a provided <see cref="DomainOfInfluenceTypes"/>.
     /// </summary>
     /// <param name="t">The type of the domain of influence.</param>

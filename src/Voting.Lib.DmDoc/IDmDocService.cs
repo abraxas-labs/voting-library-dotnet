@@ -198,6 +198,7 @@ public interface IDmDocService
     /// <param name="templateData">The template data.</param>
     /// <param name="webhookEndpoint">The endpoint of the webhook callback (on error or completion).</param>
     /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
+    /// <param name="asyncJobPriority">The async job priority for the pdf generation. If not set dmDOC defaults will be used.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>The draft that is being generated.</returns>
@@ -206,6 +207,7 @@ public interface IDmDocService
         T templateData,
         string webhookEndpoint,
         string? bulkRoot,
+        int? asyncJobPriority = null,
         CancellationToken ct = default);
 
     /// <summary>
@@ -215,6 +217,7 @@ public interface IDmDocService
     /// <param name="templateData">The template data.</param>
     /// <param name="webhookEndpoint">The endpoint of the webhook callback (on error or completion).</param>
     /// <param name="bulkRoot">The optional bulk root. Used for serial letters.</param>
+    /// <param name="asyncJobPriority">The async job priority for the pdf generation. If not set dmDOC defaults will be used.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="T">The type of the template data.</typeparam>
     /// <returns>The draft that is being generated.</returns>
@@ -223,6 +226,7 @@ public interface IDmDocService
         T templateData,
         string webhookEndpoint,
         string? bulkRoot = null,
+        int? asyncJobPriority = null,
         CancellationToken ct = default);
 
     /// <summary>

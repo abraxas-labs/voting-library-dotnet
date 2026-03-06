@@ -7,6 +7,7 @@ using Snapper;
 using Voting.Lib.VotingExports.Exceptions;
 using Voting.Lib.VotingExports.Models;
 using Voting.Lib.VotingExports.Repository;
+using Voting.Lib.VotingExports.Repository.Ausmittlung;
 using Voting.Lib.VotingExports.Repository.Basis;
 using Xunit;
 
@@ -29,6 +30,14 @@ public class TemplateRepositoryTest
         var template = TemplateRepository.GetByKey(BasisXmlContestTemplates.Ech0157And0159_4_0.Key);
         template.Key.Should().Be(BasisXmlContestTemplates.Ech0157And0159_4_0.Key);
         template.ShouldMatchSnapshot();
+    }
+
+    [Fact]
+    public void GetByKeyWithAsyncJobPriorityShouldWork()
+    {
+        var template = TemplateRepository.GetByKey(AusmittlungPdfProportionalElectionTemplates.ResultBundleReview.Key);
+        template.Key.Should().Be(AusmittlungPdfProportionalElectionTemplates.ResultBundleReview.Key);
+        template.AsyncJobPriority.Should().Be(AusmittlungPdfProportionalElectionTemplates.ResultBundleReview.AsyncJobPriority);
     }
 
     [Fact]

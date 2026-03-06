@@ -113,6 +113,7 @@ public static class AusmittlungPdfMajorityElectionTemplates
         EntityType = EntityType.MajorityElection,
         ResultType = ResultType.PoliticalBusinessResultBundleReview,
         GeneratedBy = VotingApp.VotingAusmittlung,
+        AsyncJobPriority = 10,
     };
 
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]

@@ -65,7 +65,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
             }
 
             appShortcuts = appShortcuts.Intersect(apps).ToList();
-            _logger.LogInformation(SecurityLogging.SecurityEventId, "Limited apps to {Apps} because of apps header", string.Join(',', appShortcuts));
+            _logger.LogDebug(SecurityLogging.SecurityEventId, "Limited apps to {Apps} because of apps header", string.Join(',', appShortcuts));
         }
 
         _logger.LogDebug(SecurityLogging.SecurityEventId, "Get role token for apps {Apps}", string.Join(',', appShortcuts));
@@ -76,7 +76,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
         using var response = await _httpClient.PostAsJsonAsync(tokenEndpoint, request, SecureConnectDefaults.JsonOptions).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError(SecurityLogging.SecurityEventId, "The download of the role-token returned status-code {Status}", response.StatusCode);
+            _logger.LogWarning(SecurityLogging.SecurityEventId, "The download of the role-token returned status-code {Status}", response.StatusCode);
             return [];
         }
 

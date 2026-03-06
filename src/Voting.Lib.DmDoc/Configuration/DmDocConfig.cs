@@ -69,7 +69,7 @@ public class DmDocConfig
     public JobConfig DraftCleanupScheduler { get; set; } = new() { Interval = TimeSpan.FromMinutes(5) };
 
     /// <summary>
-    /// Gets or sets the priority level of high priority printjobs.
+    /// Gets or sets the default priority level for pdf preview async jobs.
     /// </summary>
     public int AsyncJobPriority { get; set; } = 1;
 }

@@ -14,12 +14,13 @@ internal static class HsmSimulatorTestContainer
 {
     public const ushort HttpPort = 3001;
     public const string Hostname = "hsm-simulator";
-    private const string Image = "harbor.abraxas-tools.ch/voting/hsm/cryptoserversimulator:4.51.0.1";
+    private const string ImageName = "cryptoserversimulator";
+    private const string ImageTag = "4.51.0.1";
 
-    public static async Task<IContainer> StartNew(ILogger logger)
+    public static async Task<IContainer> StartNew(string registryPath, ILogger logger)
     {
         var container = new ContainerBuilder()
-            .WithImage(Image)
+            .WithImage($"{registryPath}{ImageName}:{ImageTag}")
             .WithHostname(Hostname)
             .WithPortBinding(HttpPort, HttpPort)
             .WithLogger(logger)

@@ -247,6 +247,7 @@ public static class AusmittlungPdfProportionalElectionTemplates
         EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.PoliticalBusinessResultBundleReview,
         GeneratedBy = VotingApp.VotingAusmittlung,
+        AsyncJobPriority = 10,
     };
 
     /// <summary>

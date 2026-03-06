@@ -213,8 +213,9 @@ public class DmDocService : IDmDocService
         T templateData,
         string webhookEndpoint,
         string? bulkRoot,
+        int? asyncJobPriority = null,
         CancellationToken ct = default)
-        => StartAsyncPdfGeneration(templateId, null, templateData, webhookEndpoint, bulkRoot, ct);
+        => StartAsyncPdfGeneration(templateId, null, templateData, webhookEndpoint, bulkRoot, asyncJobPriority, ct);
 
     /// <inheritdoc />
     public Task<Draft> StartAsyncPdfGeneration<T>(
@@ -222,8 +223,9 @@ public class DmDocService : IDmDocService
         T templateData,
         string webhookEndpoint,
         string? bulkRoot = null,
+        int? asyncJobPriority = null,
         CancellationToken ct = default)
-        => StartAsyncPdfGeneration(null, templateName, templateData, webhookEndpoint, bulkRoot, ct);
+        => StartAsyncPdfGeneration(null, templateName, templateData, webhookEndpoint, bulkRoot, asyncJobPriority, ct);
 
     /// <inheritdoc />
     public Task<Stream> GetPdfForPrintJob(int printJobId, CancellationToken ct = default)
@@ -403,6 +405,7 @@ public class DmDocService : IDmDocService
         T templateData,
         string webhookEndpoint,
         string? bulkRoot,
+        int? asyncJobPriority,
         CancellationToken ct)
     {
         var draftRequest = new CreateDraftRequest
@@ -410,6 +413,7 @@ public class DmDocService : IDmDocService
             TemplateId = templateId,
             TemplateName = templateName,
             Async = true,
+            AsyncJobPriority = asyncJobPriority,
             CallbackUrl = webhookEndpoint,
             CallbackActions = new[] { CallbackAction.CreateError, CallbackAction.FinishEditing, CallbackAction.FinishEditingError },
             CallbackTimeout = _config.CallbackTimeout,

@@ -35,7 +35,7 @@ public class EventProcessingRetryPolicy<TScope> : IEventProcessingRetryPolicy<TS
     public int FailureCount => _failureCounter;
 
     /// <inheritdoc />
-    public void Succeeded()
+    public virtual void Succeeded()
     {
         if (_failureCounter != 0)
         {
@@ -45,7 +45,7 @@ public class EventProcessingRetryPolicy<TScope> : IEventProcessingRetryPolicy<TS
     }
 
     /// <inheritdoc />
-    public async Task<bool> Failed(SubscriptionDroppedReason reason)
+    public virtual async Task<bool> Failed(SubscriptionDroppedReason reason)
     {
         if (reason == SubscriptionDroppedReason.Disposed)
         {

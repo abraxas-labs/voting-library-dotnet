@@ -8,5 +8,6 @@
   "GeneratedBy": 1,
   "DomainOfInfluenceTypes": null,
   "PerDomainOfInfluenceType": false,
-  "PerDomainOfInfluence": false
+  "PerDomainOfInfluence": false,
+  "AsyncJobPriority": null
 }

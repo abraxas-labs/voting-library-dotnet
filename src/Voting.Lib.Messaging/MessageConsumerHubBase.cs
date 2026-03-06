@@ -71,7 +71,7 @@ public abstract class MessageConsumerHubBase<TFilterMessage, TListenerMessage>
             throw new InvalidOperationException("Could not add listener with id " + registrationId);
         }
 
-        _logger.LogInformation("Event listener with id {Id} added ({Count})", registrationId, _listeners.Count);
+        _logger.LogDebug("Event listener with id {Id} added ({Count})", registrationId, _listeners.Count);
 
         try
         {
@@ -80,7 +80,7 @@ public abstract class MessageConsumerHubBase<TFilterMessage, TListenerMessage>
         finally
         {
             _listeners.Remove(registrationId, out _);
-            _logger.LogInformation("Event listener with id {Id} removed ({Count})", registrationId, _listeners.Count);
+            _logger.LogDebug("Event listener with id {Id} removed ({Count})", registrationId, _listeners.Count);
         }
     }
 }

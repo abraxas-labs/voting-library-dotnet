@@ -1,4 +1,4 @@
-# ✨ Changelog (`v20.12.3`)
+# ✨ Changelog (`v20.14.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v20.12.3
-Previous version ---- v20.8.0
+This version -------- v20.14.0
+Previous version ---- v20.12.3
 Initial version ----- v7.7.37
-Total commits ------- 11
+Total commits ------- 7
 ```
+
+## [v20.14.0] - 2026-03-04
+
+### 🔄 Changed
+
+- event retry policy virtual
+
+## [v20.13.3] - 2026-02-26
+
+### 🔄 Changed
+
+- make HSM PKCS#11 simulator registry path configurable via environment variable for integration tests
+
+## [v20.13.2] - 2026-02-26
+
+### 🔄 Changed
+
+- handle grpc exceptions with status code as warning
+
+## [v20.13.1] - 2026-02-25
+
+### :lock: Security
+
+- update magick image processing library to latest non vulnerable version
+
+## [v20.13.0] - 2026-02-24
+
+### :new: Added
+
+- add parameter to pass async job priority for start async pdf generation
+- set priorty for bundle review protocols to 10
+
+## [v20.12.5] - 2026-02-23
+
+### 🔄 Changed
+
+- reduce log noise info into debug
+
+## [v20.12.4] - 2026-02-20
+
+### 🔄 Changed
+
+- reduce loglevel to warning
 
 ## [v20.12.3] - 2026-02-06
 
