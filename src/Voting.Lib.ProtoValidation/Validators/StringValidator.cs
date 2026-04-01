@@ -115,6 +115,11 @@ public class StringValidator : IProtoFieldValidator
         {
             ValidateHttpsUrl(context, fieldName, stringValue!);
         }
+
+        if (stringRules.MarkdownText)
+        {
+            ValidateMarkdownText(context, fieldName, stringValue!);
+        }
     }
 
     private void ValidateGuid(ProtoValidationContext context, string fieldName, string value)
@@ -173,6 +178,9 @@ public class StringValidator : IProtoFieldValidator
 
     private void ValidateComplexMultilineText(ProtoValidationContext context, string fieldName, string value)
         => ValidateString(context, fieldName, value, StringValidation.ComplexMlTextRegex, "is not a Complex Multiline Text.", true);
+
+    private void ValidateMarkdownText(ProtoValidationContext context, string fieldName, string value)
+        => ValidateString(context, fieldName, value, StringValidation.MarkdownTextRegex, "is not a Markdown Text.", true);
 
     private void ValidateHttpsUrl(ProtoValidationContext context, string fieldName, string value)
     {

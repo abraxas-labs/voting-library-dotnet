@@ -62,6 +62,17 @@ public static partial class StringValidation
     public const string ComplexMlTextPattern = @"^[\p{L}\p{M}\p{Nd}\r\n\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]±]+\z";
 
     /// <summary>
+    /// Gets the pattern for validating markdown text.
+    /// Allows all of <see cref="ComplexMlTextPattern"/> plus the following:
+    /// - &lt;br&gt; (break tag)
+    /// - &lt;br/&gt; or &lt;br /&gt; (self-closing break tag)
+    /// - &lt;sup&gt; (superscript opening tag)
+    /// - &lt;/sup&gt; (superscript closing tag)
+    /// - ~ (italic).
+    /// </summary>
+    public const string MarkdownTextPattern = @"^(?:[\p{L}\p{M}\p{Nd}\r\n\t _!\?+\-@,\.:'\(\)\/—\""«»;&–`´’‘\+\*%=§\[\]±~]|\\|<br\s*/?>|<sup>|</sup>)+\z";
+
+    /// <summary>
     /// Gets the pattern for validating untrimmed text.
     /// </summary>
     public const string UntrimmedPattern = @"(^\s)|(\s\z)";
@@ -125,6 +136,11 @@ public static partial class StringValidation
     public static Regex ComplexMlTextRegex { get; } = GenerateComplexMlTextRegex();
 
     /// <summary>
+    /// Gets the regex for validating complex multiline text.
+    /// </summary>
+    public static Regex MarkdownTextRegex { get; } = GenerateMarkdownTextRegex();
+
+    /// <summary>
     /// Gets the regex for validating untrimmed text.
     /// </summary>
     public static Regex UntrimmedRegex { get; } = GenerateUntrimmedRegex();
@@ -158,6 +174,9 @@ public static partial class StringValidation
 
     [GeneratedRegex(ComplexMlTextPattern, RegexOptions.None, RegexTimeoutMilliseconds)]
     private static partial Regex GenerateComplexMlTextRegex();
+
+    [GeneratedRegex(MarkdownTextPattern, RegexOptions.None, RegexTimeoutMilliseconds)]
+    private static partial Regex GenerateMarkdownTextRegex();
 
     [GeneratedRegex(UntrimmedPattern, RegexOptions.None, RegexTimeoutMilliseconds)]
     private static partial Regex GenerateUntrimmedRegex();

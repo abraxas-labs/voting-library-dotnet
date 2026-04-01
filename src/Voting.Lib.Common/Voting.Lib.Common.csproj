@@ -8,5 +8,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MsExtensionsVersion)" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.0" />
+    <PackageReference Include="Markdig" Version="1.1.0" />
+    <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
   </ItemGroup>
 </Project>

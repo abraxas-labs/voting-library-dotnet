@@ -1,4 +1,4 @@
-# ✨ Changelog (`v20.14.0`)
+# ✨ Changelog (`v20.15.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v20.14.0
-Previous version ---- v20.12.3
+This version -------- v20.15.1
+Previous version ---- v20.14.0
 Initial version ----- v7.7.37
-Total commits ------- 7
+Total commits ------- 3
 ```
+
+## [v20.15.1] - 2026-04-01
+
+### 🔄 Changed
+
+- upgrade Magick.NET-Q16-AnyCPU
+
+## [v20.15.0] - 2026-03-11
+
+### 🔄 Changed
+
+- add crypto mock config to derive key pair from key id segments
+- markdown support
 
 ## [v20.14.0] - 2026-03-04
 

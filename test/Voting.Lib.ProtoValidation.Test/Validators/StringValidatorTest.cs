@@ -41,6 +41,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
                 MinLength = 1,
                 Regex = "H",
                 ComplexMlText = true,
+                MarkdownText = true,
             }),
             string.Empty);
     }
@@ -336,7 +337,6 @@ public class StringValidatorTest : ProtoValidatorBaseTest
 
     [Theory]
     [InlineData("Hello  \bWorld.", "08")]
-    [InlineData("Hello\\World", "5C")]
     [InlineData("Hello$World", "24")]
     [InlineData("Hello<World", "3C")]
     [InlineData("Hello>World", "3E")]
@@ -365,6 +365,47 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     public void ValidComplexMlTextShouldWork(string input)
     {
         ShouldHaveNoFailures(BuildRules(new() { ComplexMlText = true }), input);
+    }
+
+    [Theory]
+    [InlineData("Hello  \bWorld.", "08")]
+    [InlineData("Hello$World", "24")]
+    [InlineData("Hello<World", "3C")]
+    [InlineData("Hello>World", "3E")]
+    [InlineData("Hello^$World", "5E, 24")]
+    public void InvalidMarkdownTextShouldFail(string input, string expectedInvalidChars)
+    {
+        var failure = Validate(BuildRules(new() { MarkdownText = true }), input).Single();
+        failure.ErrorMessage.Should().Be($"'{FieldName}' is not a Markdown Text. Non-matching characters (UTF-8 hex): {expectedInvalidChars}");
+    }
+
+    [Theory]
+    [InlineData("\nHello World.")]
+    [InlineData("Hello World.\n")]
+    [InlineData(" Hello World.")]
+    [InlineData("Hello World. ")]
+    public void UntrimmedMarkdownTextShouldFail(string input)
+    {
+        var failure = Validate(BuildRules(new() { MarkdownText = true }), input).Single();
+        failure.ErrorMessage.Should().Be($"'{FieldName}' is not a trimmed Text, contains leading or trailing whitespace characters.");
+    }
+
+    [Theory]
+    [InlineData("Hello\nWorld.\nHow is the 120 _!?+-@,.:'()/—–`´’‘+*%=§[]±~ weather today")]
+    [InlineData("Hello\rWorld.")]
+    [InlineData("«Hello&\"World;»")]
+    [InlineData("This is <br> a break")]
+    [InlineData("This is <br/> a self-closing break")]
+    [InlineData("This is <br /> a self-closing break with space")]
+    [InlineData("This is <sup>superscript</sup>")]
+    [InlineData("This is ~italic~")]
+    [InlineData("Multiple tags: <sup>1</sup><br />~2~")]
+    [InlineData("- first\n- second")]
+    [InlineData("1. first\n2. second")]
+    [InlineData("2. second\n3. third")]
+    public void ValidMarkdownTextShouldWork(string input)
+    {
+        ShouldHaveNoFailures(BuildRules(new() { MarkdownText = true }), input);
     }
 
     [Theory]

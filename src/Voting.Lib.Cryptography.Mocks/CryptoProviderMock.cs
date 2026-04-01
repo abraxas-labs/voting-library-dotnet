@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Voting.Lib.Cryptography.Asymmetric;
 using Voting.Lib.Cryptography.Exceptions;
+using Voting.Lib.Cryptography.Mocks.Configuration;
 
 namespace Voting.Lib.Cryptography.Mocks;
 
@@ -18,6 +19,17 @@ namespace Voting.Lib.Cryptography.Mocks;
 public class CryptoProviderMock : ICryptoProvider
 {
     private static readonly HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA512;
+
+    private readonly CryptoMockConfig _config;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CryptoProviderMock"/> class.
+    /// </summary>
+    /// <param name="config">The config.</param>
+    public CryptoProviderMock(CryptoMockConfig config)
+    {
+        _config = config;
+    }
 
     /// <summary>
     /// Gets or sets the public key id segment.
@@ -103,7 +115,10 @@ public class CryptoProviderMock : ICryptoProvider
     /// <inheritdoc />
     public Task<EcdsaPublicKey> ExportEcdsaPublicKey(string keyId)
     {
-        var privateKeyId = keyId.Replace(PublicKeyIdSegment, PrivateKeyIdSegment, StringComparison.Ordinal);
+        var privateKeyId = _config.DeriveKeyPairFromKeyIdSegments
+            ? keyId.Replace(PublicKeyIdSegment, PrivateKeyIdSegment, StringComparison.Ordinal)
+            : keyId;
+
         using var privateKey = BuildEcdsaPrivateKey(privateKeyId);
         var publicKeyParameters = privateKey.ExportParameters(false);
         return Task.FromResult(new EcdsaPublicKey(ECDsa.Create(publicKeyParameters)));
@@ -144,7 +159,7 @@ public class CryptoProviderMock : ICryptoProvider
 
     private ECDsa BuildEcdsaPrivateKey(string keyLabel)
     {
-        if (!keyLabel.Contains(PrivateKeyIdSegment, StringComparison.Ordinal))
+        if (_config.DeriveKeyPairFromKeyIdSegments && !keyLabel.Contains(PrivateKeyIdSegment, StringComparison.Ordinal))
         {
             throw new CryptographyException($"A mocked private key id / label always needs to contain {PrivateKeyIdSegment}");
         }
