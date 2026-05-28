@@ -11,13 +11,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Common;
+using Voting.Lib.Common.Cache;
 using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.Models;
 
 namespace Voting.Lib.Iam.TokenHandling.ServiceToken;
 
-internal class ServiceTokenHandler : TokenHandler
+internal class ServiceTokenHandler : CachedTokenHandler
 {
+    // Service tokens have no per-request scope, so a per-instance constant key is sufficient.
+    private readonly string _cacheKey = "service-token-" + Guid.NewGuid();
+
     private readonly SecureConnectServiceAccountOptions _options;
     private readonly IHttpClientFactory _httpClientFactory;
 
@@ -25,12 +29,15 @@ internal class ServiceTokenHandler : TokenHandler
         ILogger<ServiceTokenHandler> logger,
         SecureConnectServiceAccountOptions options,
         TimeProvider timeProvider,
-        IHttpClientFactory httpClientFactory)
-        : base(timeProvider, logger)
+        IHttpClientFactory httpClientFactory,
+        ICache<TokenWithExpiration> cache)
+        : base(timeProvider, logger, cache)
     {
         _options = options;
         _httpClientFactory = httpClientFactory;
     }
+
+    protected override string GetCacheKey() => _cacheKey;
 
     protected override async Task<(string Token, DateTimeOffset TokenExpiry)> FetchToken(CancellationToken cancellationToken)
     {

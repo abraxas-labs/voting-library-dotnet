@@ -17,6 +17,9 @@ public class SecureConnectOnBehalfOptions
 
     /// <summary>
     /// Gets or sets the resource to resolve in the ob_token.
+    /// Note that the ob tokens are cached.
+    /// The cache key does not include the resource.
+    /// This means that if the resource is changed, tokens with the old resource may be used until the tokens expires.
     /// </summary>
     public string Resource { get; set; } = string.Empty;
 

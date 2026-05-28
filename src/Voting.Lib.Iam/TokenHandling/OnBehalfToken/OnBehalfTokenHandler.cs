@@ -6,20 +6,33 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Voting.Lib.Common;
+using Voting.Lib.Common.Cache;
 using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Voting.Lib.Iam.TokenHandling.OnBehalfToken;
 
-internal class OnBehalfTokenHandler : TokenHandler
+internal class OnBehalfTokenHandler : CachedTokenHandler
 {
+    /// <summary>
+    /// Per-instance prefix so different OnBehalfTokenHandler instances do not collide in the shared memory cache.
+    /// Note: The cache key currently only incorporates the subject token hash and this prefix.
+    /// If <see cref="SecureConnectOnBehalfOptions"/> (e.g., Resource) become dynamic at runtime, the cache key must also
+    /// incorporate those values; otherwise a changed Resource would still resolve a stale cached ob-token.
+    /// The instance of a token handler is usually instantiated once per http message handler.
+    /// The http message handler usually gets cached by the http client factory.
+    /// </summary>
+    private readonly string _cacheKeyPrefix = "on-behalf-token-" + Guid.NewGuid() + "-";
+
     private readonly SecureConnectOnBehalfOptions _options;
     private readonly SecureConnectServiceAccountOptions _serviceAccountOptions;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -31,8 +44,9 @@ internal class OnBehalfTokenHandler : TokenHandler
         SecureConnectServiceAccountOptions serviceAccountOptions,
         TimeProvider timeProvider,
         IHttpContextAccessor httpContextAccessor,
-        HttpClient httpClient)
-        : base(timeProvider, logger)
+        HttpClient httpClient,
+        ICache<TokenWithExpiration> cache)
+        : base(timeProvider, logger, cache)
     {
         _options = options;
         _httpContextAccessor = httpContextAccessor;
@@ -40,19 +54,23 @@ internal class OnBehalfTokenHandler : TokenHandler
         _httpClient = httpClient;
     }
 
+    protected override string GetCacheKey()
+    {
+        // Scope the cached ob_token by the inbound subject token.
+        // Use a hash to not expose the token.
+        var subjectToken = GetSubjectToken();
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(subjectToken));
+        return _cacheKeyPrefix + Convert.ToBase64String(hash);
+    }
+
     protected override async Task<(string Token, DateTimeOffset TokenExpiry)> FetchToken(CancellationToken cancellationToken)
     {
-        if (_httpContextAccessor.HttpContext == null)
-        {
-            throw new SecurityException("Could not get security token without http context");
-        }
-
         var subjectToken = GetSubjectToken();
         Logger.LogInformation(SecurityLogging.SecurityEventId, "Requesting new on behalf token");
 
-        var tokenEndpoint = await GetTokenEndpoint(cancellationToken);
+        var tokenEndpoint = await GetTokenEndpoint(cancellationToken).ConfigureAwait(false);
         var requestStarted = TimeProvider.GetUtcNow();
-        using var response = await _httpClient.PostAsJsonAsync(tokenEndpoint, new OnBehalfTokenRequestModel(subjectToken, _options.Resource), SecureConnectDefaults.JsonOptions, cancellationToken);
+        using var response = await _httpClient.PostAsJsonAsync(tokenEndpoint, new OnBehalfTokenRequestModel(subjectToken, _options.Resource), SecureConnectDefaults.JsonOptions, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
         {
             throw new SecurityException(
@@ -77,13 +95,18 @@ internal class OnBehalfTokenHandler : TokenHandler
     private async Task<string> GetTokenEndpoint(CancellationToken cancellationToken)
     {
         // the configuration is cached by the configuration manager.
-        var config = await _serviceAccountOptions.ConfigurationManager.GetConfigurationAsync(cancellationToken);
+        var config = await _serviceAccountOptions.ConfigurationManager.GetConfigurationAsync(cancellationToken).ConfigureAwait(false);
         return config.TokenEndpoint;
     }
 
     private string GetSubjectToken()
     {
-        var subjectToken = _httpContextAccessor.HttpContext?
+        if (_httpContextAccessor.HttpContext == null)
+        {
+            throw new SecurityException("Could not get security token without http context");
+        }
+
+        var subjectToken = _httpContextAccessor.HttpContext
             .Request.Headers
             .FirstOrDefault(header => header.Key == HeaderNames.Authorization)
             .Value

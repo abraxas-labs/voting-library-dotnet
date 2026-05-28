@@ -24,6 +24,7 @@
         <EfCoreVersion>8.0.1</EfCoreVersion>
         <MsExtensionsVersion>8.0.0</MsExtensionsVersion>
         <MsAspNetCoreVersion>8.0.1</MsAspNetCoreVersion>
+        <IdentityModelVersion>8.14.0</IdentityModelVersion>
         <EventStoreVersion>21.2.0</EventStoreVersion>
         <ProtobufVersion>3.25.2</ProtobufVersion>
         <GrpcAspNetCoreVersion>2.60.0</GrpcAspNetCoreVersion>

@@ -1,6 +1,7 @@
 ﻿// (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using System.Security.Cryptography;
 using FluentAssertions;
 using Xunit;
 
@@ -16,6 +17,21 @@ public class SignVerifyEcdsaSha384Test : BaseKmsIntegrationTest
         var plaintext = "The quick brown fox jumps over the lazy dog"u8.ToArray();
         var signature = await CryptoProvider.CreateEcdsaSha384Signature(plaintext, keyId);
         var verified = await CryptoProvider.VerifyEcdsaSha384Signature(plaintext, signature, keyId);
+        verified.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task SignRemoteAndVerifyLocalWithExistingKeyShouldWork()
+    {
+        var keyId = await GetOrCreateEcdsaSha384Key(nameof(SignRemoteAndVerifyLocalWithExistingKeyShouldWork));
+        var ecdsaPublicKey = await CryptoProvider.ExportEcdsaPublicKey(keyId);
+
+        var plaintext = "The quick brown fox jumps over the lazy dog"u8.ToArray();
+        var signature = await CryptoProvider.CreateEcdsaSha384Signature(plaintext, keyId);
+
+        using var ecdsa = ECDsa.Create();
+        ecdsa.ImportSubjectPublicKeyInfo(ecdsaPublicKey.PublicKey, out _);
+        var verified = ecdsa.VerifyData(plaintext, signature, HashAlgorithmName.SHA384, DSASignatureFormat.Rfc3279DerSequence);
         verified.Should().BeTrue();
     }
 

@@ -36,8 +36,21 @@ public sealed class JobRunner
     /// <typeparam name="TJob">The type of job to run.</typeparam>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task RunJob<TJob>(CancellationToken cancellationToken)
+    public Task RunJob<TJob>(CancellationToken cancellationToken)
         where TJob : IScheduledJob
+        => RunJob<TJob, IJobConfig>(null, cancellationToken);
+
+    /// <summary>
+    /// Runs the job once.
+    /// </summary>
+    /// <typeparam name="TJob">The type of job to run.</typeparam>
+    /// <typeparam name="TConfig">The type of the job configuration.</typeparam>
+    /// <param name="config">The job configuration.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public async Task RunJob<TJob, TConfig>(TConfig? config, CancellationToken cancellationToken)
+        where TJob : IScheduledJob
+        where TConfig : class
     {
         var jobName = typeof(TJob).Name;
         using var jobRun = SchedulerMeter.JobRunning();
@@ -49,6 +62,12 @@ public sealed class JobRunner
         try
         {
             await using var scope = _scopeFactory.CreateAsyncScope();
+
+            if (config != null)
+            {
+                var configAccessor = scope.ServiceProvider.GetRequiredService<JobRunnerConfigAccessor<TConfig>>();
+                configAccessor.Initialize(config);
+            }
 
             var jobInstance = scope.ServiceProvider.GetRequiredService<TJob>();
             _logger.LogDebug("Start running job...");

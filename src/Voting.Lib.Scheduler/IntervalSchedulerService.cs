@@ -13,23 +13,26 @@ namespace Voting.Lib.Scheduler;
 /// A background service that schedules jobs in intervals.
 /// </summary>
 /// <typeparam name="TJob">The type of job to run.</typeparam>
-public sealed class IntervalSchedulerService<TJob> : BackgroundService
+/// <typeparam name="TConfig">The type of the job config.</typeparam>
+public sealed class IntervalSchedulerService<TJob, TConfig> : BackgroundService
     where TJob : IScheduledJob
+    where TConfig : class, IJobConfig
 {
     private readonly JobRunner _jobRunner;
+    private readonly TConfig _jobConfig;
     private readonly TimeProvider _timeProvider;
     private readonly bool _runOnStart;
     private readonly TimeSpan _jobInterval;
     private PeriodicTimer? _timer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntervalSchedulerService{TJob}"/> class.
+    /// Initializes a new instance of the <see cref="IntervalSchedulerService{TJob, TConfig}"/> class.
     /// </summary>
     /// <param name="jobRunner">The job runner.</param>
     /// <param name="jobConfig">The job configuration.</param>
     /// <param name="timeProvider">The time provider.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the job config is invalid.</exception>
-    public IntervalSchedulerService(JobRunner jobRunner, IJobConfig jobConfig, TimeProvider timeProvider)
+    public IntervalSchedulerService(JobRunner jobRunner, TConfig jobConfig, TimeProvider timeProvider)
     {
         if (jobConfig.Interval <= TimeSpan.Zero)
         {
@@ -37,6 +40,7 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
         }
 
         _jobRunner = jobRunner;
+        _jobConfig = jobConfig;
         _timeProvider = timeProvider;
         _jobInterval = jobConfig.Interval;
         _runOnStart = jobConfig.RunOnStart;
@@ -56,12 +60,12 @@ public sealed class IntervalSchedulerService<TJob> : BackgroundService
 
         if (_runOnStart)
         {
-            await _jobRunner.RunJob<TJob>(stoppingToken).ConfigureAwait(false);
+            await _jobRunner.RunJob<TJob, TConfig>(_jobConfig, stoppingToken).ConfigureAwait(false);
         }
 
         while (await _timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
         {
-            await _jobRunner.RunJob<TJob>(stoppingToken).ConfigureAwait(false);
+            await _jobRunner.RunJob<TJob, TConfig>(_jobConfig, stoppingToken).ConfigureAwait(false);
         }
     }
 }

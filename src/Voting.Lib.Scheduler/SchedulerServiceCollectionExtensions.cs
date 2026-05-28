@@ -28,9 +28,7 @@ public static class SchedulerServiceCollectionExtensions
         TimeSpan interval,
         bool runOnStart = false)
         where TJob : class, IScheduledJob
-    {
-        return services.AddScheduledJob<TJob>(new JobConfig { Interval = interval, RunOnStart = runOnStart });
-    }
+        => services.AddScheduledJob<TJob, IJobConfig>(new JobConfig { Interval = interval, RunOnStart = runOnStart });
 
     /// <summary>
     /// Adds a scheduled job to the service collection.
@@ -43,6 +41,21 @@ public static class SchedulerServiceCollectionExtensions
         this IServiceCollection services,
         IJobConfig config)
         where TJob : class, IScheduledJob
+        => services.AddScheduledJob<TJob, IJobConfig>(config);
+
+    /// <summary>
+    /// Adds a scheduled job to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="config">The job configuration.</param>
+    /// <typeparam name="TJob">The type of job to run.</typeparam>
+    /// <typeparam name="TConfig">The type of the job config.</typeparam>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddScheduledJob<TJob, TConfig>(
+        this IServiceCollection services,
+        TConfig config)
+        where TJob : class, IScheduledJob
+        where TConfig : class, IJobConfig
     {
         if (config.Interval <= TimeSpan.Zero)
         {
@@ -50,10 +63,9 @@ public static class SchedulerServiceCollectionExtensions
         }
 
         services.TryAddScoped<TJob>();
-        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<IntervalSchedulerService<TJob>>(sp, config));
-        services.TryAddSingleton<JobRunner>();
-        services.AddSystemClock();
-        return services;
+        services.AddForwardRefScoped<IJobRunnerConfigAccessor<TConfig>, JobRunnerConfigAccessor<TConfig>>();
+        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<IntervalSchedulerService<TJob, TConfig>>(sp, config));
+        return services.AddJobInfrastructure();
     }
 
     /// <summary>
@@ -69,9 +81,7 @@ public static class SchedulerServiceCollectionExtensions
         string cronSchedule,
         string cronTimeZone = DateTimeConstants.EuropeZurichTimeZoneId)
         where TJob : class, IScheduledJob
-    {
-        return services.AddCronJob<TJob>(new CronJobConfig { CronSchedule = cronSchedule, CronTimeZone = cronTimeZone });
-    }
+        => services.AddCronJob<TJob, ICronJobConfig>(new CronJobConfig { CronSchedule = cronSchedule, CronTimeZone = cronTimeZone });
 
     /// <summary>
     /// Adds a cron job to the service collection.
@@ -84,6 +94,21 @@ public static class SchedulerServiceCollectionExtensions
         this IServiceCollection services,
         ICronJobConfig config)
         where TJob : class, IScheduledJob
+        => services.AddCronJob<TJob, ICronJobConfig>(config);
+
+    /// <summary>
+    /// Adds a cron job to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="config">The job configuration.</param>
+    /// <typeparam name="TJob">The type of job to run.</typeparam>
+    /// <typeparam name="TConfig">The type of the job config.</typeparam>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddCronJob<TJob, TConfig>(
+        this IServiceCollection services,
+        TConfig config)
+        where TJob : class, IScheduledJob
+        where TConfig : class, ICronJobConfig
     {
         if (string.IsNullOrEmpty(config.CronSchedule))
         {
@@ -96,7 +121,13 @@ public static class SchedulerServiceCollectionExtensions
         }
 
         services.TryAddScoped<TJob>();
-        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<CronSchedulerService<TJob>>(sp, config));
+        services.AddForwardRefScoped<IJobRunnerConfigAccessor<TConfig>, JobRunnerConfigAccessor<TConfig>>();
+        services.AddSingleton<IHostedService>(sp => ActivatorUtilities.CreateInstance<CronSchedulerService<TJob, TConfig>>(sp, config));
+        return services.AddJobInfrastructure();
+    }
+
+    private static IServiceCollection AddJobInfrastructure(this IServiceCollection services)
+    {
         services.TryAddSingleton<JobRunner>();
         services.AddSystemClock();
         return services;

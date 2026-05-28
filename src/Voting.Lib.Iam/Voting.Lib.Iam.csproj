@@ -3,6 +3,8 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MsAspNetCoreVersion)" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="$(MsExtensionsVersion)" />
+        <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="$(IdentityModelVersion)" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelVersion)" />
     </ItemGroup>
 
   <ItemGroup>

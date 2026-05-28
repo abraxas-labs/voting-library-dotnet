@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -205,9 +206,22 @@ public class KmsCryptoProvider : ICryptoProvider
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>
-    public Task<EcdsaPublicKey> ExportEcdsaPublicKey(string keyId)
+    public async Task<EcdsaPublicKey> ExportEcdsaPublicKey(string keyId)
     {
-        throw new NotImplementedException();
+        var publicKeyName = $"{keyId}-pub";
+
+        var response = await _http.PostJson<object, ExportKeyResponse>(
+            $"v1/vault/keys2/{WebUtility.UrlEncode(publicKeyName)}/export",
+            new ExportKeyRequest("pkcs1"));
+
+        if (string.IsNullOrWhiteSpace(response.Material))
+        {
+            throw new InvalidOperationException("No key material in the response found for key " + keyId);
+        }
+
+        var ecdsa = ECDsa.Create();
+        ecdsa.ImportFromPem(response.Material);
+        return new EcdsaPublicKey(ecdsa, keyId);
     }
 
     /// <inheritdoc cref="ICryptoProvider"/>

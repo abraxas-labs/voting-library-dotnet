@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -186,8 +187,15 @@ public class RoleTokenHandlerTest : IDisposable
         _httpHandlerMock.VerifyNoOutstandingExpectation();
     }
 
+    /// <summary>
+    /// Verifies that role token validation recovers after an IDP signing key rotation once the
+    /// ConfigurationManager's asynchronous background refresh has completed.
+    /// See <c>RoleTokenHandler.ValidateToken</c> for details on the IdentityModel non-blocking
+    /// refresh behavior.
+    /// </summary>
+    /// <returns><see cref="Task"/> representing the asynchronous unit test.</returns>
     [Fact]
-    public async Task GetRolesWithKnownKidAfterRefreshShouldWork()
+    public async Task GetRolesWithKnownKidAfterAsyncRefreshShouldWork()
     {
         _options.LimitRolesToAppHeaderApps = false;
         _options.RoleTokenApps = null;
@@ -196,22 +204,40 @@ public class RoleTokenHandlerTest : IDisposable
         var configManager = (ConfigurationManager<OpenIdConnectConfiguration>)_options.ConfigurationManager!;
         configManager.RefreshInterval = ConfigurationManager<OpenIdConnectConfiguration>.MinimumRefreshInterval;
 
-        // call GetRoles to ensure existing keys are loaded
+        // Hook into the v8.* internal _onBackgroundTaskFinish callback to deterministically await
+        // the async key refresh instead of relying on Task.Delay (which would be flaky).
+        var backgroundTaskFinished = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var onBackgroundTaskFinishField = typeof(ConfigurationManager<OpenIdConnectConfiguration>)
+            .GetField("_onBackgroundTaskFinish", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        onBackgroundTaskFinishField.SetValue(configManager, new Action(() => backgroundTaskFinished.TrySetResult()));
+
+        // Phase 1: First call — triggers initial (blocking) config fetch since _currentConfiguration is null.
+        // No refresh needed; keys are loaded into cache for the first time.
         ExpectTokenFetch();
         var roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("Role1", "Role2");
 
-        // await refresh interval
-        await Task.Delay(configManager.RefreshInterval);
-
-        // add new key
+        // Simulate IDP signing key rotation: replace JWKS with a new key.
         using var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var securityKey = new ECDsaSecurityKey(key) { KeyId = "foo-bar-key2" };
         _keySet.Keys.Clear();
         _keySet.Keys.Add(JsonWebKeyConverter.ConvertFromSecurityKey(securityKey));
         AddMockedBackends();
 
-        // call GetRoles again
+        // Phase 2: Second call — role token is signed with the new key, but ConfigurationManager
+        // returns stale cached keys (from Phase 1). Validation fails with
+        // SecurityTokenSignatureKeyNotFoundException which triggers RequestRefresh().
+        // RequestRefresh fires an async background task to fetch updated JWKS (takes milliseconds),
+        // but this call still returns empty because the stale keys cannot verify the new signature.
+        ExpectTokenFetch(t => t.SigningCredentials = new(securityKey, SecurityAlgorithms.EcdsaSha256));
+        roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
+        roles.Should().BeEmpty();
+
+        // Await the async background key refresh to complete (replaces the non-deterministic Task.Delay).
+        await backgroundTaskFinished.Task;
+
+        // Phase 3: Third call — background refresh has updated _currentConfiguration with the new
+        // signing keys. Token validation now succeeds and roles are returned.
         ExpectTokenFetch(t => t.SigningCredentials = new(securityKey, SecurityAlgorithms.EcdsaSha256));
         roles = await _roleTokenHandler.GetRoles(_subjectToken, "12345", "Tenant1");
         roles.Should().BeEquivalentTo("Role1", "Role2");

@@ -88,7 +88,7 @@ internal class RoleTokenHandler : IRoleTokenHandler
         }
 
         var token = roleTokenResponse.Token ?? throw new SecurityException("No token received");
-        var roleTokenIdentity = await ValidateToken(subject, token, true).ConfigureAwait(false);
+        var roleTokenIdentity = await ValidateToken(subject, token).ConfigureAwait(false);
         if (roleTokenIdentity == null)
         {
             // already logged.
@@ -117,10 +117,50 @@ internal class RoleTokenHandler : IRoleTokenHandler
             .ToList();
     }
 
+    /// <summary>
+    /// Validates a JWT token by checking its signature, lifetime, issuer, and subject.
+    /// </summary>
+    /// <remarks>
+    /// The validation behavior is intended to be equivalent to
+    /// <see cref="Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler" /> in ASP.NET Core.
+    ///
+    /// <para>
+    /// <b>Signing key refresh (<see href="https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/blob/8.14.0/src/Microsoft.IdentityModel.Protocols/Configuration/ConfigurationManager.cs#L451-L468">
+    /// IdentityModel v8.* non-blocking behavior</see>)</b>
+    /// </para>
+    /// <para>
+    /// If validation fails with <see cref="SecurityTokenSignatureKeyNotFoundException" />, for example after an
+    /// identity provider signing key rotation, this method calls
+    /// <see cref="Microsoft.IdentityModel.Protocols.IConfigurationManager{T}.RequestRefresh" /> to trigger an
+    /// asynchronous JWKS refresh. This manual refresh behaves equivalently to the internal refresh mechanism used by
+    /// <see cref="Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler"/>.
+    /// </para>
+    /// <para>
+    /// In IdentityModel v8.*, <see cref="Microsoft.IdentityModel.Protocols.IConfigurationManager{T}.RequestRefresh" />
+    /// schedules a background Task in <c>RequestRefreshBackgroundThread()</c> to fetch updated signing keys from the
+    /// JWKS endpoint. The call returns immediately and does not block the current validation attempt. Until the refresh
+    /// completes, <see cref="Microsoft.IdentityModel.Protocols.IConfigurationManager{T}.GetConfigurationAsync(CancellationToken)" />
+    /// continues to return the previously cached keys.
+    /// </para>
+    /// <para>
+    /// As a result, the current call always fails when a key-not-found condition is encountered. Validation succeeds on a
+    /// subsequent call once the background refresh has completed and the updated keys are available.
+    /// </para>
+    /// <para>
+    /// <b>Note:</b> The very first call to
+    /// <see cref="Microsoft.IdentityModel.Protocols.IConfigurationManager{T}.GetConfigurationAsync(CancellationToken)" />
+    /// always blocks, because no cached configuration exists and the initial metadata and JWKS retrieval must complete
+    /// before token validation can occur.
+    /// </para>
+    /// </remarks>
+    /// <param name="subject">The expected <c>sub</c> (subject) claim value of the JWT token.</param>
+    /// <param name="token">The raw JWT token to validate.</param>
+    /// <returns>
+    /// The validated <see cref="ClaimsIdentity" />, or <see langword="null" /> if validation fails.
+    /// </returns>
     private async Task<ClaimsIdentity?> ValidateToken(
         string subject,
-        string token,
-        bool refreshOnKeyNotFound)
+        string token)
     {
         try
         {
@@ -138,12 +178,10 @@ internal class RoleTokenHandler : IRoleTokenHandler
             if (!tokenValidationResult.IsValid)
             {
                 if (tokenValidationResult.Exception is SecurityTokenSignatureKeyNotFoundException &&
-                    refreshOnKeyNotFound &&
                     Options is { RefreshOnIssuerKeyNotFound: true, ConfigurationManager: not null })
                 {
-                    _logger.LogError(SecurityLogging.SecurityEventId, "Role token key not found, retrying with refreshed keys.");
+                    _logger.LogWarning(SecurityLogging.SecurityEventId, "Role token key not found, request an asynchronous key refresh.");
                     Options.ConfigurationManager.RequestRefresh();
-                    return await ValidateToken(subject, token, false);
                 }
 
                 throw new SecurityTokenValidationException("Role token validation failed.", tokenValidationResult.Exception);

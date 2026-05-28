@@ -24,6 +24,7 @@ public static class OnBehalfTokenServiceCollectionExtensions
         services.TryAddSingleton<IOnBehalfTokenHandlerFactory, DefaultOnBehalfTokenHandlerFactory>();
         services.TryAddSingleton<IPostConfigureOptions<SecureConnectOnBehalfOptions>, SecureConnectOnBehalfPostConfigureOptions>();
         services.AddHttpContextAccessor();
+        services.AddSecureConnectServiceTokenHandling();
         return services;
     }
 

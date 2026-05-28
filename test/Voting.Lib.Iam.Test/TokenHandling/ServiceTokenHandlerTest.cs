@@ -8,12 +8,15 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Moq;
 using RichardSzalay.MockHttp;
+using Voting.Lib.Common.Cache;
 using Voting.Lib.Iam.AuthenticationScheme;
 using Voting.Lib.Iam.Models;
+using Voting.Lib.Iam.TokenHandling;
 using Voting.Lib.Iam.TokenHandling.ServiceToken;
 using Voting.Lib.Testing.Mocks;
 using Xunit;
@@ -46,7 +49,9 @@ public class ServiceTokenHandlerTest
         postConfigureOptions.PostConfigure("test", options);
 
         var clock = MockedClock.CreateFakeTimeProvider();
-        var handler = new ServiceTokenHandler(NullLogger<ServiceTokenHandler>.Instance, options, clock, httpClientFactoryMock.Object);
+        using var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var cache = new Cache<TokenWithExpiration>(memoryCache, new CacheOptions<TokenWithExpiration>());
+        var handler = new ServiceTokenHandler(NullLogger<ServiceTokenHandler>.Instance, options, clock, httpClientFactoryMock.Object, cache);
 
         // fetch the token the first time
         // should fetch the configuration and the token

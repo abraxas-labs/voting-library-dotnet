@@ -49,6 +49,9 @@ public class Cache<T> : ICache<T>
         })!;
     }
 
+    /// <inheritdoc />
+    public void Remove(string key) => _memoryCache.Remove(BuildInternalKey(key));
+
     private void ApplyCacheOptions(ICacheEntry cacheEntry)
     {
         cacheEntry.Size = _cacheOptions.CalculateSize((string)cacheEntry.Key, (T)cacheEntry.Value!);

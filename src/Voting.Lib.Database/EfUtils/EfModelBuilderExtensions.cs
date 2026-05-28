@@ -21,6 +21,15 @@ public static class EfModelBuilderExtensions
         => propertyBuilder.HasColumnType("date");
 
     /// <summary>
+    /// Sets the column type of the property to "date".
+    /// </summary>
+    /// <param name="propertyBuilder">The property builder.</param>
+    /// <typeparam name="TProperty">The property.</typeparam>
+    /// <returns>The updated property builder.</returns>
+    public static ComplexTypePropertyBuilder<TProperty> HasDateType<TProperty>(this ComplexTypePropertyBuilder<TProperty> propertyBuilder)
+        => propertyBuilder.HasColumnType("date");
+
+    /// <summary>
     /// Sets a utc conversion on a DateTime property.
     /// </summary>
     /// <param name="builder">The PropertyBuilder.</param>
@@ -31,11 +40,31 @@ public static class EfModelBuilderExtensions
     }
 
     /// <summary>
+    /// Sets a utc conversion on a DateTime property.
+    /// </summary>
+    /// <param name="builder">The PropertyBuilder.</param>
+    /// <returns>The updated property builder.</returns>
+    public static ComplexTypePropertyBuilder<DateTime> HasUtcConversion(this ComplexTypePropertyBuilder<DateTime> builder)
+    {
+        return builder.HasConversion(d => d, d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
+    }
+
+    /// <summary>
     /// Sets a utc conversion on a nullable DateTime property.
     /// </summary>
     /// <param name="builder">The PropertyBuilder.</param>
     /// <returns>The updated property builder.</returns>
     public static PropertyBuilder<DateTime?> HasUtcConversion(this PropertyBuilder<DateTime?> builder)
+    {
+        return builder.HasConversion(d => d, d => DateTime.SpecifyKind(d!.Value, DateTimeKind.Utc));
+    }
+
+    /// <summary>
+    /// Sets a utc conversion on a nullable DateTime property.
+    /// </summary>
+    /// <param name="builder">The PropertyBuilder.</param>
+    /// <returns>The updated property builder.</returns>
+    public static ComplexTypePropertyBuilder<DateTime?> HasUtcConversion(this ComplexTypePropertyBuilder<DateTime?> builder)
     {
         return builder.HasConversion(d => d, d => DateTime.SpecifyKind(d!.Value, DateTimeKind.Utc));
     }

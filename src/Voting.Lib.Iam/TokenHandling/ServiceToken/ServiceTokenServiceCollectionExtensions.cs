@@ -5,6 +5,8 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Voting.Lib.Common.Cache;
+using Voting.Lib.Iam.TokenHandling;
 using Voting.Lib.Iam.TokenHandling.ServiceToken;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,11 @@ public static class ServiceTokenServiceCollectionExtensions
     {
         services.TryAddSingleton<IPostConfigureOptions<SecureConnectServiceAccountOptions>, SecureConnectServiceAccountPostConfigureOptions>();
         services.TryAddSingleton<IServiceTokenHandlerFactory, DefaultServiceTokenHandlerFactory>();
+        services.AddCache(new CacheOptions<TokenWithExpiration>
+        {
+            // Tokens are validated against TimeProvider in TokenHandler; this just bounds memory for unused subjects.
+            SlidingExpiration = TimeSpan.FromHours(1),
+        });
         return services;
     }
 

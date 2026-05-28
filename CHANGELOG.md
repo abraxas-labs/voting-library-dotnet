@@ -1,4 +1,4 @@
-# ✨ Changelog (`v20.15.1`)
+# ✨ Changelog (`v21.1.2`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v20.15.1
-Previous version ---- v20.14.0
+This version -------- v21.1.2
+Previous version ---- v20.15.1
 Initial version ----- v7.7.37
-Total commits ------- 3
+Total commits ------- 4
 ```
+
+## [v21.1.2] - 2026-05-13
+
+### 🔄 Changed
+
+- include subject in ob token cache key
+
+## [v21.1.1] - 2026-05-07
+
+### 🔄 Changed
+
+- pin identity model packages to v8.* for compatibility
+- update role token validation to asynchronously request signing key invalidation when key id is not found.
+
+## [v21.1.0] - 2026-05-01
+
+### 🔄 Changed
+
+- add kms key export and ef complex property extensions
+
+## [v21.0.0] - 2026-04-23
+
+### 🆕 Added
+
+- add support for strongly-typed job configs in job registration.
+- Refactored scheduling infrastructure to support strongly-typed job configuration for both interval and cron jobs.
+- Scheduler services and registration methods are now generic over both job and config types, enabling custom config classes.
+- Introduced config accessor interfaces for config injection.
+- Maintained backward compatibility with legacy overloads.
+
+BREAKING CHANGE: add TConfig generic parameter to scheduler services
 
 ## [v20.15.1] - 2026-04-01
 

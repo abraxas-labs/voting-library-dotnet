@@ -34,4 +34,10 @@ public interface ICache<T>
     /// <param name="factory">The factory to create a new cache entry.</param>
     /// <returns>The cached or newly created value.</returns>
     Task<T> GetOrAdd(string key, Func<Task<T>> factory);
+
+    /// <summary>
+    /// Removes the cache entry with the specified key.
+    /// </summary>
+    /// <param name="key">The cache key.</param>
+    void Remove(string key);
 }
