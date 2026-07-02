@@ -20,7 +20,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_majority-election-result-delivery_{0}",
         Description = "Majorzwahlresultate (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.MajorityElection,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -34,7 +34,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_proportional-election-result-delivery_{0}",
         Description = "Proporzwahlresultate (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -48,7 +48,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_proportional-election-result-delivery_with_info_{0}",
         Description = "Proporzwahlresultate inkl. Panaschierstatistik (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -62,7 +62,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_vote-result-delivery_{0}",
         Description = "Abstimmungsresultate (eCH-0252 Result Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.Vote,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -76,7 +76,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_majority-election-info-delivery_{0}",
         Description = "Majorzwahlinformationen (eCH-0252 Information Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.MajorityElection,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };
@@ -90,7 +90,7 @@ public static class AusmittlungXmlContestTemplates
         Filename = "eCH-0252_proportional-election-info-delivery_{0}",
         Description = "Proporzwahlinformationen (eCH-0252 Information Delivery)",
         Format = ExportFileFormat.Xml,
-        EntityType = EntityType.Contest,
+        EntityType = EntityType.ProportionalElection,
         ResultType = ResultType.Contest,
         GeneratedBy = VotingApp.VotingAusmittlung,
     };

@@ -26,7 +26,7 @@ public interface IEventingServiceCollection
 
     /// <summary>
     /// Adds event publishing to the services.
-    /// Scans for all <see cref="BaseEventSourcingAggregate"/> and <see cref="Voting.Lib.Eventing.Seeding.IAggregateSeedSource"/> implementations.
+    /// Scans for all <see cref="BaseEventSourcingAggregate"/> implementations.
     /// </summary>
     /// <typeparam name="T">The type of the assembly to scan for aggregates.</typeparam>
     /// <returns>The <see cref="IEventingServiceCollection"/> instance.</returns>

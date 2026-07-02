@@ -19,6 +19,7 @@ using Xunit;
 
 namespace Voting.Lib.DokConnector.Test;
 
+[Obsolete("Removed once EaiDokConnector is not used anymore.")]
 public class EaiDokConnectorTest
 {
     private const string Host = "http://localhost/";

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Voting.Lib.Eventing.Test.Domain;
 
-public class ActionIdTest
+public class EventStoreActionIdTest
 {
     [Theory]
     [InlineData("action1", 2, 1, "4771768f8daf0c86b1ba3eb4f31119d2b02d1b6da118662dcb27b9c1d54c766e")]
@@ -30,7 +30,7 @@ public class ActionIdTest
             Enumerable.Range(0, amountOfEvents).ToList().ForEach(_ => aggregate.RaiseEvent());
         }
 
-        new ActionId(action, aggregates.Cast<IEventSourcingAggregateVersion>().ToArray())
+        new EventStoreActionId(action, aggregates.Cast<IEventSourcingAggregateVersion>().ToArray())
             .ComputeHash()
             .Should()
             .Be(hash);

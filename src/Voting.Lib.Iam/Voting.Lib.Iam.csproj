@@ -17,6 +17,7 @@
     <InternalsVisibleTo Include="Voting.Lib.Rest" />
     <InternalsVisibleTo Include="Voting.Lib.Grpc.Test" />
     <InternalsVisibleTo Include="Voting.Lib.Rest.Test" />
+    <InternalsVisibleTo Include="Voting.Lib.Iam.SecondFactor.Test" />
   </ItemGroup>
 
 </Project>

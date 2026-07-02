@@ -49,6 +49,14 @@ public class EchSerializerTest
         xml.MatchXmlSnapshot();
     }
 
+    [Fact]
+    public void SerializeXmlElementShouldWork()
+    {
+        var delivery = CreateDelivery(2, true);
+        var xmlElement = _serializer.Serialize(delivery);
+        xmlElement!.InnerXml.MatchXmlSnapshot();
+    }
+
     private async IAsyncEnumerable<VotingPersonType> GenerateVoters(int count)
     {
         for (var i = 0; i < count; i++)

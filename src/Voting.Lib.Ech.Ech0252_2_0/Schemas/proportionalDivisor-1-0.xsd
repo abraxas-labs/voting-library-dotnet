@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:pd="http://www.zh.ch/voting/1" targetNamespace="http://www.zh.ch/voting/1" version="2.0">
+	<xs:annotation>
+		<xs:documentation>Schema für Wahldivisoren bei Proporzverfahren</xs:documentation>
+		<xs:documentation>Datum: 2025-05-20</xs:documentation>
+		<xs:documentation>Version: 1.0.0</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="divisorValueType">
+		<xs:choice>
+			<xs:element type="xs:decimal" name="quotient"/>
+			<xs:sequence>
+				<xs:element type="xs:long" name="dividend"/>
+				<xs:element type="xs:long" name="divisor"/>
+			</xs:sequence>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="electionGroupType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="electionGroupIdentification"/>
+			<xs:choice>
+				<xs:element type="pd:divisorType" name="districtDivisor"/>
+				<xs:element type="pd:divisorType" name="divisor"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="divisorType">
+		<xs:sequence>
+			<xs:element type="pd:divisorValueType" name="value"/>
+			<xs:element type="pd:divisorValueType" name="upperLimit"/>
+			<xs:element type="pd:divisorValueType" name="lowerLimit"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="listGroupDivisorType">
+		<xs:complexContent>
+			<xs:extension base="pd:divisorType">
+				<xs:sequence>
+					<xs:element type="xs:string" name="listIdentification"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="electionAssociationType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="electionAssociationId"/>
+			<xs:element type="pd:listGroupDivisorType" name="listGroupDivisor" maxOccurs="unbounded" minOccurs="0"/>
+			<xs:element type="pd:divisorType" name="divisor"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="proportionalDivisor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element type="pd:electionGroupType" name="electionGroup" maxOccurs="unbounded" minOccurs="0"/>
+				<xs:element type="pd:electionAssociationType" name="electionAssociation" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

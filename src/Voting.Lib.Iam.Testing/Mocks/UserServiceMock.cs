@@ -1,7 +1,6 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,17 +24,28 @@ public class UserServiceMock : IUserService
     public Task<User?> GetUser(string loginId, bool includeDeleted)
         => Task.FromResult(SecureConnectTestDefaults.MockedUsers.Find(t => t.Loginid == loginId));
 
+    /// <inheritdoc cref="IUserService.GetReadySecondFactorProviders"/>
+    /// <summary>
+    /// Returns all second factor providers.
+    /// </summary>
+    public Task<IReadOnlySet<V1SecondFactorProvider>> GetReadySecondFactorProviders(string loginId)
+        => Task.FromResult<IReadOnlySet<V1SecondFactorProvider>>(new HashSet<V1SecondFactorProvider> { V1SecondFactorProvider.NEVIS });
+
     /// <inheritdoc cref="IUserService.RequestSecondFactor"/>
     /// <summary>
     /// Returns a string of a random generated guid.
     /// </summary>
-    public Task<SecondFactor> RequestSecondFactor(string loginId, string provider, string message)
-        => Task.FromResult(new SecondFactor(Guid.NewGuid().ToString(), new List<string>()));
+    public Task<SecondFactor> RequestSecondFactor(string loginId, V1SecondFactorProvider provider, string? message = null)
+        => Task.FromResult(new SecondFactor(V1SecondFactorProvider.OTP));
 
     /// <inheritdoc cref="IUserService.VerifySecondFactor"/>
     /// <summary>
-    /// Returns true if the code matches the <see cref="SecureConnectTestDefaults.MockedVerified2faId"/>.
+    /// Returns true if the code or token jwts matches the <see cref="SecureConnectTestDefaults.MockedVerified2faId"/>.
     /// </summary>
-    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, ICollection<string> tokenJwtIds, CancellationToken ct)
-        => Task.FromResult(tokenJwtIds.Contains(SecureConnectTestDefaults.MockedVerified2faId));
+    public Task<bool> VerifySecondFactor(string loginId, V1SecondFactorProvider provider, string? code = null, ICollection<string>? nevisTokenJwtIds = null, CancellationToken ct = default)
+    {
+        var nevisOk = nevisTokenJwtIds?.Contains(SecureConnectTestDefaults.MockedVerified2faId) ?? false;
+        var otpOk = code == SecureConnectTestDefaults.MockedVerified2faId;
+        return Task.FromResult(nevisOk || otpOk);
+    }
 }

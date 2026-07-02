@@ -1,4 +1,4 @@
-# ✨ Changelog (`v21.1.2`)
+# ✨ Changelog (`v22.1.3`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v21.1.2
-Previous version ---- v20.15.1
+This version -------- v22.1.3
+Previous version ---- v21.1.2
 Initial version ----- v7.7.37
-Total commits ------- 4
+Total commits ------- 11
 ```
+
+## [v22.1.3] - 2026-06-29
+
+### 🔄 Changed
+
+- set createdAt correctly for 2fa transactions
+
+## [v22.1.2] - 2026-06-29
+
+### 🔄 Changed
+
+- fix pre-alloc in ToHexString in HashUtil
+
+## [v22.1.1] - 2026-06-26
+
+### 🔄 Changed
+
+- add new dok connector api provider and mark eai connector as obsolete
+
+## [v22.1.0] - 2026-06-17
+
+### 🔄 Changed
+
+- improve hash util
+
+## [v22.0.0] - 2026-06-16
+
+BREAKING CHANGE: actionid is moved, abstracted with an interface, 2fa APIs change
+
+## [v21.2.1] - 2026-06-15
+
+### 🔄 Changed
+
+- allow upper case for email validation
+
+## [v21.2.0] - 2026-05-28
+
+### 🔄 Changed
+
+- new dmdoc api call for bicks with intern_name
 
 ## [v21.1.2] - 2026-05-13
 

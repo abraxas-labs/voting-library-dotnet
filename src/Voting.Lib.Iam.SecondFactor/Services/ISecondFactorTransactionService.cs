@@ -1,7 +1,9 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using Voting.Lib.Common;
 using Voting.Lib.Iam.SecondFactor.Models;
+using Voting.Lib.Iam.Services.ApiClient.Identity;
 
 namespace Voting.Lib.Iam.SecondFactor.Services;
 
@@ -12,12 +14,13 @@ public interface ISecondFactorTransactionService
 {
     /// <summary>
     /// Creates a new 2fa transaction.
+    /// Uses nevis if available.
     /// </summary>
-    /// <param name="actionId">The action id which uniquely describes the verifiable action.</param>
+    /// <param name="actionId">The action id that uniquely describes the verifiable action.</param>
     /// <param name="message">The message displayed to the user.</param>
     /// <returns>The info about the transaction.</returns>
     Task<SecondFactorTransactionInfo> Create(
-        ISecondFactorTransactionActionId actionId,
+        IActionId actionId,
         string message);
 
     /// <summary>
@@ -25,11 +28,15 @@ public interface ISecondFactorTransactionService
     /// and that the action id has not changed during the verification.
     /// </summary>
     /// <param name="transactionId">The transaction id.</param>
-    /// <param name="actionProvider">The action provider.</param>
+    /// <param name="provider">The provider to use.</param>
+    /// <param name="actionIdProvider">The action provider.</param>
+    /// <param name="otpCode">The OTP verification code (if OTP provider is used).</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task EnsureVerified(
         Guid transactionId,
-        Func<Task<ISecondFactorTransactionActionId>> actionProvider,
-        CancellationToken cancellationToken);
+        V1SecondFactorProvider provider,
+        Func<Task<IActionId>> actionIdProvider,
+        string? otpCode = null,
+        CancellationToken cancellationToken = default);
 }

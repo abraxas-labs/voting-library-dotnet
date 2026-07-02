@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Adds eventing services to the ServiceCollection.
-    /// Aggregates, AggregateSeeders and EventProcessors can be added via assembly scanning on the returned <see cref="IEventingServiceCollection"/>.
+    /// Aggregates and EventProcessors can be added via assembly scanning on the returned <see cref="IEventingServiceCollection"/>.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="config">The configuration of the event store.</param>

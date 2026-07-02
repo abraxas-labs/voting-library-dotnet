@@ -92,6 +92,7 @@ generate "Ech0228_1_0" "eCH-0228-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=
 generate "Ech0222_3_0" "eCH-0222-3-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0252_1_0" "eCH-0252-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_0
 generate "Ech0252_2_0" "eCH-0252-2-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2
+generate "proportionalDivisor-1-0" "proportionalDivisor-1-0.xsd" -n http://www.zh.ch/voting/1=ZhProportionalDivisor_1_0
 
 echo "Copying files into C# projects"
 for dir in "$models_dir"/*/; do

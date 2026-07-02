@@ -261,6 +261,14 @@ public interface IDmDocService
     Task<List<Brick>> ListBricks(string category, CancellationToken ct = default);
 
     /// <summary>
+    /// Get a brick with a specific intern_name.
+    /// </summary>
+    /// <param name="internName">The unique internName of a brick.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>Returns a brick with a specific intern_name.</returns>
+    Task<Brick> GetBrick(string internName, CancellationToken ct = default);
+
+    /// <summary>
     /// Get all active bricks of a specific category.
     /// </summary>
     /// <param name="category">The category (specified by intern name of the category).</param>

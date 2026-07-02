@@ -48,6 +48,13 @@ public interface IDmDocUrlBuilder
     string Bricks();
 
     /// <summary>
+    /// Get the URL for a brick over inern_name.
+    /// </summary>
+    /// <param name="internName">The intern_name of a brick.</param>
+    /// <returns>The bricks URL.</returns>
+    string Brick(string internName);
+
+    /// <summary>
     /// Gets the URL for bricks of a specific category.
     /// </summary>
     /// <param name="categoryId">The category ID.</param>

@@ -7,4 +7,4 @@ namespace Voting.Lib.Iam.SecondFactor.Exceptions;
 /// The data of the 2fa transaction changed since it was created.
 /// </summary>
 [Serializable]
-public class SecondFactorTransactionDataChangedException : Exception;
+public class SecondFactorTransactionDataChangedException() : Exception("Data changed during the second factor transaction");

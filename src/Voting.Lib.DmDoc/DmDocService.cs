@@ -256,6 +256,13 @@ public class DmDocService : IDmDocService
     }
 
     /// <inheritdoc />
+    public Task<Brick> GetBrick(string internName, CancellationToken ct = default)
+    {
+        var url = _urlBuilder.Brick(internName);
+        return _http.GetDmDoc<Brick>(url, ct);
+    }
+
+    /// <inheritdoc />
     public Task<List<Brick>> ListActiveBricks(string category, CancellationToken ct = default)
     {
         var url = _urlBuilder.ActiveBricks(category);

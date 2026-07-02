@@ -51,7 +51,7 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     [InlineData("abxperson")]
     [InlineData("max.muster@test..ch")]
     [InlineData("maxmuster.com")]
-    [InlineData("$A12345@example.com")]
+    [InlineData("()12345@example.com")]
     public void InvalidEmailShouldFail(string input)
     {
         var failure = Validate(BuildRules(new() { Email = true }), input).Single();
@@ -64,6 +64,8 @@ public class StringValidatorTest : ProtoValidatorBaseTest
     [InlineData("__max+muster@example.com")]
     [InlineData("max/muster=mann@domain.de")]
     [InlineData("\"Max\\Muster\"@test.co.uk")]
+    [InlineData("ABC@TEST.CH")]
+    [InlineData("ABCdef@TEst.CH")]
     public void ValidEmailShouldWork(string input)
     {
         ShouldHaveNoFailures(BuildRules(new() { Email = true }), input);

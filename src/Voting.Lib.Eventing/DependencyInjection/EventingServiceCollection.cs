@@ -15,7 +15,6 @@ using Voting.Lib.Eventing.Domain;
 using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Protobuf;
 using Voting.Lib.Eventing.Read;
-using Voting.Lib.Eventing.Seeding;
 using Voting.Lib.Eventing.Subscribe;
 using Voting.Lib.Scheduler;
 
@@ -50,8 +49,6 @@ public class EventingServiceCollection : IEventingServiceCollection
         Services.TryAddScoped<IAggregateRepository, AggregateRepository>();
         Services.TryAddScoped<IAggregateRepositoryHandler, AggregateRepositoryHandler>();
         Services.TryAddScoped<IAggregateFactory, AggregateFactory>();
-        Services.TryAddSingleton<IEventSeeder, EventSeeder>();
-        Services.AddHostedService<AggregateSeeder>();
         return this;
     }
 
@@ -61,7 +58,6 @@ public class EventingServiceCollection : IEventingServiceCollection
     {
         AddPublishing();
         AddAggregatesFromAssemblyOfType<T>();
-        AddAggregateSeedersFromAssemblyOfType<T>();
         return this;
     }
 
@@ -113,14 +109,6 @@ public class EventingServiceCollection : IEventingServiceCollection
         => t.IsGenericType
             && t.GetGenericTypeDefinition() == typeof(ICatchUpDetectorEventProcessor<,>)
             && t.GetGenericArguments()[0] == eventProcessorScopeType;
-
-    private void AddAggregateSeedersFromAssemblyOfType<T>()
-    {
-        Services.Scan(scan => scan.FromAssemblyOf<T>()
-            .AddClasses(classes => classes.AssignableTo<IAggregateSeedSource>())
-            .AsImplementedInterfaces()
-            .WithScopedLifetime());
-    }
 
     private void AddAggregatesFromAssemblyOfType<T>()
     {

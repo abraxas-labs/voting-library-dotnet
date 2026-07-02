@@ -10,16 +10,16 @@ namespace Voting.Lib.Eventing.Domain;
 /// <summary>
 /// An action ID represents an action taking place on a stream.
 /// </summary>
-public class ActionId
+public class EventStoreActionId : IActionId
 {
     private const string ActionIdSeparator = "-";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ActionId"/> class.
+    /// Initializes a new instance of the <see cref="EventStoreActionId"/> class.
     /// </summary>
     /// <param name="action">The action.</param>
     /// <param name="aggregateVersions">The included aggregate versions.</param>
-    public ActionId(string action, params IEventSourcingAggregateVersion[] aggregateVersions)
+    public EventStoreActionId(string action, params IEventSourcingAggregateVersion[] aggregateVersions)
     {
         Action = action;
         AggregateVersions = aggregateVersions;

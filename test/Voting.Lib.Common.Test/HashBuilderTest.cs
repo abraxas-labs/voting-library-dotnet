@@ -18,6 +18,19 @@ public class HashBuilderTest
     }
 
     [Fact]
+    public void HashBuilderShouldGenerateSameUsingSpanAndByte()
+    {
+        using var hasher = new HashBuilder(HashAlgorithmName.SHA256);
+        AppendAllDataKinds(hasher);
+        var hash = hasher.GetHashAndReset();
+
+        AppendAllDataKinds(hasher);
+        Span<byte> spanHash = stackalloc byte[hash.Length];
+        hasher.GetHashAndReset(spanHash).Should().Be(hash.Length);
+        spanHash.SequenceEqual(hash).Should().BeTrue();
+    }
+
+    [Fact]
     public void HashBuilderShouldGenerateConsistentHash()
     {
         using var hasher = new HashBuilder(HashAlgorithmName.SHA256);

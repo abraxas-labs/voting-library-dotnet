@@ -7,4 +7,4 @@ namespace Voting.Lib.Iam.SecondFactor.Exceptions;
 /// The 2fa transaction is not verified.
 /// </summary>
 [Serializable]
-public class SecondFactorTransactionNotVerifiedException : Exception;
+public class SecondFactorTransactionNotVerifiedException() : Exception("Second factor transaction is not verified");

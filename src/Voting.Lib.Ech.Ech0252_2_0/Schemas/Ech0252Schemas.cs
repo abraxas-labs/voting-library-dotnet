@@ -27,6 +27,7 @@ public sealed class Ech0252Schemas
         ["http://www.ech.ch/xmlns/eCH-0058/5"] = "eCH-0058-5-0.xsd",
         ["http://www.ech.ch/xmlns/eCH-0155/5"] = "eCH-0155-5-2.xsd",
         ["http://www.ech.ch/xmlns/eCH-0252/2"] = "eCH-0252-2-0.xsd",
+        ["http://www.zh.ch/voting/1"] = "proportionalDivisor-1-0.xsd",
     };
 
     private Ech0252Schemas()

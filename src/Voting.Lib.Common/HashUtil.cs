@@ -14,28 +14,59 @@ namespace Voting.Lib.Common;
 /// </summary>
 public static class HashUtil
 {
-    private const int Sha256Length = 256 / 8;
+    private const int StackAllocBytesThreshold = 512;
+
+    /// <summary>
+    /// Calculates the SHA256 hash of the input.
+    /// </summary>
+    /// <param name="input">The input to hash.</param>
+    /// <returns>Returns the SHA256 hash of the input as a hex string.</returns>
+    public static string GetSHA256Hash(string input)
+    {
+        Span<byte> hash = stackalloc byte[SHA256.HashSizeInBytes];
+        GetSHA256(input, hash);
+        return ToHexString(hash);
+    }
 
     /// <summary>
     /// Calculates the SHA256 hash of the input.
     /// </summary>
     /// <param name="input">The input to hash.</param>
     /// <returns>Returns the SHA256 hash of the input.</returns>
-    public static string GetSHA256Hash(string input)
+    public static byte[] GetSHA256HashBytes(string input)
     {
-        var length = Encoding.UTF8.GetByteCount(input);
-        var data = ArrayPool<byte>.Shared.Rent(length);
+        var hash = new byte[SHA256.HashSizeInBytes];
+        GetSHA256(input, hash);
+        return hash;
+    }
+
+    /// <summary>
+    /// Calculates the SHA256 hash of the input.
+    /// </summary>
+    /// <param name="input">The input to hash.</param>
+    /// <param name="output">The output span.</param>
+    public static void GetSHA256(string input, Span<byte> output)
+    {
+        var byteCount = Encoding.UTF8.GetByteCount(input);
+
+        if (byteCount <= StackAllocBytesThreshold)
+        {
+            Span<byte> inputBytes = stackalloc byte[byteCount];
+            Encoding.UTF8.GetBytes(input, inputBytes);
+            SHA256.HashData(inputBytes, output);
+            return;
+        }
+
+        var buffer = ArrayPool<byte>.Shared.Rent(byteCount);
         try
         {
-            var dataView = data.AsSpan(..length);
-            Encoding.UTF8.GetBytes(input, dataView);
-            Span<byte> hash = stackalloc byte[Sha256Length];
-            SHA256.HashData(dataView, hash);
-            return ToHexString(hash);
+            var utf8Bytes = buffer.AsSpan(0, byteCount);
+            Encoding.UTF8.GetBytes(input, utf8Bytes);
+            SHA256.HashData(utf8Bytes, output);
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(data);
+            ArrayPool<byte>.Shared.Return(buffer);
         }
     }
 
@@ -46,7 +77,7 @@ public static class HashUtil
     /// <returns>The hex string.</returns>
     public static string ToHexString(ReadOnlySpan<byte> data)
     {
-        var sb = new StringBuilder(data.Length);
+        var sb = new StringBuilder(data.Length * 2);
         foreach (var t in data)
         {
             sb.Append(t.ToString("x2", CultureInfo.InvariantCulture));

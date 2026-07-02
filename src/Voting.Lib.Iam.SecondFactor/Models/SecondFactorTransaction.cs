@@ -1,6 +1,8 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
+using Voting.Lib.Iam.Services.ApiClient.Identity;
+
 namespace Voting.Lib.Iam.SecondFactor.Models;
 
 /// <summary>
@@ -44,7 +46,12 @@ public class SecondFactorTransaction
     public string ActionIdHash { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the provider that was used for the latest attempt.
+    /// </summary>
+    public V1SecondFactorProvider? LastAttemptedProvider { get; set; }
+
+    /// <summary>
     /// Gets or sets the external token jwt ids associated with this transaction.
     /// </summary>
-    public List<string> ExternalTokenJwtIds { get; set; } = [];
+    public List<string>? NevisExternalTokenJwtIds { get; set; }
 }

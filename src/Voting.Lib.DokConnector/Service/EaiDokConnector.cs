@@ -17,6 +17,7 @@ namespace Voting.Lib.DokConnector.Service;
 /// <summary>
 /// The implementation of the EAI DOK connector.
 /// </summary>
+[Obsolete("Use DokConnectorApi instead.")]
 public class EaiDokConnector : IDokConnector
 {
     private readonly DokConnectorConfig _config;

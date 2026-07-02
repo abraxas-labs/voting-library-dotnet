@@ -4,10 +4,12 @@
 using System.Security.Cryptography;
 using Microsoft.Extensions.Logging;
 using Voting.Lib.Common;
+using Voting.Lib.Iam.Models;
 using Voting.Lib.Iam.SecondFactor.Configuration;
 using Voting.Lib.Iam.SecondFactor.Exceptions;
 using Voting.Lib.Iam.SecondFactor.Models;
 using Voting.Lib.Iam.Services;
+using Voting.Lib.Iam.Services.ApiClient.Identity;
 using Voting.Lib.Iam.Store;
 
 namespace Voting.Lib.Iam.SecondFactor.Services;
@@ -58,34 +60,53 @@ public class SecondFactorTransactionService : ISecondFactorTransactionService
     /// <param name="message">The message displayed to the user.</param>
     /// <returns>The info about the transaction.</returns>
     public async Task<SecondFactorTransactionInfo> Create(
-        ISecondFactorTransactionActionId actionId,
+        IActionId actionId,
         string message)
     {
         var actionIdHash = actionId.ComputeHash();
 
+        var now = _timeProvider.GetUtcNowDateTime();
+        var expireAt = now.Add(_config.TransactionExpiration);
+
+        // only nevis and otp supported
+        var availableProviders = await _userService.GetReadySecondFactorProviders(_auth.User.Loginid);
+        availableProviders = availableProviders.Where(p => p is V1SecondFactorProvider.OTP or V1SecondFactorProvider.NEVIS).ToHashSet();
+
         // a code displayed to the user to correlate the second factor request
         var correlationCode = BuildCorrelationCode();
-        var expireAt = _timeProvider.GetUtcNowDateTime().Add(_config.TransactionExpiration);
-        var secondFactor = await _userService.RequestSecondFactor(
-            _auth.User.Loginid,
-            _config.Provider.ToString(),
-            $"({correlationCode}) {message}");
+        message = $"({correlationCode}) {message}";
+
+        // Only initiate NEVIS if it is among the available providers.
+        // If only OTP is available, we skip the NEVIS request and the user verifies via OTP.
+        SecondFactorNevisInfo? nevisInfo = null;
+        if (availableProviders.Contains(V1SecondFactorProvider.NEVIS))
+        {
+            nevisInfo = await RequestNevis(message, _auth.User.Loginid).ConfigureAwait(false);
+        }
+
         var transaction = new SecondFactorTransaction
         {
             Id = Guid.NewGuid(),
             UserId = _auth.User.Loginid,
             ActionIdHash = actionIdHash,
-            LastUpdatedAt = _timeProvider.GetUtcNowDateTime(),
+            CreatedAt = now,
+            LastUpdatedAt = now,
             ExpireAt = expireAt,
-            ExternalTokenJwtIds = secondFactor.TokenJwtIds.ToList(),
+            NevisExternalTokenJwtIds = nevisInfo?.TokenJwtIds.ToList(),
         };
         await _repo.Create(transaction);
         _logger.LogInformation(
             SecurityLogging.SecurityEventId,
-            "Created second factor transaction with ExternalTokenJwtIds <{SecondFactorExternalTokenJwtIds}> for action {ActionId}",
-            string.Join(',', transaction.ExternalTokenJwtIds),
+            "Created second factor transaction with Providers {Providers}, ExternalTokenJwtIds <{SecondFactorExternalTokenJwtIds}> for action {ActionId}",
+            string.Join(',', availableProviders.Select(p => p.ToString())),
+            string.Join(',', transaction.NevisExternalTokenJwtIds ?? []),
             actionId);
-        return new SecondFactorTransactionInfo(transaction, correlationCode, message, secondFactor.Qr);
+        return new SecondFactorTransactionInfo(
+            transaction,
+            correlationCode,
+            message,
+            availableProviders,
+            nevisInfo);
     }
 
     /// <summary>
@@ -95,18 +116,22 @@ public class SecondFactorTransactionService : ISecondFactorTransactionService
     /// Ensure that the target data is not modified while calling this method.
     /// </summary>
     /// <param name="transactionId">The transaction id.</param>
-    /// <param name="actionProvider">The action provider.</param>
+    /// <param name="provider">The provider to use.</param>
+    /// <param name="actionIdProvider">The action provider.</param>
+    /// <param name="otpCode">The OTP code (if OTP provider).</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task EnsureVerified(
         Guid transactionId,
-        Func<Task<ISecondFactorTransactionActionId>> actionProvider,
-        CancellationToken cancellationToken)
+        V1SecondFactorProvider provider,
+        Func<Task<IActionId>> actionIdProvider,
+        string? otpCode = null,
+        CancellationToken cancellationToken = default)
     {
-        await EnsureAwaitVerification(transactionId, cancellationToken);
+        await EnsureAwaitVerification(transactionId, provider, otpCode, cancellationToken);
 
         // The action id must be fetched after the blocking verify request, to check for data changes in the aggregate during the request.
-        var actionId = await actionProvider();
+        var actionId = await actionIdProvider();
         await EnsureDataHasNotChanged(transactionId, actionId);
         _logger.LogInformation(
             SecurityLogging.SecurityEventId,
@@ -115,18 +140,24 @@ public class SecondFactorTransactionService : ISecondFactorTransactionService
             actionId);
     }
 
-    private async Task EnsureAwaitVerification(Guid transactionId, CancellationToken ct)
+    private async Task EnsureAwaitVerification(
+        Guid transactionId,
+        V1SecondFactorProvider provider,
+        string? otpCode,
+        CancellationToken ct)
     {
         var secondFactorTransaction = await _repo.GetById(transactionId);
         secondFactorTransaction.PollCount++;
         secondFactorTransaction.LastUpdatedAt = _timeProvider.GetUtcNowDateTime();
+        secondFactorTransaction.LastAttemptedProvider = provider;
         await _repo.Update(secondFactorTransaction);
 
         var isVerified = await _userService.VerifySecondFactor(
             _auth.User.Loginid,
-            _config.Provider,
-            secondFactorTransaction.ExternalTokenJwtIds,
-            ct);
+            provider,
+            code: otpCode,
+            nevisTokenJwtIds: secondFactorTransaction.NevisExternalTokenJwtIds,
+            ct: ct);
         if (!isVerified)
         {
             _logger.LogWarning(
@@ -137,7 +168,7 @@ public class SecondFactorTransactionService : ISecondFactorTransactionService
         }
     }
 
-    private async Task EnsureDataHasNotChanged(Guid transactionId, ISecondFactorTransactionActionId actionId)
+    private async Task EnsureDataHasNotChanged(Guid transactionId, IActionId actionId)
     {
         var secondFactorTransaction = await _repo.GetById(transactionId);
         var actionIdHash = actionId.ComputeHash();
@@ -150,6 +181,17 @@ public class SecondFactorTransactionService : ISecondFactorTransactionService
                 actionId);
             throw new SecondFactorTransactionDataChangedException();
         }
+    }
+
+    private async Task<SecondFactorNevisInfo?> RequestNevis(
+        string message,
+        string loginId)
+    {
+        var secondFactor = await _userService.RequestSecondFactor(
+            loginId,
+            V1SecondFactorProvider.NEVIS,
+            message);
+        return secondFactor.Nevis;
     }
 
     private string BuildCorrelationCode()

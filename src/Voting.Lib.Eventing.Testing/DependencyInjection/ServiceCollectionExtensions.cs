@@ -4,7 +4,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Voting.Lib.Eventing.Persistence;
 using Voting.Lib.Eventing.Read;
-using Voting.Lib.Eventing.Seeding;
 using Voting.Lib.Eventing.Testing.Mocks;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,7 +28,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<AggregateRepositoryMockStore>()
             .AddScoped<AggregateRepositoryMock>()
             .AddScoped<IAggregateRepository>(sp => sp.GetRequiredService<AggregateRepositoryMock>())
-            .RemoveAll<IEventSeeder>()
             .RemoveAll<IEventReader>()
             .AddScoped<EventReaderMock>()
             .AddScoped<IEventReader>(sp => sp.GetRequiredService<EventReaderMock>())

@@ -150,6 +150,34 @@ public class EchSerializer
         await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, leaveOpen, xmlAttributeOverrides, ct);
     }
 
+    /// <summary>
+    /// Serializes a entity to a XML element.
+    /// </summary>
+    /// <typeparam name="T">Type of entity.</typeparam>
+    /// <param name="entity">The eCH object to serialize.</param>
+    /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <returns>A XML element.</returns>
+    public XmlElement? Serialize<T>(T entity, XmlAttributeOverrides? xmlAttributeOverrides = null)
+    {
+        var serializer = new XmlSerializer(typeof(T), xmlAttributeOverrides);
+        var doc = new XmlDocument();
+
+        try
+        {
+            using var writer = doc.CreateNavigator()!.AppendChild();
+            serializer.Serialize(writer, entity);
+        }
+        catch (Exception e)
+        {
+            // log exception here already, since it could be hidden
+            // due to the streaming architecture
+            _logger.LogError(e, "Could not serialize element");
+            throw;
+        }
+
+        return doc.DocumentElement;
+    }
+
     private async Task CopyAndReplacePrototypeElement<T>(
         Stream prototypeStream,
         Stream target,

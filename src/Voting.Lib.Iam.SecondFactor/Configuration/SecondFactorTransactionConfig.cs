@@ -1,8 +1,6 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using Voting.Lib.Iam.Services.ApiClient.Identity;
-
 namespace Voting.Lib.Iam.SecondFactor.Configuration;
 
 /// <summary>
@@ -19,11 +17,6 @@ public class SecondFactorTransactionConfig
     /// Gets or sets the length of the correlation code.
     /// </summary>
     public int CorrelationCodeLength { get; set; } = 4;
-
-    /// <summary>
-    /// Gets or sets the name of the 2FA provider to use.
-    /// </summary>
-    public V1SecondFactorProvider Provider { get; set; } = V1SecondFactorProvider.NEVIS;
 
     /// <summary>
     /// Gets or sets the interval in which the cleanup job should run.

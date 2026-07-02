@@ -1,28 +1,28 @@
 // (c) Copyright by Abraxas Informatik AG
 // For license information see LICENSE file
 
-using System.Collections.Generic;
+using Voting.Lib.Iam.Services.ApiClient.Identity;
 
 namespace Voting.Lib.Iam.Models;
 
 /// <summary>
-/// Represents a second factor.
+/// A second factor.
 /// </summary>
 public class SecondFactor
 {
-    internal SecondFactor(string qr, ICollection<string> tokenJwtIds)
+    internal SecondFactor(V1SecondFactorProvider provider, SecondFactorNevisInfo? nevis = null)
     {
-        Qr = qr;
-        TokenJwtIds = tokenJwtIds;
+        Provider = provider;
+        Nevis = nevis;
     }
 
     /// <summary>
-    /// Gets or sets the qr code.
+    /// Gets the second factor provider used.
     /// </summary>
-    public string Qr { get; set; }
+    public V1SecondFactorProvider Provider { get; }
 
     /// <summary>
-    /// Gets or sets the token jwt ids.
+    /// Gets the info about the nevis second factor.
     /// </summary>
-    public ICollection<string> TokenJwtIds { get; set; }
+    public SecondFactorNevisInfo? Nevis { get; init; }
 }

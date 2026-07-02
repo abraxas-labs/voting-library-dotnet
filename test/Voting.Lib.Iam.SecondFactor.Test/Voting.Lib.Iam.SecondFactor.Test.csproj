@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Voting.Lib.Iam.SecondFactor\Voting.Lib.Iam.SecondFactor.csproj" />
+  </ItemGroup>
+</Project>

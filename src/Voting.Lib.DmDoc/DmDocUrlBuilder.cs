@@ -66,6 +66,10 @@ public class DmDocUrlBuilder : IDmDocUrlBuilder
         => BuildUrl("bricks", BuildBricksQueryString());
 
     /// <inheritdoc />
+    public string Brick(string internName)
+        => BuildUrl($"bricks/intern_name/{internName}", BuildBricksQueryString());
+
+    /// <inheritdoc />
     public string Bricks(int categoryId)
         => BuildUrl("bricks", BuildBricksQueryString(("category_id", categoryId)));
 
