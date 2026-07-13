@@ -1,4 +1,4 @@
-# ✨ Changelog (`v22.1.3`)
+# ✨ Changelog (`v22.2.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v22.1.3
-Previous version ---- v21.1.2
+This version -------- v22.2.0
+Previous version ---- v22.1.3
 Initial version ----- v7.7.37
-Total commits ------- 11
+Total commits ------- 1
 ```
+
+## [v22.2.0] - 2026-07-01
+
+### 🔄 Changed
+
+- add X509 helper utils
 
 ## [v22.1.3] - 2026-06-29
 

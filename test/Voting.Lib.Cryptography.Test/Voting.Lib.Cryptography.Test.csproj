@@ -4,4 +4,10 @@
     <ProjectReference Include="..\..\src\Voting.Lib.Cryptography\Voting.Lib.Cryptography.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="X509\TestFiles\*.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
