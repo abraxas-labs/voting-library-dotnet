@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Voting.Lib.Ech.Ech0011_9_0\Voting.Lib.Ech.Ech0011_9_0.csproj" />
     <ProjectReference Include="..\Voting.Lib.Ech.Ech0021_8_0\Voting.Lib.Ech.Ech0021_8_0.csproj" />
     <ProjectReference Include="..\Voting.Lib.Ech.Ech0155_5_1\Voting.Lib.Ech.Ech0155_5_1.csproj" />
+    <ProjectReference Include="..\Voting.Lib.Ech.Ech0045_VoterExtension_1_0\Voting.Lib.Ech.Ech0045_VoterExtension_1_0.csproj" />
     <ProjectReference Include="..\Voting.Lib.Ech\Voting.Lib.Ech.csproj" />
   </ItemGroup>
 

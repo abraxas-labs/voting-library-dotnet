@@ -26,7 +26,7 @@ public static class BasisXmlMajorityElectionTemplates
     };
 
     /// <summary>
-    /// Gets the eCH-0157 v4.2 (semantic v5.1) majority election export template.
+    /// Gets the eCH-0157 v5.1 (semantic v4.2) majority election export template.
     /// </summary>
     public static readonly TemplateModel Ech0157_5_1 = new TemplateModel
     {
@@ -38,10 +38,24 @@ public static class BasisXmlMajorityElectionTemplates
         GeneratedBy = VotingApp.VotingBasis,
     };
 
+    /// <summary>
+    /// Gets the eCH-0157 v5.2 (semantic v4.3) majority election export template.
+    /// </summary>
+    public static readonly TemplateModel Ech0157_5_2 = new TemplateModel
+    {
+        Key = "majority_election_ech_0157_5_2",
+        Filename = "eCH-0157_v5_2_{0}",
+        Description = "eCH-0157 v4.3",
+        Format = ExportFileFormat.Xml,
+        EntityType = EntityType.MajorityElection,
+        GeneratedBy = VotingApp.VotingBasis,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         Ech0157_4_0,
         Ech0157_5_1,
+        Ech0157_5_2,
     };
 }
 #pragma warning restore SA1310

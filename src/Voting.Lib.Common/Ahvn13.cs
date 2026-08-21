@@ -60,6 +60,7 @@ public class Ahvn13
 
     /// <summary>
     /// Tries to parse the supplied string as an AHVN13.
+    /// Supports both the dotted format (e.g. 756.1234.5678.97) and the plain numeric format (e.g. 7561234567897).
     /// </summary>
     /// <param name="s">The string to parse.</param>
     /// <param name="parsed">The parsed AHNV13 if the supplied string was valid.</param>
@@ -78,6 +79,7 @@ public class Ahvn13
 
     /// <summary>
     /// Parses the supplied string as an AHVN13.
+    /// Supports both the dotted format (e.g. 756.1234.5678.97) and the plain numeric format (e.g. 7561234567897).
     /// </summary>
     /// <param name="s">The string to parse.</param>
     /// <returns>The parsed AHVN13.</returns>
@@ -113,6 +115,7 @@ public class Ahvn13
 
     /// <summary>
     /// Checks whether the supplied string is a valid AHVN13.
+    /// Supports both the dotted format (e.g. 756.1234.5678.97) and the plain numeric format (e.g. 7561234567897).
     /// </summary>
     /// <param name="s">The string to validate.</param>
     /// <returns>Whether the string is a valid AHNV13.</returns>
@@ -168,15 +171,27 @@ public class Ahvn13
 
     private static bool TryGetNumericValue([NotNullWhen(true)] string? s, out long number)
     {
-        if (s == null || !Ahvn13Regex.IsMatch(s))
+        if (s == null)
         {
             number = default;
             return false;
         }
 
-        // Since the regex matches, we can be sure that the format is correct and only digits remain after removing the periods.
-        number = long.Parse(s.Replace(".", string.Empty));
-        return true;
+        // First check for plain numeric format without dots (e.g. 7567359619817)
+        if (s.Length == Ahvn13DigitCount && long.TryParse(s, out number))
+        {
+            return true;
+        }
+
+        if (Ahvn13Regex.IsMatch(s))
+        {
+            // Since the regex matches, we can be sure that the format is correct and only digits remain after removing the periods.
+            number = long.Parse(s.Replace(".", string.Empty));
+            return true;
+        }
+
+        number = default;
+        return false;
     }
 
     private static int[] GetDigitsOfNumber(long number)

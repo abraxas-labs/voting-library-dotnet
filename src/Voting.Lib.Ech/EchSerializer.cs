@@ -65,11 +65,12 @@ public class EchSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="entity">The eCH object to serialize.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <param name="extraTypes">Optional additional types to register with the serializer (eg. for extensions).</param>
     /// <param name="leaveStreamOpen">Whether to leave the stream open.</param>
     /// <typeparam name="T">The type of the object to serialize.</typeparam>
-    public void WriteXml<T>(PipeWriter writer, T entity, XmlAttributeOverrides? xmlAttributeOverrides = null, bool leaveStreamOpen = false)
+    public void WriteXml<T>(PipeWriter writer, T entity, XmlAttributeOverrides? xmlAttributeOverrides = null, Type[]? extraTypes = null, bool leaveStreamOpen = false)
         where T : notnull
-        => WriteXml(writer.AsStream(), entity, xmlAttributeOverrides, leaveStreamOpen);
+        => WriteXml(writer.AsStream(), entity, xmlAttributeOverrides, extraTypes, leaveStreamOpen);
 
     /// <summary>
     /// Writes an XML to the provided stream.
@@ -77,11 +78,12 @@ public class EchSerializer
     /// <param name="stream">The target stream.</param>
     /// <param name="entity">The eCH object to serialize.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <param name="extraTypes">Optional additional types to register with the serializer (eg. for extensions).</param>
     /// <param name="leaveStreamOpen">Whether to leave the stream open.</param>
     /// <typeparam name="T">The type of the object to serialize.</typeparam>
-    public void WriteXml<T>(Stream stream, T entity, XmlAttributeOverrides? xmlAttributeOverrides = null, bool leaveStreamOpen = false)
+    public void WriteXml<T>(Stream stream, T entity, XmlAttributeOverrides? xmlAttributeOverrides = null, Type[]? extraTypes = null, bool leaveStreamOpen = false)
     {
-        var serializer = new XmlSerializer(typeof(T), xmlAttributeOverrides);
+        var serializer = new XmlSerializer(typeof(T), xmlAttributeOverrides, extraTypes ?? Type.EmptyTypes, null, null);
         using var streamWriter = new StreamWriter(stream, Encoding, leaveOpen: leaveStreamOpen);
         using var xmlWriter = XmlWriter.Create(streamWriter, XmlWriterSettings);
         serializer.Serialize(xmlWriter, entity);
@@ -101,6 +103,7 @@ public class EchSerializer
     /// <param name="elements">The elements which replace the prototype element.</param>
     /// <param name="leaveOpen">Whether to leave the stream open.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <param name="extraTypes">Optional additional types to register with the serializer (eg. for extensions).</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="TRoot">The type of the xml root element.</typeparam>
     /// <typeparam name="TItem">The type of the elements.</typeparam>
@@ -112,9 +115,10 @@ public class EchSerializer
         IAsyncEnumerable<TItem> elements,
         bool leaveOpen = false,
         XmlAttributeOverrides? xmlAttributeOverrides = null,
+        Type[]? extraTypes = null,
         CancellationToken ct = default)
         where TItem : class
-        => WriteXmlWithElements(writer.AsStream(), prototypeElementName, o, elements, leaveOpen, xmlAttributeOverrides, ct);
+        => WriteXmlWithElements(writer.AsStream(), prototypeElementName, o, elements, leaveOpen, xmlAttributeOverrides, extraTypes, ct);
 
     /// <summary>
     /// Writes an XML to the provided stream.
@@ -130,6 +134,7 @@ public class EchSerializer
     /// <param name="elements">The elements which replace the prototype element.</param>
     /// <param name="leaveOpen">Whether to leave the stream open.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <param name="extraTypes">Optional additional types to register with the serializer (eg. for polymorphic xsi:type extensions).</param>
     /// <param name="ct">The cancellation token.</param>
     /// <typeparam name="TRoot">The type of the xml root element.</typeparam>
     /// <typeparam name="TItem">The type of the elements.</typeparam>
@@ -141,13 +146,14 @@ public class EchSerializer
         IAsyncEnumerable<TItem> elements,
         bool leaveOpen = false,
         XmlAttributeOverrides? xmlAttributeOverrides = null,
+        Type[]? extraTypes = null,
         CancellationToken ct = default)
         where TItem : class
     {
         await using var ms = RecyclableMemoryStreamManager.GetStream();
-        WriteXml(ms, o, xmlAttributeOverrides, true);
+        WriteXml(ms, o, xmlAttributeOverrides, extraTypes, true);
         ms.Seek(0, SeekOrigin.Begin);
-        await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, leaveOpen, xmlAttributeOverrides, ct);
+        await CopyAndReplacePrototypeElement(ms, stream, prototypeElementName, elements, leaveOpen, xmlAttributeOverrides, ct, extraTypes);
     }
 
     /// <summary>
@@ -156,10 +162,11 @@ public class EchSerializer
     /// <typeparam name="T">Type of entity.</typeparam>
     /// <param name="entity">The eCH object to serialize.</param>
     /// <param name="xmlAttributeOverrides">Optional XML attribute overrides (eg. for extensions).</param>
+    /// <param name="extraTypes">Optional additional types to register with the serializer (eg. for polymorphic xsi:type extensions).</param>
     /// <returns>A XML element.</returns>
-    public XmlElement? Serialize<T>(T entity, XmlAttributeOverrides? xmlAttributeOverrides = null)
+    public XmlElement? Serialize<T>(T entity, XmlAttributeOverrides? xmlAttributeOverrides = null, Type[]? extraTypes = null)
     {
-        var serializer = new XmlSerializer(typeof(T), xmlAttributeOverrides);
+        var serializer = new XmlSerializer(typeof(T), xmlAttributeOverrides, extraTypes ?? Type.EmptyTypes, null, null);
         var doc = new XmlDocument();
 
         try
@@ -185,7 +192,8 @@ public class EchSerializer
         IAsyncEnumerable<T> elements,
         bool leaveTargetOpen,
         XmlAttributeOverrides? overrides,
-        CancellationToken ct)
+        CancellationToken ct,
+        Type[]? extraTypes = null)
         where T : class
     {
         overrides ??= new();
@@ -252,7 +260,7 @@ public class EchSerializer
         await prototypeReader.SeekAsync(charsToSkip, ct);
 
         // serialize all elements
-        await SerializeElements(targetWriter, elements, overrides);
+        await SerializeElements(targetWriter, elements, overrides, extraTypes);
 
         // copy remainder
         await prototypeReader.CopyToAsync(targetWriter, ct);
@@ -261,9 +269,10 @@ public class EchSerializer
     private async Task SerializeElements<T>(
         TextWriter targetWriter,
         IAsyncEnumerable<T> elements,
-        XmlAttributeOverrides overrides)
+        XmlAttributeOverrides overrides,
+        Type[]? extraTypes = null)
     {
-        var serializer = new XmlSerializer(typeof(T), overrides);
+        var serializer = new XmlSerializer(typeof(T), overrides, extraTypes ?? Type.EmptyTypes, null, null);
 
         await foreach (var element in elements)
         {

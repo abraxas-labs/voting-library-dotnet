@@ -1,4 +1,4 @@
-# ✨ Changelog (`v22.2.0`)
+# ✨ Changelog (`v22.5.0`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v22.2.0
-Previous version ---- v22.1.3
+This version -------- v22.5.0
+Previous version ---- v22.2.0
 Initial version ----- v7.7.37
-Total commits ------- 1
+Total commits ------- 6
 ```
+
+## [v22.5.0] - 2026-08-20
+
+### 🔄 Changed
+
+- split protocolls with diffrent domainOfInfluenceIdentification
+
+## [v22.4.0] - 2026-08-11
+
+### 🔄 Changed
+
+- support eCH-0045 e-voting voter extension
+
+## [v22.3.0] - 2026-08-10
+
+### 🔄 Changed
+
+- add eCH 0157/0159 V4.3 and 0222 V1.3
+
+## [v22.2.3] - 2026-08-10
+
+### 🔄 Changed
+
+- ahvn13 validation also allows values without dots
+
+## [v22.2.2] - 2026-08-05
+
+### 🔄 Changed
+
+- allow CryptoProviderMock to simulate system failures
+
+## [v22.2.1] - 2026-07-29
+
+### 🔄 Changed
+
+- upgrade html sanitizer to upgrade angle sharp which had a vuln
 
 ## [v22.2.0] - 2026-07-01
 

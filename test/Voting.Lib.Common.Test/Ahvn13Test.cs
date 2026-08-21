@@ -30,8 +30,27 @@ public class Ahvn13Test
     }
 
     [Theory]
+    [InlineData("7561234567897", true, 7561234567897)]
+    [InlineData("7561234567880", true, 7561234567880)]
+    [InlineData("7561234567898", false, null)]
+    [InlineData("8561234567898", false, null)]
+    public void PlainNumericStringTryParseShouldWork(string input, bool expectedResult, long? numberRepresentation)
+    {
+        var result = Ahvn13.TryParse(input, out var parsed);
+        result.Should().Be(expectedResult);
+
+        if (result)
+        {
+            parsed!.ToNumber().Should().Be(numberRepresentation);
+            parsed.ToString().Should().Be(input.Insert(3, ".").Insert(8, ".").Insert(13, "."));
+        }
+    }
+
+    [Theory]
     [InlineData("756.1234.5678.97", 7561234567897)]
     [InlineData("756.1234.5678.80", 7561234567880)]
+    [InlineData("7561234567897", 7561234567897)]
+    [InlineData("7561234567880", 7561234567880)]
     public void StringParseShouldWork(string input, long expectedResult)
     {
         var result = Ahvn13.Parse(input);
@@ -43,6 +62,8 @@ public class Ahvn13Test
     [InlineData("test")]
     [InlineData("856.1234.5678.98")]
     [InlineData("")]
+    [InlineData("7561234567898")]
+    [InlineData("8561234567898")]
     public void StringParseShouldThrowOnBadInput(string input)
     {
         var parseAction = () => Ahvn13.Parse(input);
@@ -94,6 +115,10 @@ public class Ahvn13Test
     [InlineData("856.1234.5678.98", false)]
     [InlineData("", false)]
     [InlineData(null, false)]
+    [InlineData("7561234567897", true)]
+    [InlineData("7561234567880", true)]
+    [InlineData("7561234567898", false)]
+    [InlineData("8561234567898", false)]
     public void StringIsValidShouldWork(string? input, bool expected)
     {
         var isValid = Ahvn13.IsValid(input);

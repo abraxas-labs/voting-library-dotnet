@@ -26,7 +26,7 @@ public static class BasisXmlVoteTemplates
     };
 
     /// <summary>
-    /// Gets the eCH-0159 v4.2 (semantic v5.1) vote export template.
+    /// Gets the eCH-0159 v5.1 (semantic v4.2) vote export template.
     /// </summary>
     public static readonly TemplateModel Ech0159_5_1 = new TemplateModel
     {
@@ -38,10 +38,24 @@ public static class BasisXmlVoteTemplates
         GeneratedBy = VotingApp.VotingBasis,
     };
 
+    /// <summary>
+    /// Gets the eCH-0159 v5.2 (semantic v4.3) vote export template.
+    /// </summary>
+    public static readonly TemplateModel Ech0159_5_2 = new TemplateModel
+    {
+        Key = "vote_ech_0159_5_2",
+        Filename = "eCH-0159_v4_3_{0}",
+        Description = "eCH-0159 v4.3",
+        Format = ExportFileFormat.Xml,
+        EntityType = EntityType.Vote,
+        GeneratedBy = VotingApp.VotingBasis,
+    };
+
     internal static readonly IReadOnlyCollection<TemplateModel> All = new[]
     {
         Ech0159_4_0,
         Ech0159_5_1,
+        Ech0159_5_2,
     };
 }
 #pragma warning restore SA1310

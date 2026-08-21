@@ -42,11 +42,8 @@ declare -a namespaces=(
     "http://www.ech.ch/xmlns/eCH-0135/2=Ech0135_2_0" \
     "http://www.ech.ch/xmlns/eCH-0155/4=Ech0155_4_0" \
     "http://www.ech.ch/xmlns/eCH-0157/4=Ech0157_4_0" \
-    "http://www.ech.ch/xmlns/eCH-0157/5=Ech0157_5_1" \
     "http://www.ech.ch/xmlns/eCH-0159/4=Ech0159_4_0" \
-    "http://www.ech.ch/xmlns/eCH-0159/5=Ech0159_5_1" \
     "http://www.ech.ch/xmlns/eCH-0222/1=Ech0222_1_0" \
-    "http://www.ech.ch/xmlns/eCH-0222/3=Ech0222_3_0" \
     "http://www.ech.ch/xmlns/eCH-0228/1=Ech0228_1_0" \
     "http://www.ech.ch/xmlns/eCH-0252/1=Ech0252_1_0" \
     "http://www.ech.ch/xmlns/eCH-0252/2=Ech0252_2_0"
@@ -85,14 +82,18 @@ generate "Ech0045_6_0" "eCH-0045-6-0.xsd"  -n http://www.ech.ch/xmlns/eCH-0155/5
 generate "Ech0072_1_0" "eCH-0072-1-0.xsd"
 generate "Ech0110_4_0" "eCH-0110-4-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
 generate "Ech0157_4_0" "eCH-0157-4-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
-generate "Ech0157_5_1" "eCH-0157-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
+generate "Ech0157_5_1" "eCH-0157-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1 -n http://www.ech.ch/xmlns/eCH-0157/5=Ech0157_5_1 
+generate "Ech0157_5_2" "eCH-0157-5-2.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2 -n http://www.ech.ch/xmlns/eCH-0157/5=Ech0157_5_2
 generate "Ech0159_4_0" "eCH-0159-4-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
-generate "Ech0159_5_1" "eCH-0159-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
+generate "Ech0159_5_1" "eCH-0159-5-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1 -n http://www.ech.ch/xmlns/eCH-0159/5=Ech0159_5_1
+generate "Ech0159_5_2" "eCH-0159-5-2.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2 -n http://www.ech.ch/xmlns/eCH-0159/5=Ech0159_5_2
 generate "Ech0228_1_0" "eCH-0228-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
-generate "Ech0222_3_0" "eCH-0222-3-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1
+generate "Ech0222_3_0" "eCH-0222-3-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_1 -n http://www.ech.ch/xmlns/eCH-0222/3=Ech0222_3_0
+generate "Ech0222_3_1" "eCH-0222-3-1.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2 -n http://www.ech.ch/xmlns/eCH-0222/3=Ech0222_3_1
 generate "Ech0252_1_0" "eCH-0252-1-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_0
 generate "Ech0252_2_0" "eCH-0252-2-0.xsd" -n http://www.ech.ch/xmlns/eCH-0155/5=Ech0155_5_2
 generate "proportionalDivisor-1-0" "proportionalDivisor-1-0.xsd" -n http://www.zh.ch/voting/1=ZhProportionalDivisor_1_0
+generate "Ech0045_VoterExtension_1_0" "eCH-0045-voter-extension-1-0.xsd" -n http://www.evoting.ch/xmlns/ech0045VoterExtension/1=Ech0045_VoterExtension_1_0
 
 echo "Copying files into C# projects"
 for dir in "$models_dir"/*/; do

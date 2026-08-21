@@ -55,8 +55,10 @@ public class Ech0045Deserializer
     /// <returns>A collection of voters.</returns>
     public async IAsyncEnumerable<(int Index, VotingPersonType Voter)> ReadVoters(XmlReader reader, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        var serializerSelector = Ech0045PersonExtensionOverrides.BuildAutoDetectingSerializerSelector(Ech0045SerializerInfo.Voter);
+
         var i = 0;
-        await foreach (var voter in reader.EnumerateElementsAsync<VotingPersonType>(Ech0045SerializerInfo.Voter, cancellationToken))
+        await foreach (var voter in reader.EnumerateElementsAsync<VotingPersonType>(Ech0045SerializerInfo.Voter, serializerSelector, cancellationToken))
         {
             yield return (i, voter);
             i++;

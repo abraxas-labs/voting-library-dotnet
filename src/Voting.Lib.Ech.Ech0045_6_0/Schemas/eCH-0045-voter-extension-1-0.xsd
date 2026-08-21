@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.evoting.ch/xmlns/ech0045VoterExtension/1" xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb" targetNamespace="http://www.evoting.ch/xmlns/ech0045VoterExtension/1" elementFormDefault="qualified" version="1.0" jaxb:version="3.0">
+	<xs:complexType name="voterExtensionType">
+		<xs:sequence>
+			<xs:element name="eGovToken" type="eGovTokenType" minOccurs="0"/>
+			<xs:element name="unstructuredPhysicalAddress" type="unstructuredPhysicalAddressType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="eGovTokenType">
+		<xs:restriction base="xs:token">
+			<xs:length value="32"/>
+			<xs:pattern value="[0-9A-F]{32}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="unstructuredPhysicalAddressType">
+		<xs:sequence>
+			<xs:element name="addressLine1">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:sequence>
+				<xs:element name="addressLine2">
+					<xs:simpleType>
+						<xs:restriction base="xs:token">
+							<xs:minLength value="1"/>
+							<xs:maxLength value="50"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:sequence minOccurs="0">
+					<xs:element name="addressLine3">
+						<xs:simpleType>
+							<xs:restriction base="xs:token">
+								<xs:minLength value="1"/>
+								<xs:maxLength value="50"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:sequence minOccurs="0">
+						<xs:element name="addressLine4">
+							<xs:simpleType>
+								<xs:restriction base="xs:token">
+									<xs:minLength value="1"/>
+									<xs:maxLength value="50"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:sequence minOccurs="0">
+							<xs:element name="addressLine5">
+								<xs:simpleType>
+									<xs:restriction base="xs:token">
+										<xs:minLength value="1"/>
+										<xs:maxLength value="50"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:sequence minOccurs="0">
+								<xs:element name="addressLine6">
+									<xs:simpleType>
+										<xs:restriction base="xs:token">
+											<xs:minLength value="1"/>
+											<xs:maxLength value="50"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:sequence minOccurs="0">
+									<xs:element name="addressLine7">
+										<xs:simpleType>
+											<xs:restriction base="xs:token">
+												<xs:minLength value="1"/>
+												<xs:maxLength value="50"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:sequence>
+						</xs:sequence>
+					</xs:sequence>
+				</xs:sequence>
+			</xs:sequence>
+			<xs:element name="country" type="countryType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="countryType">
+		<xs:sequence>
+			<xs:element name="countryId" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="1000"/>
+						<xs:maxInclusive value="9999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="countryIdISO2">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:minLength value="2"/>
+						<xs:maxLength value="2"/>
+						<xs:pattern value="[A-Z]{2}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="countryNameShort">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:maxLength value="50"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -32,6 +32,7 @@ public sealed class Ech0045Schemas
         ["http://www.ech.ch/xmlns/eCH-0007/6"] = "eCH-0007-6-0.xsd",
         ["http://www.ech.ch/xmlns/eCH-0006/3"] = "eCH-0006-3-0.xsd",
         ["http://www.ech.ch/xmlns/eCH-0006/2"] = "eCH-0006-2-0.xsd",
+        ["http://www.evoting.ch/xmlns/ech0045VoterExtension/1"] = "eCH-0045-voter-extension-1-0.xsd",
     };
 
     private Ech0045Schemas()

@@ -6,9 +6,7 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Ech0045_6_0;
-using Voting.Lib.Ech.Ech0045_6_0.Models;
 
 namespace Voting.Lib.Ech.Ech0045_6_0.Converter;
 
@@ -17,10 +15,6 @@ namespace Voting.Lib.Ech.Ech0045_6_0.Converter;
 /// </summary>
 public class Ech0045Serializer
 {
-    // Needs to match the order of SwissPersonType.Extension
-    private const int PersonExtensionXmlAttributeOrder = 5;
-    private const string ExtensionXmlAttributeName = "extension";
-
     private readonly DeliveryHeaderProvider _deliveryHeaderProvider;
     private readonly EchSerializer _serializer;
 
@@ -43,19 +37,23 @@ public class Ech0045Serializer
     /// <param name="persons">The voters.</param>
     /// <param name="leaveWriterOpen">Whether to leave the writer open.</param>
     /// <param name="ct">The cancellation token.</param>
+    /// <param name="personExtensionKind">The kind of the person extension to write.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public Task WriteXml(
         PipeWriter writer,
         VoterListType voterList,
         IAsyncEnumerable<VotingPersonType> persons,
         bool leaveWriterOpen,
-        CancellationToken ct)
+        CancellationToken ct,
+        PersonExtensionKind personExtensionKind = PersonExtensionKind.VotingVoterExtension)
     {
         var xmlData = new VoterDelivery
         {
             DeliveryHeader = _deliveryHeaderProvider.BuildHeader(),
             VoterList = voterList,
         };
+
+        var (overrides, extraTypes) = Ech0045PersonExtensionOverrides.BuildOverridesAndExtraTypes(personExtensionKind);
 
         voterList.Voter.Add(new VotingPersonType()); // add one prototype entry to be replaced
         return _serializer.WriteXmlWithElements(
@@ -64,7 +62,8 @@ public class Ech0045Serializer
             xmlData,
             persons,
             leaveWriterOpen,
-            BuildXmlAttributeOverrides(),
+            overrides,
+            extraTypes,
             ct);
     }
 
@@ -72,26 +71,13 @@ public class Ech0045Serializer
     /// Writes an eCH-0045 delivery to xml bytes.
     /// </summary>
     /// <param name="delivery">The eCH-0045 delivery.</param>
+    /// <param name="personExtensionKind">The kind of the person extension to write.</param>
     /// <returns>The xml bytes.</returns>
-    public byte[] ToXmlBytes(VoterDelivery delivery)
+    public byte[] ToXmlBytes(VoterDelivery delivery, PersonExtensionKind personExtensionKind = PersonExtensionKind.VotingVoterExtension)
     {
+        var (overrides, extraTypes) = Ech0045PersonExtensionOverrides.BuildOverridesAndExtraTypes(personExtensionKind);
         using var memoryStream = new MemoryStream();
-        _serializer.WriteXml(memoryStream, delivery, BuildXmlAttributeOverrides());
+        _serializer.WriteXml(memoryStream, delivery, overrides, extraTypes: extraTypes);
         return memoryStream.ToArray();
-    }
-
-    private XmlAttributeOverrides BuildXmlAttributeOverrides()
-    {
-        // ensure that eCH swiss abroad extension can be mapped, since in the contract the type is any.
-        var xmlAttributeOverrides = new XmlAttributeOverrides();
-        var swissPersonXmlAttributes = new XmlAttributes();
-
-        var swissExtensionXmlAttribute = new XmlElementAttribute(ExtensionXmlAttributeName, typeof(object));
-        swissExtensionXmlAttribute.Type = typeof(SwissPersonExtension);
-        swissExtensionXmlAttribute.Order = PersonExtensionXmlAttributeOrder;
-        swissPersonXmlAttributes.XmlElements.Add(swissExtensionXmlAttribute);
-
-        xmlAttributeOverrides.Add(typeof(PersonType), nameof(SwissPersonType.Extension), swissPersonXmlAttributes);
-        return xmlAttributeOverrides;
     }
 }
