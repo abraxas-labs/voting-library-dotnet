@@ -1,4 +1,4 @@
-# ✨ Changelog (`v22.5.0`)
+# ✨ Changelog (`v22.5.1`)
 
 All notable changes to this project will be documented in this file.
 
@@ -8,11 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version Info
 
 ```text
-This version -------- v22.5.0
-Previous version ---- v22.2.0
+This version -------- v22.5.1
+Previous version ---- v22.5.0
 Initial version ----- v7.7.37
-Total commits ------- 6
+Total commits ------- 1
 ```
+
+## [v22.5.1] - 2026-08-31
+
+### 🔄 Changed
+
+- remove deprecated dok connect uploader adapter
 
 ## [v22.5.0] - 2026-08-20
 

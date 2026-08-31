@@ -11,12 +11,6 @@ namespace Voting.Lib.DokConnector.Configuration;
 public class DokConnectorConfig
 {
     /// <summary>
-    /// Gets or sets the user name.
-    /// </summary>
-    [Obsolete("Removed once migration to ServiceCollectionExtensions.AddDokConnectorApi() is complete.")]
-    public string UserName { get; set; } = string.Empty;
-
-    /// <summary>
     /// Gets or sets the endpoint.
     /// </summary>
     public Uri Endpoint { get; set; } = new("http://localhost:3000");
